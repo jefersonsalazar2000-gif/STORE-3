@@ -139,14 +139,14 @@
     </form>
   </dialog>
 
-  <!-- Firebase (opcional). Si no lo configuras, usa localStorage -->
+  <!-- App -->
   <script type="module">
     // ========== CONFIG ==========
     const AFFILIATE_TAG_DEFAULT = "kaninosabioan-20"; // cambia si quieres
-    const ADMIN_KEY = "mega360"; // clave para Admin
-    const USE_FIREBASE = false;  // pon true cuando pegues tu config
+    const ADMIN_KEY = "mega360";                      // clave para Admin
+    const USE_FIREBASE = false;                        // true si configuras Firebase
 
-    // Pega tu configuración de Firebase y pon USE_FIREBASE=true para sincronizar
+    // Firebase (si lo usas)
     const firebaseConfig = {
       apiKey: "",
       authDomain: "",
@@ -159,7 +159,7 @@
     // ========== Estado ==========
     let isAdmin = false;
     let editingId = null;
-    let products = []; // espejo local
+    let products = [];
     let db = null;
     let unsub = null;
 
@@ -186,7 +186,7 @@
 
     year.textContent = new Date().getFullYear();
 
-    // ========== Datos de ejemplo (1ª vez) ==========
+    // ========== Datos de ejemplo (primera vez) ==========
     const seed = [
       {
         title:"Apple iPhone 15 Pro (128GB)",
@@ -227,6 +227,16 @@
       const raw = localStorage.getItem('ja_store_products');
       if(!raw){ saveLocal(seed); return [...seed]; }
       try { return JSON.parse(raw); } catch { saveLocal(seed); return [...seed]; }
+    }
+
+    // Cargar desde products.json del repo si existe
+    async function loadFromRepo(){
+      try{
+        const r = await fetch('products.json?v='+Date.now(), {cache:'no-store'});
+        if(!r.ok) return null;
+        const j = await r.json();
+        return ensureIds(Array.isArray(j) ? j : []);
+      }catch{ return null; }
     }
 
     // ========== Render ==========
@@ -415,18 +425,25 @@
             products = ensureIds(seed);
           }
           renderCategories(products);
-          normalizeImgsInDOM();   // corrige URLs Amazon tras pintar
+          normalizeImgsInDOM();
           applyFilters();
         });
       } else {
-        products = ensureIds(loadLocal());
-        if(products.length===0){ products = ensureIds(seed); saveLocal(products); }
+        // 1) Intenta cargar del repo
+        let remote = await loadFromRepo();
+        if (remote && remote.length) {
+          products = remote;
+          saveLocal(products);          // caché local
+        } else {
+          // 2) Fallback a local/seed
+          products = ensureIds(loadLocal());
+          if(products.length===0){ products = ensureIds(seed); saveLocal(products); }
+        }
         renderCategories(products);
-        normalizeImgsInDOM();     // <- importante
+        normalizeImgsInDOM();
         applyFilters();
       }
 
-      // Ajuste visual (grid ya se acomoda con Tailwind)
       new ResizeObserver(()=>{}).observe(document.body);
     }
 
