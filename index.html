@@ -32,63 +32,20 @@
   <style>
     :root {
       --grad-1: linear-gradient(135deg,#00E5FF 0%, #7C3AED 50%, #FF0099 100%);
-      --grad-2: linear-gradient(135deg,#0AEFFF 0%, #2AF598 50%, #08AEEA 100%);
       --btn-grad: linear-gradient(135deg, #00E5FF 0%, #7C3AED 50%, #FF0099 100%);
       --ring: 0 0 0 1.5px rgba(124,58,237,.45), 0 0 18px rgba(124,58,237,.35), inset 0 0 12px rgba(0,229,255,.25);
     }
     body { font-family: 'Outfit', sans-serif; }
-    .neon-title {
-      background: var(--grad-1);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 18px rgba(124,58,237,.25);
-    }
-    .neon-ring { box-shadow: var(--ring); }
-    .btn-neon {
-      background: var(--btn-grad);
-      color:#0b0f1a;
-      font-weight:800;
-      box-shadow: 0 0 24px rgba(124,58,237,.35);
-      transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
-    }
+    .neon-title { background: var(--grad-1); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 18px rgba(124,58,237,.25); }
+    .btn-neon { background: var(--btn-grad); color:#0b0f1a; font-weight:800; box-shadow: 0 0 24px rgba(124,58,237,.35); transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease; }
     .btn-neon:hover { transform: translateY(-1px) scale(1.01); box-shadow: 0 0 32px rgba(124,58,237,.55); }
     .chip { background: rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.35) }
-    .card {
-      background: radial-gradient(1200px 500px at -10% -10%, rgba(124,58,237,.12), transparent 50%),
-                  radial-gradient(1000px 400px at 120% 120%, rgba(0,229,255,.10), transparent 45%),
-                  #12172a;
-      border: 1px solid rgba(124,58,237,.25);
-    }
-    .toolbar {
-      background: linear-gradient(180deg, rgba(18,23,42,.85), rgba(18,23,42,.6) 60%, rgba(18,23,42,.1));
-      border-bottom: 1px solid rgba(124,58,237,.25);
-      backdrop-filter: blur(8px);
-    }
-    .gradient-border {
-      position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-    }
-    .gradient-border::before {
-      content: '';
-      position: absolute; inset: 0;
-      padding: 1px; border-radius: 16px;
-      background: var(--grad-1);
-      -webkit-mask: 
-        linear-gradient(#000 0 0) content-box, 
-        linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-              mask-composite: exclude;
-      pointer-events: none;
-    }
-    .input {
-      background:#0e1430; border:1px solid rgba(124,58,237,.35);
-      outline: none; color:white; border-radius: 12px; padding:.7rem .9rem;
-    }
+    .card { background: radial-gradient(1200px 500px at -10% -10%, rgba(124,58,237,.12), transparent 50%), radial-gradient(1000px 400px at 120% 120%, rgba(0,229,255,.10), transparent 45%), #12172a; border: 1px solid rgba(124,58,237,.25); }
+    .toolbar { background: linear-gradient(180deg, rgba(18,23,42,.85), rgba(18,23,42,.6) 60%, rgba(18,23,42,.1)); border-bottom: 1px solid rgba(124,58,237,.25); backdrop-filter: blur(8px); }
+    .gradient-border { position: relative; border-radius: 16px; overflow: hidden; }
+    .gradient-border::before { content: ''; position: absolute; inset: 0; padding: 1px; border-radius: 16px; background: var(--grad-1); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+    .input { background:#0e1430; border:1px solid rgba(124,58,237,.35); outline: none; color:white; border-radius: 12px; padding:.7rem .9rem; }
     .input:focus { box-shadow: var(--ring); }
-    .tag { background:rgba(10,239,255,.12); border:1px solid rgba(10,239,255,.35) }
-    .hidden-scroll::-webkit-scrollbar{ display:none }
   </style>
 </head>
 
@@ -107,12 +64,8 @@
         <p class="text-xs text-white/70 -mt-0.5">De todo • Tecnología • Hogar • Accesorios</p>
       </div>
 
-      <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">
-        YouTube
-      </a>
-      <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">
-        Admin
-      </button>
+      <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
+      <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Admin</button>
     </div>
   </header>
 
@@ -130,7 +83,6 @@
   <!-- Grid productos -->
   <main class="max-w-7xl mx-auto px-4 py-6">
     <div id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
-
     <p id="empty" class="hidden text-center text-white/60 mt-10">No hay productos que coincidan.</p>
   </main>
 
@@ -187,14 +139,14 @@
     </form>
   </dialog>
 
-  <!-- Firebase (opcional: para sincronizar entre dispositivos). Si no lo configuras, usa localStorage -->
+  <!-- Firebase (opcional). Si no lo configuras, usa localStorage -->
   <script type="module">
-    // ========== CONFIGURACIÓN ==========
+    // ========== CONFIG ==========
     const AFFILIATE_TAG_DEFAULT = "kaninosabioan-20"; // cambia si quieres
-    const ADMIN_KEY = "mega360"; // escribe aquí tu clave para entrar a Admin
+    const ADMIN_KEY = "mega360"; // clave para Admin
     const USE_FIREBASE = false;  // pon true cuando pegues tu config
 
-    // Pega tu configuración de Firebase y pon USE_FIREBASE=true para sincronizar entre dispositivos:
+    // Pega tu configuración de Firebase y pon USE_FIREBASE=true para sincronizar
     const firebaseConfig = {
       apiKey: "",
       authDomain: "",
@@ -207,7 +159,7 @@
     // ========== Estado ==========
     let isAdmin = false;
     let editingId = null;
-    let products = []; // espejo local para pintar rápido
+    let products = []; // espejo local
     let db = null;
     let unsub = null;
 
@@ -234,7 +186,7 @@
 
     year.textContent = new Date().getFullYear();
 
-    // ========== Datos de ejemplo por primera vez ==========
+    // ========== Datos de ejemplo (1ª vez) ==========
     const seed = [
       {
         title:"Apple iPhone 15 Pro (128GB)",
@@ -262,87 +214,6 @@
         price:"229.00",
         category:"Accesorios",
         featured:false
-      },
-      {
-        title:"Apple Watch Series 9",
-        brand:"Apple",
-        image:"https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1200&auto=format&fit=crop",
-        amazon:`https://www.amazon.com/dp/B0CHX5Z5GZ?tag=${AFFILIATE_TAG_DEFAULT}`,
-        price:"399.00",
-        category:"Accesorios",
-        featured:false
-      },
-      {
-        title:"Kindle Paperwhite",
-        brand:"Amazon",
-        image:"https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1200&auto=format&fit=crop",
-        amazon:`https://www.amazon.com/dp/B08N36XNTT?tag=${AFFILIATE_TAG_DEFAULT}`,
-        price:"149.99",
-        category:"Tecnología",
-        featured:false
-      },
-      {
-        title:"Nintendo Switch OLED",
-        brand:"Nintendo",
-        image:"https://images.unsplash.com/photo-1560264280-88b68371db39?q=80&w=1200&auto=format&fit=crop",
-        amazon:`https://www.amazon.com/dp/B098RKWHHZ?tag=${AFFILIATE_TAG_DEFAULT}`,
-        price:"349.00",
-        category:"Gaming",
-        featured:true
-      },
-      {
-        title:"PlayStation 5 Slim",
-        brand:"Sony",
-        image:"https://images.unsplash.com/photo-1606813907291-76b1b83b3bf2?q=80&w=1200&auto=format&fit=crop",
-        amazon:`https://www.amazon.com/dp/B0CLL9P9N8?tag=${AFFILIATE_TAG_DEFAULT}`,
-        price:"499.00",
-        category:"Gaming",
-        featured:false
-      },
-      {
-        title:"Robot Aspirador Roomba i7",
-        brand:"iRobot",
-        image:"https://images.unsplash.com/photo-1585059895524-7201a72c4183?q=80&w=1200&auto=format&fit=crop",
-        amazon:`https://www.amazon.com/dp/B07GNPDMRP?tag=${AFFILIATE_TAG_DEFAULT}`,
-        price:"399.00",
-        category:"Hogar",
-        featured:false
-      },
-      {
-        title:"Logitech MX Master 3S",
-        brand:"Logitech",
-        image:"https://images.unsplash.com/photo-1587825140400-5d526fd05a72?q=80&w=1200&auto=format&fit=crop",
-        amazon:`https://www.amazon.com/dp/B09HM94VDS?tag=${AFFILIATE_TAG_DEFAULT}`,
-        price:"99.00",
-        category:"Accesorios",
-        featured:false
-      },
-      {
-        title:"Monitor 27\" 4K IPS",
-        brand:"LG",
-        image:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop",
-        amazon:`https://www.amazon.com/dp/B08BV2DH9Z?tag=${AFFILIATE_TAG_DEFAULT}`,
-        price:"299.00",
-        category:"Tecnología",
-        featured:false
-      },
-      {
-        title:"SSD NVMe 1TB",
-        brand:"Crucial",
-        image:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop",
-        amazon:`https://www.amazon.com/dp/B08K9D8GJ9?tag=${AFFILIATE_TAG_DEFAULT}`,
-        price:"89.00",
-        category:"Tecnología",
-        featured:false
-      },
-      {
-        title:"Echo Dot (5ª gen)",
-        brand:"Amazon",
-        image:"https://images.unsplash.com/photo-1611599539395-054cf3ed266d?q=80&w=1200&auto=format&fit=crop",
-        amazon:`https://www.amazon.com/dp/B09B2SBWPX?tag=${AFFILIATE_TAG_DEFAULT}`,
-        price:"49.99",
-        category:"Hogar",
-        featured:false
       }
     ];
 
@@ -351,9 +222,7 @@
     const qsa = s => [...document.querySelectorAll(s)];
     const uid = () => crypto.randomUUID();
 
-    function saveLocal(list){
-      localStorage.setItem('ja_store_products', JSON.stringify(list));
-    }
+    function saveLocal(list){ localStorage.setItem('ja_store_products', JSON.stringify(list)); }
     function loadLocal(){
       const raw = localStorage.getItem('ja_store_products');
       if(!raw){ saveLocal(seed); return [...seed]; }
@@ -363,9 +232,7 @@
     // ========== Render ==========
     function renderCategories(list){
       const cats = ['all', ...new Set(list.map(p=>p.category))];
-      categoryFilter.innerHTML = cats.map(c => 
-        `<option value="${c}">${c === 'all' ? 'Todas las categorías' : c}</option>`
-      ).join('');
+      categoryFilter.innerHTML = cats.map(c => `<option value="${c}">${c === 'all' ? 'Todas las categorías' : c}</option>`).join('');
     }
 
     function productCard(p){
@@ -380,7 +247,7 @@
       return `
         <article class="card rounded-2xl p-3 sm:p-4 flex flex-col gradient-border">
           <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3]">
-            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover" loading="lazy" />
+            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-contain bg-[#0e1430]" loading="lazy" />
           </div>
           <div class="mt-3 flex items-start justify-between gap-3">
             <div class="min-w-0">
@@ -415,9 +282,7 @@
     }
 
     // ========== CRUD Local ==========
-    function ensureIds(list){
-      return list.map(p => ({ id: p.id || uid(), ...p }));
-    }
+    function ensureIds(list){ return list.map(p => ({ id: p.id || uid(), ...p })); }
 
     window.editProduct = (id)=>{
       const p = products.find(x=>x.id===id);
@@ -441,9 +306,10 @@
         const { deleteDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
         await deleteDoc(doc(db,'products',id));
       } else {
-        products = products.filter(p=>p.id!==id);
+        products = products.filter(p => p.id !== id);
         saveLocal(products);
         renderCategories(products);
+        normalizeImgsInDOM();   // corrige URLs Amazon tras pintar
         applyFilters();
       }
     };
@@ -475,7 +341,7 @@
       };
       if(!data.title || !data.image || !data.amazon){ alert("Título, Imagen y URL de Amazon son obligatorios."); return; }
 
-      // Si el link no trae ?tag=, le insertamos el tag por defecto
+      // Si el link no trae ?tag=, insertamos el tag por defecto
       if(!/[\?&]tag=/.test(data.amazon) && AFFILIATE_TAG_DEFAULT){
         const sep = data.amazon.includes('?') ? '&' : '?';
         data.amazon = `${data.amazon}${sep}tag=${AFFILIATE_TAG_DEFAULT}`;
@@ -487,12 +353,13 @@
         await setDoc(doc(db,'products',id), { id, ...data });
       } else {
         if(editingId){
-          products = products.map(p=> p.id===editingId ? ({...p, ...data}) : p);
+          products = products.map(p => p.id === editingId ? ({...p, ...data}) : p);
         } else {
           products = [{ id: uid(), ...data }, ...products];
         }
         saveLocal(products);
         renderCategories(products);
+        normalizeImgsInDOM();   // corrige URLs Amazon tras pintar
         applyFilters();
       }
       modal.close();
@@ -544,27 +411,63 @@
           products = [];
           snap.forEach(doc=> products.push(doc.data()));
           if(products.length===0){
-            // primera vez: sembramos
-            // (nota: para no exceder writes, solo sembramos local)
+            // primera vez: sembramos localmente
             products = ensureIds(seed);
           }
           renderCategories(products);
+          normalizeImgsInDOM();   // corrige URLs Amazon tras pintar
           applyFilters();
         });
       } else {
         products = ensureIds(loadLocal());
         if(products.length===0){ products = ensureIds(seed); saveLocal(products); }
         renderCategories(products);
+        normalizeImgsInDOM();     // <- importante
         applyFilters();
       }
 
-      // Ajustar alto de tarjetas iguales
-      new ResizeObserver(()=> {
-        // noop visual; Tailwind + grid ya se acomoda
-      }).observe(document.body);
+      // Ajuste visual (grid ya se acomoda con Tailwind)
+      new ResizeObserver(()=>{}).observe(document.body);
     }
 
     window.addEventListener('DOMContentLoaded', init);
   </script>
+
+  <!-- 🔧 Normalizador de imágenes Amazon -->
+  <script>
+    // Convierte URLs Amazon (._AC_SX..., _UX..., _QL..., _CR..., etc.) al formato estable m.media-amazon.com
+    function normalizeAmazonImage(url, size = 1200) {
+      if (!url) return url;
+      try {
+        if (url.startsWith("//")) url = "https:" + url;
+        const u = new URL(url);
+        if (!/amazon\./i.test(u.hostname)) return url;     // solo Amazon
+        u.hostname = "m.media-amazon.com";                 // CDN estable
+        let p = u.pathname.replace(/\._[^.]+_\./g, ".");   // quita sufijos variables
+        p = p.replace(/\.(jpg|jpeg|png|webp)$/i, `._SL${size}_.$1`); // fija tamaño
+        u.search = "";
+        return `${u.origin}${p}`;
+      } catch { return url; }
+    }
+
+    function normalizeElementImage(img){
+      const dataSrc = img.getAttribute("data-src");
+      if (dataSrc && !img.getAttribute("src")) img.setAttribute("src", dataSrc);
+      const src = img.getAttribute("src") || "";
+      const n = normalizeAmazonImage(src);
+      if (n && n !== src) img.setAttribute("src", n);
+      if (img.hasAttribute("srcset")) img.removeAttribute("srcset");
+    }
+
+    function normalizeImgsInDOM(sel="img"){ document.querySelectorAll(sel).forEach(normalizeElementImage); }
+
+    // Al cargar + reintento (por lazy) + mutaciones dinámicas
+    document.addEventListener("DOMContentLoaded", () => {
+      normalizeImgsInDOM();
+      setTimeout(()=>normalizeImgsInDOM(), 300);
+    });
+    new MutationObserver(()=>normalizeImgsInDOM()).observe(document.body,{childList:true,subtree:true});
+  </script>
+
 </body>
 </html>
