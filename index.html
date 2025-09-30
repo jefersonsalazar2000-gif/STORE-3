@@ -1,192 +1,509 @@
- // =========================
-  const YOUTUBE_URL = "http://www.youtube.com/@SABIDURIAANIMAL86";
-  const AMAZON_TAG  = "kaninosabioan-20"; // Tu tag afiliado
-  // Pega tu firebaseConfig abajo (reemplaza null por tu objeto; sin esto, cada dispositivo mantiene sus propios datos)
-  // Pega tu firebaseConfig abajo (reemplaza null por tu objeto)
-  // const firebaseConfig = { apiKey:"...", authDomain:"...", projectId:"...", storageBucket:"...", messagingSenderId:"...", appId:"..." };
-  const firebaseConfig = null; // <<< PÉGALO AQUÍ
-
-@@ -208,7 +208,7 @@ <h3 class="text-lg font-bold">Escanea para ir al canal</h3>
-  // =========================
-  const $ = (q,root=document)=>root.querySelector(q);
-  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
-  const yearEl = $("#year"); yearEl.textContent = new Date().getFullYear();
-  $("#year").textContent = new Date().getFullYear();
-  const grid = $("#grid");
-  const empty = $("#empty");
-  const dlgForm = $("#dlgForm");
-@@ -229,19 +229,15 @@ <h3 class="text-lg font-bold">Escanea para ir al canal</h3>
-  const qrApi = (url) => `https://quickchart.io/qr?text=${encodeURIComponent(url)}&size=512&margin=2`;
-  qrImg.src = qrApi(YOUTUBE_URL);
-
-  // =========================
-  // Estado
-  // =========================
-  let ADMIN = false;
-  let PRODUCTS = []; // cache local
-  let PRODUCTS = [];
-  let FILTER = { text:"", cat:"all" };
-
-  // Firestore o demo
-  let db = null, auth = null, usingDemo = false;
-
-  // =========================
-  // DEMO DATA (12 productos)
-  // =========================
-  // DEMO DATA
-  const DEMO = [
-    {title:"Monitor Curvo 32\" 165Hz", cat:"Tecnología", price:279.99, img:"https://images.unsplash.com/photo-1587202372775-98927b111c78?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0B1X12345"},
-    {title:"Escritorio Eléctrico Altura Ajustable", cat:"Hogar", price:199.99, img:"https://images.unsplash.com/photo-1545259741-2ea3ebf61fa7?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0B2X54321"},
-@@ -257,11 +253,8 @@ <h3 class="text-lg font-bold">Escanea para ir al canal</h3>
-    {title:"Silla Ergonómica", cat:"Hogar", price:229.99, img:"https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0CHA66666"},
-  ];
-
-  // =========================
-  // INICIO
-  // =========================
-  window.addEventListener('load', async () => {
-    // Botones y modales
-    $("#btnCloseQR")?.addEventListener("click", ()=> dlgQR.close());
-    $("#btnQR").addEventListener("click", ()=> dlgQR.showModal());
-
-@@ -284,7 +277,7 @@ <h3 class="text-lg font-bold">Escanea para ir al canal</h3>
-        await auth.signInAnonymously();
-        usingDemo = false;
-      } else {
-        usingDemo = true; // sin config => demo local
-        usingDemo = true;
+  theme: {
+        extend: {
+          fontFamily: { outfit: ['Outfit','ui-sans-serif','system-ui']},
+          colors: {
+            base: '#0b0f1a',
+            card: '#12172a',
+            soft: '#1a2140'
+          }
+          colors: { base:'#0b0f1a', card:'#12172a', soft:'#1a2140' }
+        }
       }
-    } catch (e) {
-      console.warn('Firebase no disponible, usando DEMO.', e);
-@@ -295,14 +288,9 @@ <h3 class="text-lg font-bold">Escanea para ir al canal</h3>
-    render();
-  });
-
-  // =========================
-  // CRUD
-  // =========================
-  async function loadProducts() {
-    if (usingDemo) {
-      PRODUCTS = DEMO.map((p, i)=> ({ id:`demo-${i}`, ...p }));
-      return;
     }
-    if (usingDemo) { PRODUCTS = DEMO.map((p, i)=> ({ id:`demo-${i}`, ...p })); return; }
-    const snap = await db.collection('products').orderBy('createdAt','desc').get();
-    PRODUCTS = snap.docs.map(d=> ({ id:d.id, ...d.data() }));
-    if (!PRODUCTS.length) {
-@@ -318,41 +306,23 @@ <h3 class="text-lg font-bold">Escanea para ir al canal</h3>
+@@ -28,24 +24,28 @@
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
 
-  async function createOrUpdateProduct(data) {
-    if (usingDemo) {
-      if (data.id?.startsWith('demo-')) {
-        PRODUCTS = PRODUCTS.map(p=> p.id===data.id ? data : p);
-      } else {
-        data.id = 'demo-'+(PRODUCTS.length+1);
-        PRODUCTS.unshift(data);
-      }
-      render();
-      return;
+  <!-- Estilos propios -->
+  <!-- Estilos -->
+  <style>
+    :root {
+    :root{
+      --grad-1: linear-gradient(135deg,#00E5FF 0%, #7C3AED 50%, #FF0099 100%);
+      --btn-grad: linear-gradient(135deg, #00E5FF 0%, #7C3AED 50%, #FF0099 100%);
+      --ring: 0 0 0 1.5px rgba(124,58,237,.45), 0 0 18px rgba(124,58,237,.35), inset 0 0 12px rgba(0,229,255,.25);
     }
-    if (data.id) {
-      const {id, ...rest}=data;
-      await db.collection('products').doc(id).set(rest, {merge:true});
-    } else {
-      await db.collection('products').add({ ...data, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-      if (data.id?.startsWith('demo-')) { PRODUCTS = PRODUCTS.map(p=> p.id===data.id ? data : p); }
-      else { data.id = 'demo-'+(PRODUCTS.length+1); PRODUCTS.unshift(data); }
-      render(); return;
-    }
-    if (data.id) { const {id, ...rest}=data; await db.collection('products').doc(id).set(rest, {merge:true}); }
-    else { await db.collection('products').add({ ...data, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); }
-  }
+    body { font-family: 'Outfit', sans-serif; }
+    .neon-title { background: var(--grad-1); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 18px rgba(124,58,237,.25); }
+    .btn-neon { background: var(--btn-grad); color:#0b0f1a; font-weight:800; box-shadow: 0 0 24px rgba(124,58,237,.35); transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease; }
+    .btn-neon:hover { transform: translateY(-1px) scale(1.01); box-shadow: 0 0 32px rgba(124,58,237,.55); }
+    .chip { background: rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.35) }
+    .card { background: radial-gradient(1200px 500px at -10% -10%, rgba(124,58,237,.12), transparent 50%), radial-gradient(1000px 400px at 120% 120%, rgba(0,229,255,.10), transparent 45%), #12172a; border: 1px solid rgba(124,58,237,.25); }
+    .toolbar { background: linear-gradient(180deg, rgba(18,23,42,.85), rgba(18,23,42,.6) 60%, rgba(18,23,42,.1)); border-bottom: 1px solid rgba(124,58,237,.25); backdrop-filter: blur(8px); }
+    .gradient-border { position: relative; border-radius: 16px; overflow: hidden; }
+    .gradient-border::before { content: ''; position: absolute; inset: 0; padding: 1px; border-radius: 16px; background: var(--grad-1); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+    .input { background:#0e1430; border:1px solid rgba(124,58,237,.35); outline: none; color:white; border-radius: 12px; padding:.7rem .9rem; }
+    .input:focus { box-shadow: var(--ring); }
+    body{ font-family:'Outfit',sans-serif }
+    .neon-title{ background:var(--grad-1); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 0 18px rgba(124,58,237,.25) }
+    .btn-neon{ background:var(--btn-grad); color:#0b0f1a; font-weight:800; box-shadow:0 0 24px rgba(124,58,237,.35); transition:transform .12s, box-shadow .12s, opacity .12s }
+    .btn-neon:hover{ transform:translateY(-1px) scale(1.01); box-shadow:0 0 32px rgba(124,58,237,.55) }
+    .chip{ background:rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.35) }
+    .card{ background:
+      radial-gradient(1200px 500px at -10% -10%, rgba(124,58,237,.12), transparent 50%),
+      radial-gradient(1000px 400px at 120% 120%, rgba(0,229,255,.10), transparent 45%),
+      #12172a; border:1px solid rgba(124,58,237,.25) }
+    .toolbar{ background:linear-gradient(180deg, rgba(18,23,42,.85), rgba(18,23,42,.6) 60%, rgba(18,23,42,.1)); border-bottom:1px solid rgba(124,58,237,.25); backdrop-filter:blur(8px) }
+    .gradient-border{ position:relative; border-radius:16px; overflow:hidden }
+    .gradient-border::before{ content:''; position:absolute; inset:0; padding:1px; border-radius:16px; background:var(--grad-1);
+      -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none }
+    .input{ background:#0e1430; border:1px solid rgba(124,58,237,.35); outline:none; color:white; border-radius:12px; padding:.7rem .9rem }
+    .input:focus{ box-shadow:var(--ring) }
+  </style>
+</head>
 
-  async function deleteProduct(id) {
-    if (usingDemo) {
-      PRODUCTS = PRODUCTS.filter(p=>p.id!==id);
-      render();
-      return;
-    }
-    if (usingDemo) { PRODUCTS = PRODUCTS.filter(p=>p.id!==id); render(); return; }
-    await db.collection('products').doc(id).delete();
-  }
+@@ -55,32 +55,25 @@
+  <header class="toolbar sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl gradient-border flex items-center justify-center shrink-0">
+        <div class="w-full h-full rounded-[14px] bg-[#0e1430] flex items-center justify-center">
+          <span class="text-xl font-extrabold">J_A</span>
+        </div>
+        <div class="w-full h-full rounded-[14px] bg-[#0e1430] flex items-center justify-center"><span class="text-xl font-extrabold">J_A</span></div>
+      </div>
+      <div class="flex-1">
+        <h1 class="text-xl sm:text-2xl font-extrabold neon-title leading-none">MEGA STORE 360</h1>
+        <p class="text-xs text-white/70 -mt-0.5">De todo • Tecnología • Hogar • Accesorios</p>
+      </div>
 
-  // =========================
-  // RENDER
-  // =========================
-  function affiliateUrl(url) {
-    try {
-      const u = new URL(url);
-      if (!u.searchParams.has('tag')) u.searchParams.set('tag', AMAZON_TAG);
-      return u.toString();
-    } catch { return url; }
-    try { const u = new URL(url); if (!u.searchParams.has('tag')) u.searchParams.set('tag', AMAZON_TAG); return u.toString(); }
-    catch { return url; }
-  }
+      <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
+      <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Admin</button>
+    </div>
+  </header>
 
-  function filteredProducts() {
-@@ -401,12 +371,8 @@ <h3 class="font-bold line-clamp-2">${escapeHtml(p.title)}</h3>
-          const id = b.getAttribute('data-edit');
-          const p = PRODUCTS.find(x=>x.id===id);
-          if (!p) return;
-          fId.value = p.id;
-          fTitle.value = p.title||'';
-          fCat.value = p.cat||'';
-          fPrice.value = p.price||'';
-          fImg.value = p.img||'';
-          fUrl.value = p.url||'';
-          fId.value = p.id; fTitle.value = p.title||''; fCat.value = p.cat||'';
-          fPrice.value = p.price||''; fImg.value = p.img||''; fUrl.value = p.url||'';
-          dlgForm.showModal();
-        };
-      });
-@@ -426,26 +392,13 @@ <h3 class="font-bold line-clamp-2">${escapeHtml(p.title)}</h3>
-    }
-  }
+  <!-- Controles -->
+  <section class="max-w-7xl mx-auto px-4 mt-4 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
+    <div class="gradient-border">
+      <input id="search" class="input w-full" placeholder="Buscar productos… (ej. iPhone, smartwatch)" />
+    </div>
+    <select id="categoryFilter" class="input">
+      <option value="all">Todas las categorías</option>
+    </select>
+    <div class="gradient-border"><input id="search" class="input w-full" placeholder="Buscar productos… (ej. iPhone, smartwatch)" /></div>
+    <select id="categoryFilter" class="input"><option value="all">Todas las categorías</option></select>
+    <button id="btnAdd" class="btn-neon px-4 py-2 rounded-xl text-sm disabled:opacity-40" disabled>+ Agregar</button>
+  </section>
 
-  // =========================
-  // EVENTOS UI
-  // =========================
-  $$("button[data-cat]").forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      FILTER.cat = btn.getAttribute('data-cat');
-      render();
-    });
-    btn.addEventListener('click', ()=>{ FILTER.cat = btn.getAttribute('data-cat'); render(); });
-  });
+  <!-- Grid productos -->
+  <!-- Grid -->
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <div id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+    <p id="empty" class="hidden text-center text-white/60 mt-10">No hay productos que coincidan.</p>
+@@ -97,7 +90,7 @@ <h1 class="text-xl sm:text-2xl font-extrabold neon-title leading-none">MEGA STOR
+    </div>
+  </footer>
 
-  searchInput.addEventListener('input', ()=>{
-    FILTER.text = searchInput.value;
-    render();
-  });
+  <!-- Modal producto -->
+  <!-- Modal -->
+  <dialog id="modal" class="backdrop:bg-black/70 rounded-2xl w-[min(720px,92vw)]">
+    <form id="form" method="dialog" class="card rounded-2xl p-4 sm:p-6">
+      <div class="flex items-center justify-between mb-4">
+@@ -108,10 +101,8 @@ <h3 id="modalTitle" class="text-lg font-extrabold neon-title">Nuevo producto</h3
+      <div class="grid gap-3 sm:grid-cols-2">
+        <div class="gradient-border"><input required id="pTitle" class="input w-full" placeholder="Título / Nombre" /></div>
+        <div class="gradient-border"><input id="pBrand" class="input w-full" placeholder="Marca (opcional)" /></div>
 
-  clearSearch.addEventListener('click', ()=>{
-    searchInput.value = '';
-    FILTER.text = '';
-    render();
-  });
-  searchInput.addEventListener('input', ()=>{ FILTER.text = searchInput.value; render(); });
-  clearSearch.addEventListener('click', ()=>{ searchInput.value = ''; FILTER.text = ''; render(); });
+        <div class="gradient-border sm:col-span-2"><input required id="pImage" class="input w-full" placeholder="URL de imagen (https://…)" /></div>
+        <div class="gradient-border sm:col-span-2"><input required id="pAmazon" class="input w-full" placeholder="URL afiliado de Amazon (con tu tag)" /></div>
 
-  function askAdmin() {
-    const pin = prompt("Ingresa PIN de Admin (sugerido: 360):","");
-@@ -472,19 +425,14 @@ <h3 class="font-bold line-clamp-2">${escapeHtml(p.title)}</h3>
-      img: fImg.value.trim(),
-      url: fUrl.value.trim()
+        <div class="gradient-border"><input id="pPrice" class="input w-full" placeholder="Precio (opcional, ej. 799.00)" inputmode="decimal" /></div>
+        <div class="gradient-border">
+          <select id="pCategory" class="input w-full">
+@@ -127,10 +118,8 @@ <h3 id="modalTitle" class="text-lg font-extrabold neon-title">Nuevo producto</h3
+
+      <div class="mt-4 flex items-center justify-between">
+        <label class="flex items-center gap-2 text-sm text-white/80">
+          <input id="pFeatured" type="checkbox" class="accent-fuchsia-500 scale-110" />
+          Destacado
+          <input id="pFeatured" type="checkbox" class="accent-fuchsia-500 scale-110" /> Destacado
+        </label>
+
+        <div class="flex items-center gap-2">
+          <button type="button" id="btnDelete" class="px-3 py-2 rounded-xl chip text-sm hidden">Eliminar</button>
+          <button type="submit" class="btn-neon px-4 py-2 rounded-xl">Guardar</button>
+@@ -141,37 +130,22 @@ <h3 id="modalTitle" class="text-lg font-extrabold neon-title">Nuevo producto</h3
+
+  <!-- App -->
+  <script type="module">
+    // ========== CONFIG ==========
+    const AFFILIATE_TAG_DEFAULT = "kaninosabioan-20"; // cambia si quieres
+    const ADMIN_KEY = "mega360";                      // clave para Admin
+    const USE_FIREBASE = false;                        // true si configuras Firebase
+
+    // Firebase (si lo usas)
+    const firebaseConfig = {
+      apiKey: "",
+      authDomain: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: ""
     };
-    if (!data.title || !data.cat || !data.img || !data.url) {
-      alert("Completa título, categoría, imagen y URL de Amazon.");
-      return;
-    }
-    if (!data.title || !data.cat || !data.img || !data.url) { alert("Completa título, categoría, imagen y URL de Amazon."); return; }
-    await createOrUpdateProduct(data);
-    await loadProducts();
-    render();
-    dlgForm.close();
-  });
+    // ===== CONFIG =====
+    const AFFILIATE_TAG_DEFAULT = "kaninosabioan-20";
+    const ADMIN_KEY = "mega360";
+    const USE_FIREBASE = false; // si configuras Firebase, cambia a true
 
-  // =========================
-  // HELPERS
-  // =========================
-  function escapeHtml(s=""){ return s.replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c])) }
+    // ========== Estado ==========
+    let isAdmin = false;
+    let editingId = null;
+    let products = [];
+    let db = null;
+    let unsub = null;
+    const firebaseConfig = { apiKey:"", authDomain:"", projectId:"", storageBucket:"", messagingSenderId:"", appId:"" };
+
+    // ========== UI refs ==========
+    // ===== Estado / refs =====
+    let isAdmin=false, editingId=null, products=[], db=null, unsub=null;
+    const grid = document.getElementById('grid');
+    const empty = document.getElementById('empty');
+    const search = document.getElementById('search');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const btnAdd = document.getElementById('btnAdd');
+    const btnAdmin = document.getElementById('btnAdmin');
+    const year = document.getElementById('year');
+
+    const modal = document.getElementById('modal');
+    const form = document.getElementById('form');
+    const modalTitle = document.getElementById('modalTitle');
+@@ -183,53 +157,25 @@ <h3 id="modalTitle" class="text-lg font-extrabold neon-title">Nuevo producto</h3
+    const pCategory = document.getElementById('pCategory');
+    const pFeatured = document.getElementById('pFeatured');
+    const btnDelete = document.getElementById('btnDelete');
+
+    year.textContent = new Date().getFullYear();
+
+    // ========== Datos de ejemplo (primera vez) ==========
+    // ===== Seed (solo primera vez) =====
+    const seed = [
+      {
+        title:"Apple iPhone 15 Pro (128GB)",
+        brand:"Apple",
+        image:"https://images.unsplash.com/photo-1695048134231-bc87e1a3e94a?q=80&w=1200&auto=format&fit=crop",
+        amazon:`https://www.amazon.com/dp/B0CHX3LPPB?tag=${AFFILIATE_TAG_DEFAULT}`,
+        price:"999.00",
+        category:"Teléfonos",
+        featured:true
+      },
+      {
+        title:"Samsung Galaxy S24 Ultra",
+        brand:"Samsung",
+        image:"https://images.unsplash.com/photo-1580906855280-95e0b1f4a1e7?q=80&w=1200&auto=format&fit=crop",
+        amazon:`https://www.amazon.com/dp/B0CSJ3LLQK?tag=${AFFILIATE_TAG_DEFAULT}`,
+        price:"1199.00",
+        category:"Teléfonos",
+        featured:true
+      },
+      {
+        title:"AirPods Pro (2da gen)",
+        brand:"Apple",
+        image:"https://images.unsplash.com/photo-1588421357574-87938a86fa28?q=80&w=1200&auto=format&fit=crop",
+        amazon:`https://www.amazon.com/dp/B0BDK62PDX?tag=${AFFILIATE_TAG_DEFAULT}`,
+        price:"229.00",
+        category:"Accesorios",
+        featured:false
+      }
+      { title:"Apple iPhone 15 Pro (128GB)", brand:"Apple", image:"https://images.unsplash.com/photo-1695048134231-bc87e1a3e94a?q=80&w=1200&auto=format&fit=crop", amazon:`https://www.amazon.com/dp/B0CHX3LPPB?tag=${AFFILIATE_TAG_DEFAULT}`, price:"999.00", category:"Teléfonos", featured:true },
+      { title:"Samsung Galaxy S24 Ultra", brand:"Samsung", image:"https://images.unsplash.com/photo-1580906855280-95e0b1f4a1e7?q=80&w=1200&auto=format&fit=crop", amazon:`https://www.amazon.com/dp/B0CSJ3LLQK?tag=${AFFILIATE_TAG_DEFAULT}`, price:"1199.00", category:"Teléfonos", featured:true },
+      { title:"AirPods Pro (2da gen)", brand:"Apple", image:"https://images.unsplash.com/photo-1588421357574-87938a86fa28?q=80&w=1200&auto=format&fit=crop", amazon:`https://www.amazon.com/dp/B0BDK62PDX?tag=${AFFILIATE_TAG_DEFAULT}`, price:"229.00", category:"Accesorios", featured:false }
+    ];
+
+    // ========== Helpers ==========
+    const qs = s => document.querySelector(s);
+    // ===== Helpers =====
+    const qsa = s => [...document.querySelectorAll(s)];
+    const uid = () => crypto.randomUUID();
+
+    const ensureIds = list => list.map(p => ({ id: p.id || uid(), ...p }));
+    function saveLocal(list){ localStorage.setItem('ja_store_products', JSON.stringify(list)); }
+    function loadLocal(){
+      const raw = localStorage.getItem('ja_store_products');
+      if(!raw){ saveLocal(seed); return [...seed]; }
+      try { return JSON.parse(raw); } catch { saveLocal(seed); return [...seed]; }
+    }
+
+    // Cargar desde products.json del repo si existe
+    async function loadFromRepo(){
+      try{
+        const r = await fetch('products.json?v='+Date.now(), {cache:'no-store'});
+@@ -239,10 +185,10 @@ <h3 id="modalTitle" class="text-lg font-extrabold neon-title">Nuevo producto</h3
+      }catch{ return null; }
+    }
+
+    // ========== Render ==========
+    // ===== Render =====
+    function renderCategories(list){
+      const cats = ['all', ...new Set(list.map(p=>p.category))];
+      categoryFilter.innerHTML = cats.map(c => `<option value="${c}">${c === 'all' ? 'Todas las categorías' : c}</option>`).join('');
+      categoryFilter.innerHTML = cats.map(c => `<option value="${c}">${c==='all'?'Todas las categorías':c}</option>`).join('');
+    }
+
+    function productCard(p){
+@@ -266,7 +212,6 @@ <h3 class="font-extrabold leading-tight line-clamp-2">${p.title}</h3>
+              ${price?`<div class="mt-1 text-white/90 font-semibold">${price}</div>`:''}
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <a href="${p.amazon}" target="_blank" rel="nofollow sponsored noopener" class="btn-neon w-full justify-center px-4 py-2 rounded-xl inline-flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414L11 19.586V14a1 1 0 0 1 1-1z"/></svg>
+@@ -275,39 +220,31 @@ <h3 class="font-extrabold leading-tight line-clamp-2">${p.title}</h3>
+            ${isAdmin?`<p class="mt-1 text-[11px] text-white/50 break-all">${p.amazon}</p>`:''}
+            ${adminBtns}
+          </div>
+        </article>
+      `;
+        </article>`;
+    }
+
+    function applyFilters(){
+      const term = (search.value||'').toLowerCase().trim();
+      const cat = categoryFilter.value || 'all';
+      const filtered = products.filter(p=>{
+        const matchesTerm = !term || (p.title.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term));
+        const matchesCat = cat==='all' || p.category===cat;
+        return matchesTerm && matchesCat;
+        const okTerm = !term || p.title.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term);
+        const okCat  = cat==='all' || p.category===cat;
+        return okTerm && okCat;
+      });
+      grid.innerHTML = filtered.map(productCard).join('');
+      empty.classList.toggle('hidden', filtered.length>0);
+    }
+
+    // ========== CRUD Local ==========
+    function ensureIds(list){ return list.map(p => ({ id: p.id || uid(), ...p })); }
+
+    // ===== CRUD Local =====
+    window.editProduct = (id)=>{
+      const p = products.find(x=>x.id===id);
+      if(!p) return;
+      const p = products.find(x=>x.id===id); if(!p) return;
+      editingId = id;
+      modalTitle.textContent = "Editar producto";
+      pTitle.value = p.title||'';
+      pBrand.value = p.brand||'';
+      pImage.value = p.image||'';
+      pAmazon.value = p.amazon||'';
+      pPrice.value = p.price||'';
+      pCategory.value = p.category||'Tecnología';
+      pTitle.value = p.title||''; pBrand.value = p.brand||'';
+      pImage.value = p.image||''; pAmazon.value = p.amazon||'';
+      pPrice.value = p.price||''; pCategory.value = p.category||'Tecnología';
+      pFeatured.checked = !!p.featured;
+      btnDelete.classList.remove('hidden');
+      modal.showModal();
+      btnDelete.classList.remove('hidden'); modal.showModal();
+    };
+
+    window.removeProduct = async (id)=>{
+@@ -319,93 +256,56 @@ <h3 class="font-extrabold leading-tight line-clamp-2">${p.title}</h3>
+        products = products.filter(p => p.id !== id);
+        saveLocal(products);
+        renderCategories(products);
+        normalizeImgsInDOM();   // corrige URLs Amazon tras pintar
+        normalizeImgsInDOM();
+        applyFilters();
+      }
+    };
+
+    btnAdd.addEventListener('click', ()=>{
+      editingId = null;
+      modalTitle.textContent = "Nuevo producto";
+      form.reset();
+      pFeatured.checked = false;
+      btnDelete.classList.add('hidden');
+      modal.showModal();
+      editingId = null; modalTitle.textContent = "Nuevo producto"; form.reset();
+      pFeatured.checked = false; btnDelete.classList.add('hidden'); modal.showModal();
+    });
+
+    btnDelete.addEventListener('click', async ()=>{
+      if(editingId) await window.removeProduct(editingId);
+      modal.close();
+    });
+    btnDelete.addEventListener('click', async ()=>{ if(editingId) await window.removeProduct(editingId); modal.close(); });
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const data = {
+        title: pTitle.value.trim(),
+        brand: pBrand.value.trim(),
+        image: pImage.value.trim(),
+        amazon: pAmazon.value.trim(),
+        price: pPrice.value.trim(),
+        category: pCategory.value,
+        featured: !!pFeatured.checked
+        title:pTitle.value.trim(), brand:pBrand.value.trim(), image:pImage.value.trim(),
+        amazon:pAmazon.value.trim(), price:pPrice.value.trim(), category:pCategory.value,
+        featured:!!pFeatured.checked
+      };
+      if(!data.title || !data.image || !data.amazon){ alert("Título, Imagen y URL de Amazon son obligatorios."); return; }
+
+      // Si el link no trae ?tag=, insertamos el tag por defecto
+      if(!/[\?&]tag=/.test(data.amazon) && AFFILIATE_TAG_DEFAULT){
+        const sep = data.amazon.includes('?') ? '&' : '?';
+        data.amazon = `${data.amazon}${sep}tag=${AFFILIATE_TAG_DEFAULT}`;
+        const sep = data.amazon.includes('?') ? '&' : '?'; data.amazon = `${data.amazon}${sep}tag=${AFFILIATE_TAG_DEFAULT}`;
+      }
+
+      if(db){
+        const { setDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+        const id = editingId || uid();
+        await setDoc(doc(db,'products',id), { id, ...data });
+        const id = editingId || crypto.randomUUID(); await setDoc(doc(db,'products',id), { id, ...data });
+      } else {
+        if(editingId){
+          products = products.map(p => p.id === editingId ? ({...p, ...data}) : p);
+        } else {
+          products = [{ id: uid(), ...data }, ...products];
+        }
+        if(editingId){ products = products.map(p => p.id===editingId ? ({...p, ...data}) : p); }
+        else { products = [{ id: crypto.randomUUID(), ...data }, ...products]; }
+        saveLocal(products);
+        renderCategories(products);
+        normalizeImgsInDOM();   // corrige URLs Amazon tras pintar
+        normalizeImgsInDOM();
+        applyFilters();
+      }
+      modal.close();
+    });
+
+    // ========== Admin ==========
+    function updateAdminUI(){
+      btnAdd.disabled = !isAdmin;
+      qsa('.admin-only').forEach(el=> el.classList.toggle('hidden', !isAdmin));
+      applyFilters();
+    }
+
+    // ===== Admin =====
+    function updateAdminUI(){ btnAdd.disabled = !isAdmin; qsa('.admin-only').forEach(el=> el.classList.toggle('hidden', !isAdmin)); applyFilters(); }
+    btnAdmin.addEventListener('click', ()=>{
+      if(isAdmin){
+        isAdmin = false;
+        localStorage.removeItem('ja_admin');
+        btnAdmin.textContent = 'Admin';
+        updateAdminUI();
+        return;
+      }
+      const key = prompt("Clave Admin:");
+      if(key === ADMIN_KEY){
+        isAdmin = true;
+        localStorage.setItem('ja_admin','1');
+        btnAdmin.textContent = 'Admin (ON)';
+        updateAdminUI();
+      } else {
+        alert("Clave incorrecta.");
+      }
+      if(isAdmin){ isAdmin=false; localStorage.removeItem('ja_admin'); btnAdmin.textContent='Admin'; updateAdminUI(); return; }
+      const key = prompt("Clave Admin:"); if(key===ADMIN_KEY){ isAdmin=true; localStorage.setItem('ja_admin','1'); btnAdmin.textContent='Admin (ON)'; updateAdminUI(); }
+      else alert("Clave incorrecta.");
+    });
+
+    // ========== Filtros ==========
+    // ===== Filtros =====
+    search.addEventListener('input', applyFilters);
+    categoryFilter.addEventListener('change', applyFilters);
+
+    // ========== Inicialización ==========
+    // ===== Init =====
+    async function init(){
+      isAdmin = !!localStorage.getItem('ja_admin');
+      btnAdmin.textContent = isAdmin ? 'Admin (ON)' : 'Admin';
+@@ -414,75 +314,55 @@ <h3 class="font-extrabold leading-tight line-clamp-2">${p.title}</h3>
+      if(USE_FIREBASE){
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
+        const { getFirestore, collection, onSnapshot, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        const app = initializeApp(firebaseConfig); db = getFirestore(app);
+        const q = query(collection(db,'products'), orderBy('title'));
+        unsub = onSnapshot(q, snap=>{
+          products = [];
+          snap.forEach(doc=> products.push(doc.data()));
+          if(products.length===0){
+            // primera vez: sembramos localmente
+            products = ensureIds(seed);
+          }
+          renderCategories(products);
+          normalizeImgsInDOM();
+          applyFilters();
+          products = []; snap.forEach(doc=> products.push(doc.data()));
+          if(products.length===0){ products = ensureIds(seed); }
+          renderCategories(products); normalizeImgsInDOM(); applyFilters();
+        });
+      } else {
+        // 1) Intenta cargar del repo
+        // 1) Cargar del repo si existe
+        let remote = await loadFromRepo();
+        if (remote && remote.length) {
+          products = remote;
+          saveLocal(products);          // caché local
+        } else {
+        if(remote && remote.length){ products = remote; saveLocal(products); }
+        else {
+          // 2) Fallback a local/seed
+          products = ensureIds(loadLocal());
+          if(products.length===0){ products = ensureIds(seed); saveLocal(products); }
+        }
+        renderCategories(products);
+        normalizeImgsInDOM();
+        applyFilters();
+        renderCategories(products); normalizeImgsInDOM(); applyFilters();
+      }
+
+      new ResizeObserver(()=>{}).observe(document.body);
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
   </script>
-</body>
+
+  <!-- 🔧 Normalizador de imágenes Amazon -->
+  <!-- 🔧 Normalizador imágenes Amazon -->
+  <script>
+    // Convierte URLs Amazon (._AC_SX..., _UX..., _QL..., _CR..., etc.) al formato estable m.media-amazon.com
+    function normalizeAmazonImage(url, size = 1200) {
+      if (!url) return url;
+      try {
+        if (url.startsWith("//")) url = "https:" + url;
+    function normalizeAmazonImage(url, size=1200){
+      if(!url) return url;
+      try{
+        if(url.startsWith("//")) url = "https:" + url;
+        const u = new URL(url);
+        if (!/amazon\./i.test(u.hostname)) return url;     // solo Amazon
+        u.hostname = "m.media-amazon.com";                 // CDN estable
+        let p = u.pathname.replace(/\._[^.]+_\./g, ".");   // quita sufijos variables
+        p = p.replace(/\.(jpg|jpeg|png|webp)$/i, `._SL${size}_.$1`); // fija tamaño
+        if(!/amazon\./i.test(u.hostname)) return url;
+        u.hostname = "m.media-amazon.com";
+        let p = u.pathname.replace(/\._[^.]+_\./g, ".");
+        p = p.replace(/\.(jpg|jpeg|png|webp)$/i, `._SL${size}_.$1`);
+        u.search = "";
+        return `${u.origin}${p}`;
+      } catch { return url; }
+      }catch{ return url; }
+    }
+
+    function normalizeElementImage(img){
+      const dataSrc = img.getAttribute("data-src");
+      if (dataSrc && !img.getAttribute("src")) img.setAttribute("src", dataSrc);
+      if(dataSrc && !img.getAttribute("src")) img.setAttribute("src", dataSrc);
+      const src = img.getAttribute("src") || "";
+      const n = normalizeAmazonImage(src);
+      if (n && n !== src) img.setAttribute("src", n);
+      if (img.hasAttribute("srcset")) img.removeAttribute("srcset");
+      if(n && n!==src) img.setAttribute("src", n);
+      if(img.hasAttribute("srcset")) img.removeAttribute("srcset");
+    }
+
+    function normalizeImgsInDOM(sel="img"){ document.querySelectorAll(sel).forEach(normalizeElementImage); }
+
+    // Al cargar + reintento (por lazy) + mutaciones dinámicas
+    document.addEventListener("DOMContentLoaded", () => {
+      normalizeImgsInDOM();
+      setTimeout(()=>normalizeImgsInDOM(), 300);
+    });
+    document.addEventListener("DOMContentLoaded", ()=>{ normalizeImgsInDOM(); setTimeout(()=>normalizeImgsInDOM(),300); });
+    new MutationObserver(()=>normalizeImgsInDOM()).observe(document.body,{childList:true,subtree:true});
+  </script>
