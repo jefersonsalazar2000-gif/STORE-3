@@ -502,6 +502,162 @@
   // HELPERS
   // =========================
   function escapeHtml(s=""){ return s.replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c])) }
-  </script>
+  </script><!-- === PARCHE SIN CAMBIAR DISEÑO (SYNC + MODAL) === -->
+<script>
+/* =========================
+   0) CONFIG EDITABLE
+========================= */
+const AMAZON_TAG = "kaninosabioan-20"; // tu tag
+const firebaseConfig = null; // <-- Pega aquí tu objeto de Firebase (apiKey, authDomain, projectId, etc.)
+
+/* =========================
+   1) CIERRE FIABLE DEL MODAL (sin tocar estilos)
+========================= */
+// Si usas <dialog id="dlgProduct"> o similar:
+(function fixModalClose(){
+  const dlg = document.querySelector("dialog"); // si tienes más de uno, ajústalo al tuyo (#dlgProduct)
+  if (!dlg) return;
+  // Cerrar por botón "Cancelar"
+  document.querySelectorAll("[data-close-dialog], #btnCloseForm").forEach(btn=>{
+    btn.addEventListener("click", e=>{ e.preventDefault(); dlg.close(); });
+  });
+  // Cerrar por ESC
+  document.addEventListener("keydown", e=>{
+    if (e.key === "Escape" && dlg.open) dlg.close();
+  });
+  // Cerrar por clic fuera
+  dlg.addEventListener("click", e=>{
+    const r = dlg.getBoundingClientRect();
+    const out = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+    if (out) dlg.close();
+  });
+})();
+
+/* =========================
+   2) CAPA DE SINCRONIZACIÓN (Firestore o localStorage)
+   - NO cambia tu HTML ni tu render()
+   - Espera que tengas una función global render() que pinta desde window.PRODUCTS
+========================= */
+(function syncLayer(){
+  // Si tu código ya define window.PRODUCTS y render(), seguimos usándolo.
+  // Si no, los creamos para no romper nada.
+  window.PRODUCTS = Array.isArray(window.PRODUCTS) ? window.PRODUCTS : [];
+  window.render   = typeof window.render === "function" ? window.render : function(){};
+
+  let db=null, auth=null, usingDemo=true;
+
+  // Helpers
+  function withAffiliate(url){
+    try{
+      const u = new URL(url);
+      if (!u.searchParams.has("tag")) u.searchParams.set("tag", AMAZON_TAG);
+      return u.toString();
+    }catch{return url}
+  }
+
+  // Exponemos API única para toda la app (puedes llamarla desde tu código existente)
+  window.Data = {
+    // Carga inicial
+    async load(){
+      if (db){ // Firestore
+        const snap = await db.collection("products").orderBy("createdAt","desc").get();
+        window.PRODUCTS = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+        window.render();
+      } else {
+        // localStorage (misma clave para no romper lo que ya tienes)
+        const raw = localStorage.getItem("products") || "[]";
+        try{ window.PRODUCTS = JSON.parse(raw) }catch{ window.PRODUCTS = [] }
+        window.render();
+      }
+    },
+    // Crear / Actualizar
+    async save(p){
+      // asegura tag afiliado sin tocar tu HTML
+      p.url = withAffiliate(p.url||"");
+      if (db){
+        if (p.id){
+          const {id, ...rest} = p;
+          await db.collection("products").doc(id).set(rest,{merge:true});
+        }else{
+          await db.collection("products").add({ ...p, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        }
+      }else{
+        // localStorage
+        if (p.id){
+          window.PRODUCTS = window.PRODUCTS.map(x=> x.id===p.id ? p : x);
+        }else{
+          p.id = "ls-"+Date.now();
+          window.PRODUCTS.unshift(p);
+        }
+        localStorage.setItem("products", JSON.stringify(window.PRODUCTS));
+      }
+      await this.load();
+    },
+    // Borrar
+    async remove(id){
+      if (!id) return;
+      if (db){
+        await db.collection("products").doc(id).delete();
+      }else{
+        window.PRODUCTS = window.PRODUCTS.filter(x=> x.id!==id);
+        localStorage.setItem("products", JSON.stringify(window.PRODUCTS));
+      }
+      await this.load();
+    }
+  };
+
+  // Arranque
+  window.addEventListener("load", async ()=>{
+    // 2.1 Firebase opcional
+    try{
+      if (firebaseConfig && typeof firebase!=="undefined"){
+        firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth();
+        db   = firebase.firestore();
+        await auth.signInAnonymously();
+        usingDemo = false;
+      }
+    }catch(err){
+      console.warn("Firebase no disponible; usando localStorage.", err);
+      usingDemo = true;
+      db = null;
+    }
+
+    // 2.2 Carga inicial (todos verán lo mismo si hay Firebase)
+    await window.Data.load();
+  });
+
+  /* =========================
+     3) Hooks opcionales:
+     Si tu código ya tenía funciones como addProduct(), editProduct(), deleteProduct(),
+     puedes cambiarlas para que llamen a Data.save() / Data.remove().
+     Ejemplo:
+       await Data.save({id, title, cat, price, img, url});
+       await Data.remove(id);
+  ========================= */
+})();
+
+/* =========================
+   4) (Opcional) Asegurar "sponsored" en botones Amazon sin cambiar el HTML
+========================= */
+(function forceSponsoredRel(){
+  const fix = ()=>{
+    document.querySelectorAll('a[target="_blank"]').forEach(a=>{
+      if (!a.href) return;
+      const txt = (a.textContent||"").toLowerCase();
+      if (txt.includes("amazon")){
+        const rel = new Set((a.getAttribute("rel")||"").split(/\s+/).filter(Boolean));
+        rel.add("nofollow"); rel.add("noopener"); rel.add("sponsored");
+        a.setAttribute("rel", Array.from(rel).join(" "));
+      }
+    });
+  };
+  document.addEventListener("DOMContentLoaded", fix);
+  // Si tu render() repinta, vuelve a ajustar
+  const mo = new MutationObserver(fix);
+  mo.observe(document.documentElement, {subtree:true, childList:true});
+})();
+</script>
+<!-- === FIN PARCHE === -->
 </body>
 </html>
