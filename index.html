@@ -10,7 +10,7 @@
   <meta name="keywords" content="Amazon afiliados, tienda, mejores productos, tecnología, J_A MEGA STORE 360">
   <meta name="robots" content="index,follow">
 
-  <!-- Open Graph -->
+  <!-- Open Graph para que en WhatsApp/Facebook muestren la imagen correcta -->
   <meta property="og:title" content="J_A MEGA STORE 360 — Tienda de Afiliados" />
   <meta property="og:description" content="Descubre los productos más buscados y ve a Amazon con tu enlace de afiliado." />
   <meta property="og:image" content="https://images.unsplash.com/photo-1516387938699-a93567ec168e?q=80&w=1200&auto=format&fit=crop" />
@@ -208,12 +208,12 @@
   // =========================
   const YOUTUBE_URL = "http://www.youtube.com/@SABIDURIAANIMAL86";
   const AMAZON_TAG  = "kaninosabioan-20"; // Tu tag afiliado
-  // Pega tu firebaseConfig abajo (reemplaza null por tu objeto):
+  // Pega tu firebaseConfig abajo (reemplaza null por tu objeto; sin esto, cada dispositivo mantiene sus propios datos)
   // const firebaseConfig = { apiKey:"...", authDomain:"...", projectId:"...", storageBucket:"...", messagingSenderId:"...", appId:"..." };
   const firebaseConfig = null; // <<< PÉGALO AQUÍ
 
   // =========================
-  // UTILIDADES
+  // UTILIDADES / ELEMENTOS
   // =========================
   const $ = (q,root=document)=>root.querySelector(q);
   const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
@@ -234,7 +234,7 @@
   btnYoutube.href = YOUTUBE_URL;
   btnYoutubeTop.href = YOUTUBE_URL;
 
-  // Generar QR simple
+  // Generar QR simple (no cambia diseño)
   const qrApi = (url) => `https://quickchart.io/qr?text=${encodeURIComponent(url)}&size=512&margin=2`;
   qrImg.src = qrApi(YOUTUBE_URL);
 
@@ -274,29 +274,27 @@
     document.getElementById("btnCloseQR")?.addEventListener("click", ()=> dlgQR.close());
     document.getElementById("btnQR").addEventListener("click", ()=> dlgQR.showModal());
 
-    // Cancelar SIEMPRE cierra el modal (botón visible)
+    // Corregido: Cancelar cierra el modal
     document.getElementById("btnCloseForm").addEventListener("click",(e)=>{ e.preventDefault(); dlgForm.close(); });
-
-    // Cerrar modal por ESC y clic fuera
+    // Corregido: cerrar por ESC y clic fuera
     document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && dlgForm.open) dlgForm.close(); });
     dlgForm.addEventListener('click', (e)=>{
       const rect = dlgForm.getBoundingClientRect();
-      const clickOutside = e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom;
-      if (clickOutside) dlgForm.close();
+      const outside = e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom;
+      if (outside) dlgForm.close();
     });
-    // Seguridad: si por alguna razón se dispara "close", asegúrate de estar cerrado
     dlgForm.addEventListener("close", ()=> dlgForm.close());
 
-    // Firebase
+    // Firebase (opcional)
     try {
       if (firebaseConfig && typeof firebase !== 'undefined') {
         firebase.initializeApp(firebaseConfig);
         auth = firebase.auth();
         db = firebase.firestore();
-        await auth.signInAnonymously(); // lectura/escritura simple
+        await auth.signInAnonymously();
         usingDemo = false;
       } else {
-        usingDemo = true; // sin config => modo demo local (no sincroniza entre dispositivos)
+        usingDemo = true; // sin config => cada dispositivo mantiene su demo local
       }
     } catch (e) {
       console.warn('Firebase no disponible, usando DEMO.', e);
@@ -317,7 +315,6 @@
     }
     const snap = await db.collection('products').orderBy('createdAt','desc').get();
     PRODUCTS = snap.docs.map(d=> ({ id:d.id, ...d.data() }));
-    // Si la colección está vacía, sembrar demo 1 sola vez
     if (!PRODUCTS.length) {
       const batch = db.batch();
       DEMO.forEach(p=>{
@@ -331,7 +328,6 @@
 
   async function createOrUpdateProduct(data) {
     if (usingDemo) {
-      // DEMO: modifica en memoria
       if (data.id?.startsWith('demo-')) {
         PRODUCTS = PRODUCTS.map(p=> p.id===data.id ? data : p);
       } else {
@@ -364,7 +360,6 @@
   function affiliateUrl(url) {
     try {
       const u = new URL(url);
-      // Si ya trae tag, respétalo; si no, agrega el tuyo
       if (!u.searchParams.has('tag')) u.searchParams.set('tag', AMAZON_TAG);
       return u.toString();
     } catch {
@@ -395,6 +390,7 @@
           <div class="mt-1 text-xs text-white/60">${escapeHtml(p.cat||'')}</div>
           <div class="mt-2 flex items-center justify-between">
             <span class="font-semibold">${price}</span>
+            <!-- Corregido: sponsored en rel, sin cambiar estilo -->
             <a href="${url}" target="_blank" rel="nofollow sponsored noopener" class="btn-neo text-sm px-3 py-2" title="Ver en Amazon">Ver en Amazon</a>
           </div>
           ${ADMIN ? `
@@ -412,7 +408,6 @@
     grid.innerHTML = list.map(productCard).join('');
     empty.classList.toggle('hidden', list.length>0);
 
-    // Wire botones editar/eliminar
     if (ADMIN) {
       $$("[data-edit]").forEach(b=>{
         b.onclick = ()=>{
@@ -447,7 +442,6 @@
   // =========================
   // EVENTOS UI
   // =========================
-  // Filtros por categoría
   $$("button[data-cat]").forEach(btn=>{
     btn.addEventListener('click', ()=>{
       FILTER.cat = btn.getAttribute('data-cat');
@@ -465,7 +459,6 @@
     render();
   });
 
-  // Admin toggle con pin simple
   function askAdmin() {
     const pin = prompt("Ingresa PIN de Admin (sugerido: 360):","");
     if (pin === "360") { ADMIN = true; alert("Modo Admin activado"); }
@@ -475,7 +468,6 @@
   btnAdmin.addEventListener('click', askAdmin);
   btnAdminSm.addEventListener('click', askAdmin);
 
-  // Abrir form nuevo
   btnAdd.addEventListener('click', ()=>{
     fId.value = "";
     fTitle.value = "";
@@ -486,7 +478,6 @@
     dlgForm.showModal();
   });
 
-  // Guardar (crear/actualizar)
   productForm.addEventListener('submit', async (e)=>{
     e.preventDefault();
     const data = {
@@ -497,7 +488,6 @@
       img: fImg.value.trim(),
       url: fUrl.value.trim()
     };
-    // Validaciones básicas
     if (!data.title || !data.cat || !data.img || !data.url) {
       alert("Completa título, categoría, imagen y URL de Amazon.");
       return;
