@@ -199,7 +199,7 @@
   // =========================
   const YOUTUBE_URL = "http://www.youtube.com/@SABIDURIAANIMAL86";
   const AMAZON_TAG  = "kaninosabioan-20"; // Tu tag afiliado
-  // Pega tu firebaseConfig abajo (reemplaza null por tu objeto; sin esto, cada dispositivo mantiene sus propios datos)
+  // Pega tu firebaseConfig abajo (reemplaza null por tu objeto)
   // const firebaseConfig = { apiKey:"...", authDomain:"...", projectId:"...", storageBucket:"...", messagingSenderId:"...", appId:"..." };
   const firebaseConfig = null; // <<< PÉGALO AQUÍ
 
@@ -208,7 +208,7 @@
   // =========================
   const $ = (q,root=document)=>root.querySelector(q);
   const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
-  const yearEl = $("#year"); yearEl.textContent = new Date().getFullYear();
+  $("#year").textContent = new Date().getFullYear();
   const grid = $("#grid");
   const empty = $("#empty");
   const dlgForm = $("#dlgForm");
@@ -229,19 +229,15 @@
   const qrApi = (url) => `https://quickchart.io/qr?text=${encodeURIComponent(url)}&size=512&margin=2`;
   qrImg.src = qrApi(YOUTUBE_URL);
 
-  // =========================
   // Estado
-  // =========================
   let ADMIN = false;
-  let PRODUCTS = []; // cache local
+  let PRODUCTS = [];
   let FILTER = { text:"", cat:"all" };
 
   // Firestore o demo
   let db = null, auth = null, usingDemo = false;
 
-  // =========================
-  // DEMO DATA (12 productos)
-  // =========================
+  // DEMO DATA
   const DEMO = [
     {title:"Monitor Curvo 32\" 165Hz", cat:"Tecnología", price:279.99, img:"https://images.unsplash.com/photo-1587202372775-98927b111c78?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0B1X12345"},
     {title:"Escritorio Eléctrico Altura Ajustable", cat:"Hogar", price:199.99, img:"https://images.unsplash.com/photo-1545259741-2ea3ebf61fa7?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0B2X54321"},
@@ -257,11 +253,8 @@
     {title:"Silla Ergonómica", cat:"Hogar", price:229.99, img:"https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0CHA66666"},
   ];
 
-  // =========================
   // INICIO
-  // =========================
   window.addEventListener('load', async () => {
-    // Botones y modales
     $("#btnCloseQR")?.addEventListener("click", ()=> dlgQR.close());
     $("#btnQR").addEventListener("click", ()=> dlgQR.showModal());
 
@@ -284,7 +277,7 @@
         await auth.signInAnonymously();
         usingDemo = false;
       } else {
-        usingDemo = true; // sin config => demo local
+        usingDemo = true;
       }
     } catch (e) {
       console.warn('Firebase no disponible, usando DEMO.', e);
@@ -295,14 +288,9 @@
     render();
   });
 
-  // =========================
   // CRUD
-  // =========================
   async function loadProducts() {
-    if (usingDemo) {
-      PRODUCTS = DEMO.map((p, i)=> ({ id:`demo-${i}`, ...p }));
-      return;
-    }
+    if (usingDemo) { PRODUCTS = DEMO.map((p, i)=> ({ id:`demo-${i}`, ...p })); return; }
     const snap = await db.collection('products').orderBy('createdAt','desc').get();
     PRODUCTS = snap.docs.map(d=> ({ id:d.id, ...d.data() }));
     if (!PRODUCTS.length) {
@@ -318,41 +306,23 @@
 
   async function createOrUpdateProduct(data) {
     if (usingDemo) {
-      if (data.id?.startsWith('demo-')) {
-        PRODUCTS = PRODUCTS.map(p=> p.id===data.id ? data : p);
-      } else {
-        data.id = 'demo-'+(PRODUCTS.length+1);
-        PRODUCTS.unshift(data);
-      }
-      render();
-      return;
+      if (data.id?.startsWith('demo-')) { PRODUCTS = PRODUCTS.map(p=> p.id===data.id ? data : p); }
+      else { data.id = 'demo-'+(PRODUCTS.length+1); PRODUCTS.unshift(data); }
+      render(); return;
     }
-    if (data.id) {
-      const {id, ...rest}=data;
-      await db.collection('products').doc(id).set(rest, {merge:true});
-    } else {
-      await db.collection('products').add({ ...data, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-    }
+    if (data.id) { const {id, ...rest}=data; await db.collection('products').doc(id).set(rest, {merge:true}); }
+    else { await db.collection('products').add({ ...data, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); }
   }
 
   async function deleteProduct(id) {
-    if (usingDemo) {
-      PRODUCTS = PRODUCTS.filter(p=>p.id!==id);
-      render();
-      return;
-    }
+    if (usingDemo) { PRODUCTS = PRODUCTS.filter(p=>p.id!==id); render(); return; }
     await db.collection('products').doc(id).delete();
   }
 
-  // =========================
   // RENDER
-  // =========================
   function affiliateUrl(url) {
-    try {
-      const u = new URL(url);
-      if (!u.searchParams.has('tag')) u.searchParams.set('tag', AMAZON_TAG);
-      return u.toString();
-    } catch { return url; }
+    try { const u = new URL(url); if (!u.searchParams.has('tag')) u.searchParams.set('tag', AMAZON_TAG); return u.toString(); }
+    catch { return url; }
   }
 
   function filteredProducts() {
@@ -401,12 +371,8 @@
           const id = b.getAttribute('data-edit');
           const p = PRODUCTS.find(x=>x.id===id);
           if (!p) return;
-          fId.value = p.id;
-          fTitle.value = p.title||'';
-          fCat.value = p.cat||'';
-          fPrice.value = p.price||'';
-          fImg.value = p.img||'';
-          fUrl.value = p.url||'';
+          fId.value = p.id; fTitle.value = p.title||''; fCat.value = p.cat||'';
+          fPrice.value = p.price||''; fImg.value = p.img||''; fUrl.value = p.url||'';
           dlgForm.showModal();
         };
       });
@@ -426,26 +392,13 @@
     }
   }
 
-  // =========================
   // EVENTOS UI
-  // =========================
   $$("button[data-cat]").forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      FILTER.cat = btn.getAttribute('data-cat');
-      render();
-    });
+    btn.addEventListener('click', ()=>{ FILTER.cat = btn.getAttribute('data-cat'); render(); });
   });
 
-  searchInput.addEventListener('input', ()=>{
-    FILTER.text = searchInput.value;
-    render();
-  });
-
-  clearSearch.addEventListener('click', ()=>{
-    searchInput.value = '';
-    FILTER.text = '';
-    render();
-  });
+  searchInput.addEventListener('input', ()=>{ FILTER.text = searchInput.value; render(); });
+  clearSearch.addEventListener('click', ()=>{ searchInput.value = ''; FILTER.text = ''; render(); });
 
   function askAdmin() {
     const pin = prompt("Ingresa PIN de Admin (sugerido: 360):","");
@@ -472,19 +425,14 @@
       img: fImg.value.trim(),
       url: fUrl.value.trim()
     };
-    if (!data.title || !data.cat || !data.img || !data.url) {
-      alert("Completa título, categoría, imagen y URL de Amazon.");
-      return;
-    }
+    if (!data.title || !data.cat || !data.img || !data.url) { alert("Completa título, categoría, imagen y URL de Amazon."); return; }
     await createOrUpdateProduct(data);
     await loadProducts();
     render();
     dlgForm.close();
   });
 
-  // =========================
   // HELPERS
-  // =========================
   function escapeHtml(s=""){ return s.replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c])) }
   </script>
 </body>
