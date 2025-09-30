@@ -10,7 +10,7 @@
   <meta name="keywords" content="Amazon afiliados, tienda, mejores productos, tecnología, J_A MEGA STORE 360">
   <meta name="robots" content="index,follow">
 
-  <!-- Open Graph para que en WhatsApp/Facebook muestren la imagen correcta -->
+  <!-- Open Graph -->
   <meta property="og:title" content="J_A MEGA STORE 360 — Tienda de Afiliados" />
   <meta property="og:description" content="Descubre los productos más buscados y ve a Amazon con tu enlace de afiliado." />
   <meta property="og:image" content="https://images.unsplash.com/photo-1516387938699-a93567ec168e?q=80&w=1200&auto=format&fit=crop" />
@@ -209,7 +209,6 @@
   const YOUTUBE_URL = "http://www.youtube.com/@SABIDURIAANIMAL86";
   const AMAZON_TAG  = "kaninosabioan-20"; // Tu tag afiliado
   // Pega tu firebaseConfig abajo (reemplaza null por tu objeto):
-  // Ejemplo:
   // const firebaseConfig = { apiKey:"...", authDomain:"...", projectId:"...", storageBucket:"...", messagingSenderId:"...", appId:"..." };
   const firebaseConfig = null; // <<< PÉGALO AQUÍ
 
@@ -231,23 +230,17 @@
   const searchInput = $("#searchInput"), clearSearch=$("#clearSearch");
   const btnYoutube = $("#btnYoutube"), btnYoutubeTop=$("#btnYoutubeTop");
   const btnQR = $("#btnQR"), qrImg=$("#qrImg");
-  const btnCloseForm = $("#btnCloseForm");
 
   btnYoutube.href = YOUTUBE_URL;
   btnYoutubeTop.href = YOUTUBE_URL;
 
-  // Generar QR simple (API chart)
+  // Generar QR simple
   const qrApi = (url) => `https://quickchart.io/qr?text=${encodeURIComponent(url)}&size=512&margin=2`;
   qrImg.src = qrApi(YOUTUBE_URL);
 
-  $("#btnCloseQR")?.addEventListener("click", ()=> dlgQR.close());
-  btnQR.addEventListener("click", ()=> dlgQR.showModal());
-
-  // Cancelar SIEMPRE cierra el modal (incluye botón 'Cancelar' y la X/top)
-  $("#btnCloseForm").addEventListener("click",(e)=>{ e.preventDefault(); dlgForm.close(); });
-  productForm.addEventListener("close", ()=> dlgForm.close()); // seguridad
-
+  // =========================
   // Estado
+  // =========================
   let ADMIN = false;
   let PRODUCTS = []; // cache local
   let FILTER = { text:"", cat:"all" };
@@ -274,9 +267,27 @@
   ];
 
   // =========================
-  // FIREBASE INIT
+  // INICIO
   // =========================
   window.addEventListener('load', async () => {
+    // Botones y modales
+    document.getElementById("btnCloseQR")?.addEventListener("click", ()=> dlgQR.close());
+    document.getElementById("btnQR").addEventListener("click", ()=> dlgQR.showModal());
+
+    // Cancelar SIEMPRE cierra el modal (botón visible)
+    document.getElementById("btnCloseForm").addEventListener("click",(e)=>{ e.preventDefault(); dlgForm.close(); });
+
+    // Cerrar modal por ESC y clic fuera
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && dlgForm.open) dlgForm.close(); });
+    dlgForm.addEventListener('click', (e)=>{
+      const rect = dlgForm.getBoundingClientRect();
+      const clickOutside = e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom;
+      if (clickOutside) dlgForm.close();
+    });
+    // Seguridad: si por alguna razón se dispara "close", asegúrate de estar cerrado
+    dlgForm.addEventListener("close", ()=> dlgForm.close());
+
+    // Firebase
     try {
       if (firebaseConfig && typeof firebase !== 'undefined') {
         firebase.initializeApp(firebaseConfig);
@@ -285,12 +296,13 @@
         await auth.signInAnonymously(); // lectura/escritura simple
         usingDemo = false;
       } else {
-        usingDemo = true;
+        usingDemo = true; // sin config => modo demo local (no sincroniza entre dispositivos)
       }
     } catch (e) {
       console.warn('Firebase no disponible, usando DEMO.', e);
       usingDemo = true;
     }
+
     await loadProducts();
     render();
   });
@@ -353,8 +365,7 @@
     try {
       const u = new URL(url);
       // Si ya trae tag, respétalo; si no, agrega el tuyo
-      const hasTag = u.searchParams.has('tag');
-      if (!hasTag) u.searchParams.set('tag', AMAZON_TAG);
+      if (!u.searchParams.has('tag')) u.searchParams.set('tag', AMAZON_TAG);
       return u.toString();
     } catch {
       return url;
@@ -384,7 +395,7 @@
           <div class="mt-1 text-xs text-white/60">${escapeHtml(p.cat||'')}</div>
           <div class="mt-2 flex items-center justify-between">
             <span class="font-semibold">${price}</span>
-            <a href="${url}" target="_blank" rel="nofollow noopener" class="btn-neo text-sm px-3 py-2" title="Ver en Amazon">Ver en Amazon</a>
+            <a href="${url}" target="_blank" rel="nofollow sponsored noopener" class="btn-neo text-sm px-3 py-2" title="Ver en Amazon">Ver en Amazon</a>
           </div>
           ${ADMIN ? `
           <div class="mt-3 flex gap-2">
