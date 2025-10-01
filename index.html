@@ -6,6 +6,9 @@
   <title>J_A MEGA STORE 360</title>
   <meta name="theme-color" content="#0b0f1a"/>
 
+  <!-- PWA (ADD) -->
+  <link rel="manifest" href="manifest.json" />
+
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -626,6 +629,16 @@
   })();
   </script>
   <!-- ==== FIN RESET ==== -->
+
+  <!-- PWA: Registrar Service Worker (ADD) -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(()=>{});
+      });
+    }
+  </script>
+  <!-- FIN PWA -->
 
 </body>
 </html>
