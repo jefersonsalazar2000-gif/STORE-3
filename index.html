@@ -3,18 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>J_A MEGA STORE 360 — Amazon Afiliados</title>
-
-  <!-- SEO básico -->
-  <meta name="description" content="J_A MEGA STORE 360: productos ganadores, los más buscados, con tu enlace de Amazon Afiliados.">
-  <meta name="keywords" content="Amazon afiliados, tienda, mejores productos, tecnología, J_A MEGA STORE 360">
-  <meta name="robots" content="index,follow">
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="J_A MEGA STORE 360 — Tienda de Afiliados" />
-  <meta property="og:description" content="Descubre los productos más buscados y ve a Amazon con tu enlace de afiliado." />
-  <meta property="og:image" content="https://images.unsplash.com/photo-1516387938699-a93567ec168e?q=80&w=1200&auto=format&fit=crop" />
-  <meta property="og:type" content="website" />
+  <title>J_A MEGA STORE 360</title>
+  <meta name="theme-color" content="#0b0f1a"/>
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -22,496 +12,359 @@
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: { outfit: ['Outfit','ui-sans-serif','system-ui'] },
-          boxShadow: {
-            glow: '0 0 25px rgba(99,102,241,0.35), 0 0 45px rgba(236,72,153,0.25)'
-          },
-          backgroundImage: {
-            'grad-neo': 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 35%, #EC4899 70%, #F59E0B 100%)',
-            'grad-neo-soft': 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(236,72,153,0.15))'
-          }
+          fontFamily: { outfit: ['Outfit','ui-sans-serif','system-ui']},
+          colors: { base:'#0b0f1a', card:'#12172a', soft:'#1a2140' }
         }
       }
     }
   </script>
+
+  <!-- Fuente -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
 
+  <!-- Estilos -->
   <style>
-    :root { color-scheme: dark; }
-    body { font-family: 'Outfit', sans-serif; }
-    .btn-neo {
-      @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-semibold transition-transform active:scale-95 shadow-glow text-white;
-      background-image: linear-gradient(135deg,#6366F1,#8B5CF6,#EC4899,#F59E0B);
-      background-size: 300% 300%;
-      animation: move 6s ease infinite;
+    :root{
+      --grad-1: linear-gradient(135deg,#00E5FF 0%, #7C3AED 50%, #FF0099 100%);
+      --btn-grad: linear-gradient(135deg, #00E5FF 0%, #7C3AED 50%, #FF0099 100%);
+      --ring: 0 0 0 1.5px rgba(124,58,237,.45), 0 0 18px rgba(124,58,237,.35), inset 0 0 12px rgba(0,229,255,.25);
     }
-    .btn-ghost {
-      @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-semibold border border-white/15 text-white/90 hover:bg-white/5;
-    }
-    @keyframes move { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-    .line-clamp-2 {
-      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
-    }
-    dialog::backdrop { background: rgb(0 0 0 / 0.6); }
+    body{ font-family:'Outfit',sans-serif }
+    .neon-title{ background:var(--grad-1); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 0 18px rgba(124,58,237,.25) }
+    .btn-neon{ background:var(--btn-grad); color:#0b0f1a; font-weight:800; box-shadow:0 0 24px rgba(124,58,237,.35); transition:transform .12s, box-shadow .12s, opacity .12s }
+    .btn-neon:hover{ transform:translateY(-1px) scale(1.01); box-shadow:0 0 32px rgba(124,58,237,.55) }
+    .chip{ background:rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.35) }
+    .card{ background:
+      radial-gradient(1200px 500px at -10% -10%, rgba(124,58,237,.12), transparent 50%),
+      radial-gradient(1000px 400px at 120% 120%, rgba(0,229,255,.10), transparent 45%),
+      #12172a; border:1px solid rgba(124,58,237,.25) }
+    .toolbar{ background:linear-gradient(180deg, rgba(18,23,42,.85), rgba(18,23,42,.6) 60%, rgba(18,23,42,.1)); border-bottom:1px solid rgba(124,58,237,.25); backdrop-filter:blur(8px) }
+    .gradient-border{ position:relative; border-radius:16px; overflow:hidden }
+    .gradient-border::before{ content:''; position:absolute; inset:0; padding:1px; border-radius:16px; background:var(--grad-1);
+      -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none }
+    .input{ background:#0e1430; border:1px solid rgba(124,58,237,.35); outline:none; color:white; border-radius:12px; padding:.7rem .9rem }
+    .input:focus{ box-shadow:var(--ring) }
   </style>
-
-  <!-- Firebase SDKs (Compat para facilidad) -->
-  <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 </head>
-<body class="min-h-full text-white">
-  <!-- NAV -->
-  <header class="sticky top-0 z-40 border-b border-white/10 backdrop-blur bg-[#0b0f1a]/70">
+
+<body class="min-h-full text-white bg-[radial-gradient(1200px_600px_at_20%_-10%,rgba(124,58,237,.15),transparent_55%),radial-gradient(900px_500px_at_120%_10%,rgba(0,229,255,.12),transparent_50%),#0b0f1a]">
+
+  <!-- Header -->
+  <header class="toolbar sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-      <div class="h-10 w-10 rounded-xl ring-2 ring-white/15 overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=200&auto=format&fit=crop" alt="logo" class="h-full w-full object-cover">
+      <div class="w-10 h-10 rounded-xl gradient-border flex items-center justify-center shrink-0">
+        <div class="w-full h-full rounded-[14px] bg-[#0e1430] flex items-center justify-center"><span class="text-xl font-extrabold">J_A</span></div>
       </div>
       <div class="flex-1">
-        <h1 class="text-lg sm:text-xl font-extrabold tracking-tight">J_A MEGA STORE <span class="text-white/60">360</span></h1>
-        <p class="text-xs text-white/60 -mt-0.5">Productos ganadores — Amazon Afiliados</p>
+        <h1 class="text-xl sm:text-2xl font-extrabold neon-title leading-none">MEGA STORE 360</h1>
+        <p class="text-xs text-white/70 -mt-0.5">De todo • Tecnología • Hogar • Accesorios</p>
       </div>
-      <div class="hidden sm:flex items-center gap-2">
-        <a id="btnYoutubeTop" target="_blank" rel="noopener" class="btn-ghost">YouTube</a>
-        <button id="btnAdmin" class="btn-ghost" title="Modo Admin">Admin</button>
-      </div>
-      <button id="btnAdminSm" class="sm:hidden btn-ghost" title="Modo Admin">Admin</button>
+      <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
+      <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Admin</button>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="relative">
-    <div class="absolute inset-0 bg-grad-neo-soft pointer-events-none"></div>
-    <div class="max-w-7xl mx-auto px-4 py-8 sm:py-10 grid md:grid-cols-[1.2fr,0.8fr] gap-6 items-center">
-      <div>
-        <h2 class="text-2xl sm:text-4xl font-black leading-tight">
-          Encuentra <span class="text-transparent bg-clip-text bg-grad-neo">los más buscados</span> y compra con tu enlace de Amazon
-        </h2>
-        <p class="mt-3 text-white/80">
-          100% responsive: lo que ves en tu web es lo mismo que verán en su teléfono.
-        </p>
-
-        <!-- Buscador -->
-        <div class="mt-5 flex gap-2">
-          <input id="searchInput" type="search" placeholder="Buscar por nombre o categoría…" class="flex-1 rounded-xl bg-white/5 border border-white/10 px-4 py-3 outline-none focus:ring-2 focus:ring-fuchsia-400/40">
-          <button id="clearSearch" class="btn-ghost">Limpiar</button>
-        </div>
-
-        <!-- Botones -->
-        <div class="mt-4 flex flex-wrap gap-2">
-          <button id="btnAdd" class="btn-neo hidden">+ Añadir producto</button>
-          <a id="btnYoutube" target="_blank" rel="noopener" class="btn-neo">Ir al canal YouTube</a>
-          <button id="btnQR" class="btn-ghost">QR del canal</button>
-        </div>
-
-        <!-- Aviso Amazon -->
-        <p class="mt-3 text-xs text-white/60">
-          Aviso: Como Asociado de Amazon, puedo ganar comisiones por compras que califiquen.
-        </p>
-      </div>
-
-      <!-- Perro y Gato portada -->
-      <div class="relative">
-        <div class="aspect-[4/3] sm:aspect-[5/4] rounded-2xl overflow-hidden ring-2 ring-white/10 shadow-glow">
-          <img src="https://images.unsplash.com/photo-1511735111819-9a3f7709049c?q=80&w=1200&auto=format&fit=crop" alt="Perro y gato" class="h-full w-full object-cover">
-        </div>
-      </div>
-    </div>
+  <!-- Controles -->
+  <section class="max-w-7xl mx-auto px-4 mt-4 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
+    <div class="gradient-border"><input id="search" class="input w-full" placeholder="Buscar productos… (ej. iPhone, smartwatch)" /></div>
+    <select id="categoryFilter" class="input"><option value="all">Todas las categorías</option></select>
+    <button id="btnAdd" class="btn-neon px-4 py-2 rounded-xl text-sm disabled:opacity-40" disabled>+ Agregar</button>
   </section>
 
-  <!-- FILTROS RÁPIDOS -->
-  <section class="max-w-7xl mx-auto px-4">
-    <div class="flex flex-wrap gap-2">
-      <button data-cat="all" class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm hover:bg-white/10">Todo</button>
-      <button data-cat="Tecnología" class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm hover:bg-white/10">Tecnología</button>
-      <button data-cat="Hogar" class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm hover:bg-white/10">Hogar</button>
-      <button data-cat="Fitness" class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm hover:bg-white/10">Fitness</button>
-      <button data-cat="Mascotas" class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm hover:bg-white/10">Mascotas</button>
-      <button data-cat="Gaming" class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm hover:bg-white/10">Gaming</button>
-    </div>
-  </section>
-
-  <!-- GRID -->
+  <!-- Grid -->
   <main class="max-w-7xl mx-auto px-4 py-6">
-    <div id="grid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
-    <div id="empty" class="hidden mt-8 text-center text-white/60">No hay resultados.</div>
+    <div id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+    <p id="empty" class="hidden text-center text-white/60 mt-10">No hay productos que coincidan.</p>
   </main>
 
-  <!-- FOOTER -->
-  <footer class="border-t border-white/10">
-    <div class="max-w-7xl mx-auto px-4 py-6 text-sm text-white/60">
-      © <span id="year"></span> J_A MEGA STORE 360 · <span class="text-white/70">Amazon Afiliados</span> ·
-      <a href="#" class="underline decoration-white/20 hover:decoration-white/60">Política de privacidad</a>
+  <!-- Footer -->
+  <footer class="border-t border-white/10 py-8">
+    <div class="max-w-7xl mx-auto px-4 text-sm text-white/60">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="font-semibold">Aviso Amazon Afiliados:</span>
+        <span>Como afiliado de Amazon, puedo ganar comisiones por compras calificadas.</span>
+      </div>
+      <div class="mt-2">© <span id="year"></span> J_A MEGA STORE 360 — Todos los derechos reservados.</div>
     </div>
   </footer>
 
-  <!-- MODAL: FORM PRODUCTO -->
-  <dialog id="dlgForm" class="rounded-2xl p-0 w-[min(680px,96vw)] bg-[#0b0f1a] border border-white/10">
-    <form method="dialog" id="productForm">
-      <div class="p-5 border-b border-white/10 flex items-center justify-between">
-        <h3 class="text-lg font-bold">Producto</h3>
-        <button id="btnCloseForm" class="btn-ghost">Cancelar</button>
+  <!-- Modal -->
+  <dialog id="modal" class="backdrop:bg-black/70 rounded-2xl w-[min(720px,92vw)]">
+    <form id="form" method="dialog" class="card rounded-2xl p-4 sm:p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="modalTitle" class="text-lg font-extrabold neon-title">Nuevo producto</h3>
+        <button type="button" class="chip px-3 py-1.5 rounded-xl" onclick="modal.close()">Cerrar</button>
       </div>
-      <div class="p-5 grid sm:grid-cols-2 gap-4">
-        <div class="sm:col-span-2">
-          <label class="text-sm text-white/70">Título</label>
-          <input id="fTitle" required class="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2">
+
+      <div class="grid gap-3 sm:grid-cols-2">
+        <div class="gradient-border"><input required id="pTitle" class="input w-full" placeholder="Título / Nombre" /></div>
+        <div class="gradient-border"><input id="pBrand" class="input w-full" placeholder="Marca (opcional)" /></div>
+        <div class="gradient-border sm:col-span-2"><input required id="pImage" class="input w-full" placeholder="URL de imagen (https://…)" /></div>
+        <div class="gradient-border sm:col-span-2"><input required id="pAmazon" class="input w-full" placeholder="URL afiliado de Amazon (con tu tag)" /></div>
+        <div class="gradient-border"><input id="pPrice" class="input w-full" placeholder="Precio (opcional, ej. 799.00)" inputmode="decimal" /></div>
+        <div class="gradient-border">
+          <select id="pCategory" class="input w-full">
+            <option value="Tecnología">Tecnología</option>
+            <option value="Teléfonos">Teléfonos</option>
+            <option value="Accesorios">Accesorios</option>
+            <option value="Hogar">Hogar</option>
+            <option value="Gaming">Gaming</option>
+            <option value="Otros">Otros</option>
+          </select>
         </div>
-        <div>
-          <label class="text-sm text-white/70">Categoría</label>
-          <input id="fCat" list="cats" required class="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2">
-          <datalist id="cats">
-            <option>Tecnología</option><option>Hogar</option><option>Fitness</option><option>Mascotas</option><option>Gaming</option>
-          </datalist>
-        </div>
-        <div>
-          <label class="text-sm text-white/70">Precio (opcional)</label>
-          <input id="fPrice" type="number" min="0" step="0.01" class="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2">
-        </div>
-        <div class="sm:col-span-2">
-          <label class="text-sm text-white/70">Imagen (URL)</label>
-          <input id="fImg" required class="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2" placeholder="https://...">
-        </div>
-        <div class="sm:col-span-2">
-          <label class="text-sm text-white/70">URL Amazon (tu producto)</label>
-          <input id="fUrl" required class="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2" placeholder="https://www.amazon.com/dp/ASIN...">
-          <p class="text-xs text-white/50 mt-1">Se agregará tu tag afiliado automáticamente: <code id="tagPreview">kaninosabioan-20</code></p>
-        </div>
-        <input type="hidden" id="fId">
       </div>
-      <div class="p-5 border-t border-white/10 flex justify-end gap-2">
-        <button value="cancel" class="btn-ghost">Cancelar</button>
-        <button id="btnSave" value="default" class="btn-neo">Guardar</button>
+
+      <div class="mt-4 flex items-center justify-between">
+        <label class="flex items-center gap-2 text-sm text-white/80">
+          <input id="pFeatured" type="checkbox" class="accent-fuchsia-500 scale-110" /> Destacado
+        </label>
+        <div class="flex items-center gap-2">
+          <button type="button" id="btnDelete" class="px-3 py-2 rounded-xl chip text-sm hidden">Eliminar</button>
+          <button type="submit" class="btn-neon px-4 py-2 rounded-xl">Guardar</button>
+        </div>
       </div>
     </form>
   </dialog>
 
-  <!-- MODAL: QR -->
-  <dialog id="dlgQR" class="rounded-2xl p-0 w-[min(520px,96vw)] bg-[#0b0f1a] border border-white/10">
-    <div class="p-5 border-b border-white/10 flex items-center justify-between">
-      <h3 class="text-lg font-bold">Escanea para ir al canal</h3>
-      <button id="btnCloseQR" class="btn-ghost">Cerrar</button>
-    </div>
-    <div class="p-5 flex items-center justify-center">
-      <img id="qrImg" alt="QR YouTube" class="w-72 h-72 object-contain">
-    </div>
-    <div class="p-5 border-t border-white/10 text-center text-xs text-white/60">
-      Si no abre, usa el botón “Ir al canal YouTube”.
-    </div>
-  </dialog>
+  <!-- App -->
+  <script type="module">
+    // ===== CONFIG =====
+    const AFFILIATE_TAG_DEFAULT = "kaninosabioan-20";
+    const ADMIN_KEY = "mega360";
+    const USE_FIREBASE = false; // si configuras Firebase, cambia a true
 
-  <script>
-  // =========================
-  // CONFIGURACIÓN EDITABLE
-  // =========================
-  const YOUTUBE_URL = "http://www.youtube.com/@SABIDURIAANIMAL86";
-  const AMAZON_TAG  = "kaninosabioan-20"; // Tu tag afiliado
-  // Pega tu firebaseConfig abajo (reemplaza null por tu objeto):
-  // const firebaseConfig = { apiKey:"...", authDomain:"...", projectId:"...", storageBucket:"...", messagingSenderId:"...", appId:"..." };
-  const firebaseConfig = null; // <<< PÉGALO AQUÍ
+    const firebaseConfig = { apiKey:"", authDomain:"", projectId:"", storageBucket:"", messagingSenderId:"", appId:"" };
 
-  // =========================
-  // UTILIDADES
-  // =========================
-  const $ = (q,root=document)=>root.querySelector(q);
-  const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
-  const yearEl = $("#year"); yearEl.textContent = new Date().getFullYear();
-  const grid = $("#grid");
-  const empty = $("#empty");
-  const dlgForm = $("#dlgForm");
-  const dlgQR = $("#dlgQR");
-  const btnAdd = $("#btnAdd");
-  const btnAdmin = $("#btnAdmin");
-  const btnAdminSm = $("#btnAdminSm");
-  const productForm = $("#productForm");
-  const fId = $("#fId"), fTitle = $("#fTitle"), fCat = $("#fCat"), fPrice=$("#fPrice"), fImg=$("#fImg"), fUrl=$("#fUrl");
-  const searchInput = $("#searchInput"), clearSearch=$("#clearSearch");
-  const btnYoutube = $("#btnYoutube"), btnYoutubeTop=$("#btnYoutubeTop");
-  const btnQR = $("#btnQR"), qrImg=$("#qrImg");
+    // ===== Estado / refs =====
+    let isAdmin=false, editingId=null, products=[], db=null, unsub=null;
+    const grid = document.getElementById('grid');
+    const empty = document.getElementById('empty');
+    const search = document.getElementById('search');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const btnAdd = document.getElementById('btnAdd');
+    const btnAdmin = document.getElementById('btnAdmin');
+    const year = document.getElementById('year');
+    const modal = document.getElementById('modal');
+    const form = document.getElementById('form');
+    const modalTitle = document.getElementById('modalTitle');
+    const pTitle = document.getElementById('pTitle');
+    const pBrand = document.getElementById('pBrand');
+    const pImage = document.getElementById('pImage');
+    const pAmazon = document.getElementById('pAmazon');
+    const pPrice = document.getElementById('pPrice');
+    const pCategory = document.getElementById('pCategory');
+    const pFeatured = document.getElementById('pFeatured');
+    const btnDelete = document.getElementById('btnDelete');
+    year.textContent = new Date().getFullYear();
 
-  btnYoutube.href = YOUTUBE_URL;
-  btnYoutubeTop.href = YOUTUBE_URL;
+    // ===== Seed (solo primera vez) =====
+    const seed = [
+      { title:"Apple iPhone 15 Pro (128GB)", brand:"Apple", image:"https://images.unsplash.com/photo-1695048134231-bc87e1a3e94a?q=80&w=1200&auto=format&fit=crop", amazon:`https://www.amazon.com/dp/B0CHX3LPPB?tag=${AFFILIATE_TAG_DEFAULT}`, price:"999.00", category:"Teléfonos", featured:true },
+      { title:"Samsung Galaxy S24 Ultra", brand:"Samsung", image:"https://images.unsplash.com/photo-1580906855280-95e0b1f4a1e7?q=80&w=1200&auto=format&fit=crop", amazon:`https://www.amazon.com/dp/B0CSJ3LLQK?tag=${AFFILIATE_TAG_DEFAULT}`, price:"1199.00", category:"Teléfonos", featured:true },
+      { title:"AirPods Pro (2da gen)", brand:"Apple", image:"https://images.unsplash.com/photo-1588421357574-87938a86fa28?q=80&w=1200&auto=format&fit=crop", amazon:`https://www.amazon.com/dp/B0BDK62PDX?tag=${AFFILIATE_TAG_DEFAULT}`, price:"229.00", category:"Accesorios", featured:false }
+    ];
 
-  // Generar QR simple
-  const qrApi = (url) => `https://quickchart.io/qr?text=${encodeURIComponent(url)}&size=512&margin=2`;
-  qrImg.src = qrApi(YOUTUBE_URL);
-
-  // =========================
-  // Estado
-  // =========================
-  let ADMIN = false;
-  let PRODUCTS = []; // cache local
-  let FILTER = { text:"", cat:"all" };
-
-  // Firestore o demo
-  let db = null, auth = null, usingDemo = false;
-
-  // =========================
-  // DEMO DATA (12 productos)
-  // =========================
-  const DEMO = [
-    {title:"Monitor Curvo 32\" 165Hz", cat:"Tecnología", price:279.99, img:"https://images.unsplash.com/photo-1587202372775-98927b111c78?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0B1X12345"},
-    {title:"Escritorio Eléctrico Altura Ajustable", cat:"Hogar", price:199.99, img:"https://images.unsplash.com/photo-1545259741-2ea3ebf61fa7?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0B2X54321"},
-    {title:"Teclado Mecánico RGB", cat:"Gaming", price:69.99, img:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0K3Y99999"},
-    {title:"Auriculares Inalámbricos ANC", cat:"Tecnología", price:129.99, img:"https://images.unsplash.com/photo-1518444082560-5f1d5d3ba1b9?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0H4Z77777"},
-    {title:"Cámara de Seguridad 2K", cat:"Hogar", price:59.99, img:"https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0A5C55555"},
-    {title:"Robot Aspirador", cat:"Hogar", price:179.99, img:"https://images.unsplash.com/photo-1533153088370-9f7f3b1b7d33?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0Z5R22222"},
-    {title:"Correa Reflectante para Perros", cat:"Mascotas", price:14.99, img:"https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0DOG11111"},
-    {title:"Comedero Automático Gatos", cat:"Mascotas", price:49.99, img:"https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0CAT22222"},
-    {title:"Banda de Resistencia Pro", cat:"Fitness", price:19.99, img:"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0FIT33333"},
-    {title:"Mancuernas Ajustables", cat:"Fitness", price:139.99, img:"https://images.unsplash.com/photo-1517341720772-05f3e1e4fe6f?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0FIT44444"},
-    {title:"Mouse Gamer 8K DPI", cat:"Gaming", price:39.99, img:"https://images.unsplash.com/photo-1544233726-9f1d2b29d3d1?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0GAM55555"},
-    {title:"Silla Ergonómica", cat:"Hogar", price:229.99, img:"https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop", url:"https://www.amazon.com/dp/B0CHA66666"},
-  ];
-
-  // =========================
-  // INICIO
-  // =========================
-  window.addEventListener('load', async () => {
-    // Botones y modales
-    document.getElementById("btnCloseQR")?.addEventListener("click", ()=> dlgQR.close());
-    document.getElementById("btnQR").addEventListener("click", ()=> dlgQR.showModal());
-
-    // Cancelar SIEMPRE cierra el modal (botón visible)
-    document.getElementById("btnCloseForm").addEventListener("click",(e)=>{ e.preventDefault(); dlgForm.close(); });
-
-    // Cerrar modal por ESC y clic fuera
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && dlgForm.open) dlgForm.close(); });
-    dlgForm.addEventListener('click', (e)=>{
-      const rect = dlgForm.getBoundingClientRect();
-      const clickOutside = e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom;
-      if (clickOutside) dlgForm.close();
-    });
-    // Seguridad: si por alguna razón se dispara "close", asegúrate de estar cerrado
-    dlgForm.addEventListener("close", ()=> dlgForm.close());
-
-    // Firebase
-    try {
-      if (firebaseConfig && typeof firebase !== 'undefined') {
-        firebase.initializeApp(firebaseConfig);
-        auth = firebase.auth();
-        db = firebase.firestore();
-        await auth.signInAnonymously(); // lectura/escritura simple
-        usingDemo = false;
-      } else {
-        usingDemo = true; // sin config => modo demo local (no sincroniza entre dispositivos)
-      }
-    } catch (e) {
-      console.warn('Firebase no disponible, usando DEMO.', e);
-      usingDemo = true;
+    // ===== Helpers =====
+    const qsa = s => [...document.querySelectorAll(s)];
+    const uid = () => crypto.randomUUID();
+    const ensureIds = list => list.map(p => ({ id: p.id || uid(), ...p }));
+    function saveLocal(list){ localStorage.setItem('ja_store_products', JSON.stringify(list)); }
+    function loadLocal(){
+      const raw = localStorage.getItem('ja_store_products');
+      if(!raw){ saveLocal(seed); return [...seed]; }
+      try { return JSON.parse(raw); } catch { saveLocal(seed); return [...seed]; }
+    }
+    async function loadFromRepo(){
+      try{
+        const r = await fetch('products.json?v='+Date.now(), {cache:'no-store'});
+        if(!r.ok) return null;
+        const j = await r.json();
+        return ensureIds(Array.isArray(j) ? j : []);
+      }catch{ return null; }
     }
 
-    await loadProducts();
-    render();
-  });
-
-  // =========================
-  // CRUD
-  // =========================
-  async function loadProducts() {
-    if (usingDemo) {
-      PRODUCTS = DEMO.map((p, i)=> ({ id:`demo-${i}`, ...p }));
-      return;
+    // ===== Render =====
+    function renderCategories(list){
+      const cats = ['all', ...new Set(list.map(p=>p.category))];
+      categoryFilter.innerHTML = cats.map(c => `<option value="${c}">${c==='all'?'Todas las categorías':c}</option>`).join('');
     }
-    const snap = await db.collection('products').orderBy('createdAt','desc').get();
-    PRODUCTS = snap.docs.map(d=> ({ id:d.id, ...d.data() }));
-    // Si la colección está vacía, sembrar demo 1 sola vez
-    if (!PRODUCTS.length) {
-      const batch = db.batch();
-      DEMO.forEach(p=>{
-        const ref=db.collection('products').doc();
-        batch.set(ref, { ...p, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-      });
-      await batch.commit();
-      await loadProducts();
-    }
-  }
 
-  async function createOrUpdateProduct(data) {
-    if (usingDemo) {
-      // DEMO: modifica en memoria
-      if (data.id?.startsWith('demo-')) {
-        PRODUCTS = PRODUCTS.map(p=> p.id===data.id ? data : p);
-      } else {
-        data.id = 'demo-'+(PRODUCTS.length+1);
-        PRODUCTS.unshift(data);
-      }
-      render();
-      return;
-    }
-    if (data.id) {
-      const {id, ...rest}=data;
-      await db.collection('products').doc(id).set(rest, {merge:true});
-    } else {
-      await db.collection('products').add({ ...data, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-    }
-  }
-
-  async function deleteProduct(id) {
-    if (usingDemo) {
-      PRODUCTS = PRODUCTS.filter(p=>p.id!==id);
-      render();
-      return;
-    }
-    await db.collection('products').doc(id).delete();
-  }
-
-  // =========================
-  // RENDER
-  // =========================
-  function affiliateUrl(url) {
-    try {
-      const u = new URL(url);
-      // Si ya trae tag, respétalo; si no, agrega el tuyo
-      if (!u.searchParams.has('tag')) u.searchParams.set('tag', AMAZON_TAG);
-      return u.toString();
-    } catch {
-      return url;
-    }
-  }
-
-  function filteredProducts() {
-    const t = FILTER.text.trim().toLowerCase();
-    const c = FILTER.cat;
-    return PRODUCTS.filter(p=>{
-      const okCat = c==='all' || (p.cat||'').toLowerCase()===c.toLowerCase();
-      const okText = !t || (p.title||'').toLowerCase().includes(t) || (p.cat||'').toLowerCase().includes(t);
-      return okCat && okText;
-    });
-  }
-
-  function productCard(p) {
-    const price = p.price ? `$${Number(p.price).toFixed(2)}` : '';
-    const url = affiliateUrl(p.url||'#');
-    return `
-      <article class="group rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] hover:bg-white/[0.05] transition">
-        <div class="aspect-[4/3] overflow-hidden">
-          <img src="${p.img}" alt="${escapeHtml(p.title)}" class="h-full w-full object-cover group-hover:scale-[1.03] transition duration-300">
-        </div>
-        <div class="p-4">
-          <h3 class="font-bold line-clamp-2">${escapeHtml(p.title)}</h3>
-          <div class="mt-1 text-xs text-white/60">${escapeHtml(p.cat||'')}</div>
-          <div class="mt-2 flex items-center justify-between">
-            <span class="font-semibold">${price}</span>
-            <a href="${url}" target="_blank" rel="nofollow sponsored noopener" class="btn-neo text-sm px-3 py-2" title="Ver en Amazon">Ver en Amazon</a>
+    function productCard(p){
+      const price = p.price ? `$${Number(p.price).toLocaleString()}` : '';
+      const tag = p.featured ? `<span class="tag text-xs px-2 py-1 rounded-lg font-semibold">Destacado</span>` : '';
+      const brand = p.brand ? `<span class="text-xs text-white/60">${p.brand}</span>` : '';
+      const adminBtns = isAdmin ? `
+        <div class="flex gap-2 mt-3">
+          <button class="chip px-3 py-1.5 rounded-xl text-sm" onclick="editProduct('${p.id}')">Editar</button>
+          <button class="chip px-3 py-1.5 rounded-xl text-sm" onclick="removeProduct('${p.id}')">Eliminar</button>
+        </div>` : '';
+      return `
+        <article class="card rounded-2xl p-3 sm:p-4 flex flex-col gradient-border">
+          <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3]">
+            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-contain bg-[#0e1430]" loading="lazy" />
           </div>
-          ${ADMIN ? `
-          <div class="mt-3 flex gap-2">
-            <button class="btn-ghost text-sm" data-edit="${p.id}">Editar</button>
-            <button class="btn-ghost text-sm" data-del="${p.id}">Eliminar</button>
-          </div>`:''}
-        </div>
-      </article>
-    `;
-  }
-
-  function render() {
-    const list = filteredProducts();
-    grid.innerHTML = list.map(productCard).join('');
-    empty.classList.toggle('hidden', list.length>0);
-
-    // Wire botones editar/eliminar
-    if (ADMIN) {
-      $$("[data-edit]").forEach(b=>{
-        b.onclick = ()=>{
-          const id = b.getAttribute('data-edit');
-          const p = PRODUCTS.find(x=>x.id===id);
-          if (!p) return;
-          fId.value = p.id;
-          fTitle.value = p.title||'';
-          fCat.value = p.cat||'';
-          fPrice.value = p.price||'';
-          fImg.value = p.img||'';
-          fUrl.value = p.url||'';
-          dlgForm.showModal();
-        };
-      });
-      $$("[data-del]").forEach(b=>{
-        b.onclick = async ()=>{
-          const id = b.getAttribute('data-del');
-          if (confirm("¿Eliminar este producto?")) {
-            await deleteProduct(id);
-            await loadProducts();
-            render();
-          }
-        };
-      });
-      btnAdd.classList.remove('hidden');
-    } else {
-      btnAdd.classList.add('hidden');
+          <div class="mt-3 flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <h3 class="font-extrabold leading-tight line-clamp-2">${p.title}</h3>
+              <div class="flex items-center gap-2 mt-1">${brand}${brand?'<span class="text-white/20">•</span>':''}<span class="text-xs text-white/60">${p.category}</span>${p.featured?'<span class="text-white/20">•</span>'+tag:''}</div>
+              ${price?`<div class="mt-1 text-white/90 font-semibold">${price}</div>`:''}
+            </div>
+          </div>
+          <div class="mt-3">
+            <a href="${p.amazon}" target="_blank" rel="nofollow sponsored noopener" class="btn-neon w-full justify-center px-4 py-2 rounded-xl inline-flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414L11 19.586V14a1 1 0 0 1 1-1z"/></svg>
+              Ver en Amazon
+            </a>
+            ${isAdmin?`<p class="mt-1 text-[11px] text-white/50 break-all">${p.amazon}</p>`:''}
+            ${adminBtns}
+          </div>
+        </article>`;
     }
-  }
 
-  // =========================
-  // EVENTOS UI
-  // =========================
-  // Filtros por categoría
-  $$("button[data-cat]").forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      FILTER.cat = btn.getAttribute('data-cat');
-      render();
-    });
-  });
+    function applyFilters(){
+      const term = (search.value||'').toLowerCase().trim();
+      const cat = categoryFilter.value || 'all';
+      const filtered = products.filter(p=>{
+        const okTerm = !term || p.title.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term);
+        const okCat  = cat==='all' || p.category===cat;
+        return okTerm && okCat;
+      });
+      grid.innerHTML = filtered.map(productCard).join('');
+      empty.classList.toggle('hidden', filtered.length>0);
+    }
 
-  searchInput.addEventListener('input', ()=>{
-    FILTER.text = searchInput.value;
-    render();
-  });
-  clearSearch.addEventListener('click', ()=>{
-    searchInput.value = '';
-    FILTER.text = '';
-    render();
-  });
-
-  // Admin toggle con pin simple
-  function askAdmin() {
-    const pin = prompt("Ingresa PIN de Admin (sugerido: 360):","");
-    if (pin === "360") { ADMIN = true; alert("Modo Admin activado"); }
-    else { ADMIN = false; alert("PIN incorrecto"); }
-    render();
-  }
-  btnAdmin.addEventListener('click', askAdmin);
-  btnAdminSm.addEventListener('click', askAdmin);
-
-  // Abrir form nuevo
-  btnAdd.addEventListener('click', ()=>{
-    fId.value = "";
-    fTitle.value = "";
-    fCat.value = "Tecnología";
-    fPrice.value = "";
-    fImg.value = "";
-    fUrl.value = "";
-    dlgForm.showModal();
-  });
-
-  // Guardar (crear/actualizar)
-  productForm.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const data = {
-      id: fId.value || null,
-      title: fTitle.value.trim(),
-      cat: fCat.value.trim(),
-      price: fPrice.value ? Number(fPrice.value) : null,
-      img: fImg.value.trim(),
-      url: fUrl.value.trim()
+    // ===== CRUD Local =====
+    window.editProduct = (id)=>{
+      const p = products.find(x=>x.id===id); if(!p) return;
+      editingId = id;
+      modalTitle.textContent = "Editar producto";
+      pTitle.value = p.title||''; pBrand.value = p.brand||'';
+      pImage.value = p.image||''; pAmazon.value = p.amazon||'';
+      pPrice.value = p.price||''; pCategory.value = p.category||'Tecnología';
+      pFeatured.checked = !!p.featured;
+      btnDelete.classList.remove('hidden'); modal.showModal();
     };
-    // Validaciones básicas
-    if (!data.title || !data.cat || !data.img || !data.url) {
-      alert("Completa título, categoría, imagen y URL de Amazon.");
-      return;
-    }
-    await createOrUpdateProduct(data);
-    await loadProducts();
-    render();
-    dlgForm.close();
-  });
 
-  // =========================
-  // HELPERS
-  // =========================
-  function escapeHtml(s=""){ return s.replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c])) }
+    window.removeProduct = async (id)=>{
+      if(!confirm("¿Eliminar este producto?")) return;
+      if(db){
+        const { deleteDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+        await deleteDoc(doc(db,'products',id));
+      } else {
+        products = products.filter(p => p.id !== id);
+        saveLocal(products);
+        renderCategories(products);
+        normalizeImgsInDOM();
+        applyFilters();
+      }
+    };
+
+    btnAdd.addEventListener('click', ()=>{
+      editingId = null; modalTitle.textContent = "Nuevo producto"; form.reset();
+      pFeatured.checked = false; btnDelete.classList.add('hidden'); modal.showModal();
+    });
+
+    btnDelete.addEventListener('click', async ()=>{ if(editingId) await window.removeProduct(editingId); modal.close(); });
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const data = {
+        title:pTitle.value.trim(), brand:pBrand.value.trim(), image:pImage.value.trim(),
+        amazon:pAmazon.value.trim(), price:pPrice.value.trim(), category:pCategory.value,
+        featured:!!pFeatured.checked
+      };
+      if(!data.title || !data.image || !data.amazon){ alert("Título, Imagen y URL de Amazon son obligatorios."); return; }
+      if(!/[\?&]tag=/.test(data.amazon) && AFFILIATE_TAG_DEFAULT){
+        const sep = data.amazon.includes('?') ? '&' : '?'; data.amazon = `${data.amazon}${sep}tag=${AFFILIATE_TAG_DEFAULT}`;
+      }
+      if(db){
+        const { setDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+        const id = editingId || crypto.randomUUID(); await setDoc(doc(db,'products',id), { id, ...data });
+      } else {
+        if(editingId){ products = products.map(p => p.id===editingId ? ({...p, ...data}) : p); }
+        else { products = [{ id: crypto.randomUUID(), ...data }, ...products]; }
+        saveLocal(products);
+        renderCategories(products);
+        normalizeImgsInDOM();
+        applyFilters();
+      }
+      modal.close();
+    });
+
+    // ===== Admin =====
+    function updateAdminUI(){ btnAdd.disabled = !isAdmin; qsa('.admin-only').forEach(el=> el.classList.toggle('hidden', !isAdmin)); applyFilters(); }
+    btnAdmin.addEventListener('click', ()=>{
+      if(isAdmin){ isAdmin=false; localStorage.removeItem('ja_admin'); btnAdmin.textContent='Admin'; updateAdminUI(); return; }
+      const key = prompt("Clave Admin:"); if(key===ADMIN_KEY){ isAdmin=true; localStorage.setItem('ja_admin','1'); btnAdmin.textContent='Admin (ON)'; updateAdminUI(); }
+      else alert("Clave incorrecta.");
+    });
+
+    // ===== Filtros =====
+    search.addEventListener('input', applyFilters);
+    categoryFilter.addEventListener('change', applyFilters);
+
+    // ===== Init =====
+    async function init(){
+      isAdmin = !!localStorage.getItem('ja_admin');
+      btnAdmin.textContent = isAdmin ? 'Admin (ON)' : 'Admin';
+      btnAdd.disabled = !isAdmin;
+
+      if(USE_FIREBASE){
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
+        const { getFirestore, collection, onSnapshot, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+        const app = initializeApp(firebaseConfig); db = getFirestore(app);
+        const q = query(collection(db,'products'), orderBy('title'));
+        unsub = onSnapshot(q, snap=>{
+          products = []; snap.forEach(doc=> products.push(doc.data()));
+          if(products.length===0){ products = ensureIds(seed); }
+          renderCategories(products); normalizeImgsInDOM(); applyFilters();
+        });
+      } else {
+        // 1) Cargar del repo si existe
+        let remote = await loadFromRepo();
+        if(remote && remote.length){ products = remote; saveLocal(products); }
+        else {
+          // 2) Fallback a local/seed
+          products = ensureIds(loadLocal());
+          if(products.length===0){ products = ensureIds(seed); saveLocal(products); }
+        }
+        renderCategories(products); normalizeImgsInDOM(); applyFilters();
+      }
+
+      new ResizeObserver(()=>{}).observe(document.body);
+    }
+    window.addEventListener('DOMContentLoaded', init);
   </script>
+
+  <!-- 🔧 Normalizador imágenes Amazon -->
+  <script>
+    function normalizeAmazonImage(url, size=1200){
+      if(!url) return url;
+      try{
+        if(url.startsWith("//")) url = "https:" + url;
+        const u = new URL(url);
+        if(!/amazon\./i.test(u.hostname)) return url;
+        u.hostname = "m.media-amazon.com";
+        let p = u.pathname.replace(/\._[^.]+_\./g, ".");
+        p = p.replace(/\.(jpg|jpeg|png|webp)$/i, `._SL${size}_.$1`);
+        u.search = "";
+        return `${u.origin}${p}`;
+      }catch{ return url; }
+    }
+    function normalizeElementImage(img){
+      const dataSrc = img.getAttribute("data-src");
+      if(dataSrc && !img.getAttribute("src")) img.setAttribute("src", dataSrc);
+      const src = img.getAttribute("src") || "";
+      const n = normalizeAmazonImage(src);
+      if(n && n!==src) img.setAttribute("src", n);
+      if(img.hasAttribute("srcset")) img.removeAttribute("srcset");
+    }
+    function normalizeImgsInDOM(sel="img"){ document.querySelectorAll(sel).forEach(normalizeElementImage); }
+    document.addEventListener("DOMContentLoaded", ()=>{ normalizeImgsInDOM(); setTimeout(()=>normalizeImgsInDOM(),300); });
+    new MutationObserver(()=>normalizeImgsInDOM()).observe(document.body,{childList:true,subtree:true});
+  </script>
+
 </body>
 </html>
