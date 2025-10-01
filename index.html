@@ -170,7 +170,7 @@
           <div class="flex flex-wrap gap-2 mt-2">
             <button id="btnConnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Conectar nube</button>
             <button id="btnDisconnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Desconectar</button>
-            <!-- botón de reset añadido (no cambia estilos/estructura) -->
+            <!-- botón de reset (no cambia estilos/estructura) -->
             <button id="btnHardReset" type="button" class="chip px-3 py-1.5 rounded-xl text-sm" onclick="resetStore(true)">
               Resetear caché y recargar
             </button>
@@ -517,18 +517,16 @@
     });
   </script>
 
-  <!-- === CARGA products.json A LOCALSTORAGE (no toca tu UI) === -->
+  <!-- === CARGA products.json A LOCALSTORAGE (con recarga 1 sola vez) === -->
   <script>
   (async function(){
-    // Usa la misma ruta que abriste en el navegador
     const JSON_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
     const LS_KEY = "ja_store_products_v2";
+    const BOOT_KEY = "ja_bootstrap_done";
 
-    // Cargar LocalStorage existente
     function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || [] }catch{ return [] } }
     function lsSave(v){ localStorage.setItem(LS_KEY, JSON.stringify(v)); }
 
-    // Normaliza del JSON (TITLE, IMAGE, AMAZON, PRICE, CATEGORY, FEATURE) -> formato de la app
     function normalize(entry){
       const p = entry || {};
       return {
@@ -544,7 +542,6 @@
       };
     }
 
-    // Merge por amazon|title para evitar duplicados
     function merge(existing, incoming){
       const keyOf = (x)=> (x.amazon || x.title || "").toLowerCase();
       const map = new Map(existing.map(x=>[keyOf(x), x]));
@@ -563,8 +560,15 @@
 
       const current = lsLoad();
       const merged = merge(current, incoming);
+      const changed = merged.length !== current.length;
+
       lsSave(merged);
-      // No pintamos nada aquí: tu app leerá LocalStorage y renderizará sola.
+
+      // --- clave: recarga 1 sola vez para que la app lea el nuevo localStorage ---
+      if (changed && !localStorage.getItem(BOOT_KEY)) {
+        localStorage.setItem(BOOT_KEY, "1");
+        location.replace(location.pathname + "?nocache=" + Date.now());
+      }
     }catch(e){
       console.warn("[products.json] No se pudo precargar:", e);
     }
@@ -572,7 +576,7 @@
   </script>
   <!-- === FIN BLOQUE === -->
 
-  <!-- ==== RESET DE CACHÉ / SW / LOCALSTORAGE (añadido, no modifica tu UI) ==== -->
+  <!-- ==== RESET DE CACHÉ / SW / LOCALSTORAGE ==== -->
   <script>
   async function resetStore(force=false) {
     try {
@@ -595,7 +599,6 @@
       location.reload();
     }
   }
-
   (function () {
     const params = new URLSearchParams(location.search);
     if (params.get('reset') === '1') resetStore(true);
