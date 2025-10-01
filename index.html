@@ -153,7 +153,7 @@
     <form method="dialog" class="card rounded-2xl p-4 sm:p-6">
       <div class="flex items-center justify-between mb-3">
         <h3 class="text-lg font-extrabold neon-title">Ajustes</h3>
-        <button type="submit" class="chip px-3 py-1.5 rounded-xl">Cerrar</button>
+        <button type="submit" class="chip px-3 py-1.5 rounded-xl text-sm">Cerrar</button>
       </div>
 
       <div class="grid gap-3">
@@ -511,151 +511,62 @@
         renderCategories(products); applyFilters();
       }
     });
-  </script><!-- === CARGA NO INTRUSIVA DE products.json (pegar al final, antes de </body>) === -->
-<script>
-(function () {
-  const JSON_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/main/products.json";
+  </script>
 
-  async function fetchJSONProducts() {
-    const res = await fetch(JSON_URL, { cache: "no-store" });
-    if (!res.ok) throw new Error("No pude cargar products.json (" + res.status + ")");
-    const data = await res.json();
-    if (!data || !data.PRODUCTOS) throw new Error("El JSON no tiene la clave PRODUCTOS");
-    return Object.entries(data.PRODUCTOS).map(([id, p]) => ({ id, ...p }));
-  }
+  <!-- === CARGA products.json A LOCALSTORAGE (no toca tu UI) === -->
+  <script>
+  (async function(){
+    // Usa la misma ruta que abriste en el navegador
+    const JSON_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
+    const LS_KEY = "ja_store_products_v2";
 
-  function mergeProducts(existing, incoming) {
-    // Evita duplicados usando id/AMAZON/TITLE como clave de comparación
-    const map = new Map();
-    (existing || []).forEach(p => {
-      const key = (p.id || p.AMAZON || p.TITLE || Math.random()).toString();
-      map.set(key, p);
-    });
-    incoming.forEach(p => {
-      const key = (p.id || p.AMAZON || p.TITLE).toString();
-      if (!map.has(key)) map.set(key, p);
-    });
-    return Array.from(map.values());
-  }
+    // Cargar LocalStorage existente
+    function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || [] }catch{ return [] } }
+    function lsSave(v){ localStorage.setItem(LS_KEY, JSON.stringify(v)); }
 
-  (async () => {
-    try {
-      const incoming = await fetchJSONProducts();
+    // Normaliza del JSON (TITLE, IMAGE, AMAZON, PRICE, CATEGORY, FEATURE) -> formato de la app
+    function normalize(entry){
+      const p = entry || {};
+      return {
+        id: crypto.randomUUID(),
+        title: p.TITLE || "",
+        brand: p.BRAND || "",
+        image: (p.IMAGE && p.IMAGE.trim()) || "https://via.placeholder.com/800x600?text=Imagen",
+        amazon: p.AMAZON || "#",
+        price: p.PRICE || "",
+        category: p.CATEGORY || "Otros",
+        featured: !!p.FEATURE,
+        createdAt: Date.now()
+      };
+    }
 
-      // Fusiona con lo que ya tenga tu app (NO borra nada)
-      window.products = mergeProducts(window.products, incoming);
-
-      // Si tu app ya tiene funciones de render, úsalas
-      if (typeof window.renderCategories === "function") {
-        window.renderCategories(window.products);
+    // Merge por amazon|title para evitar duplicados
+    function merge(existing, incoming){
+      const keyOf = (x)=> (x.amazon || x.title || "").toLowerCase();
+      const map = new Map(existing.map(x=>[keyOf(x), x]));
+      for(const p of incoming){
+        const k = keyOf(p);
+        if(!map.has(k)) map.set(k, p);
       }
-      if (typeof window.applyFilters === "function") {
-        window.applyFilters();
-      } else {
-        // Fallback súper ligero por si no existen (no cambia estilos de tu tienda)
-        const app = document.querySelector("#app");
-        if (app) {
-          app.innerHTML = window.products.map(p => `
-            <div class="card">
-              <div class="thumb">
-                <img src="${(p.IMAGE||'').trim() || 'https://via.placeholder.com/600x600?text=Imagen'}"
-                     alt="${p.TITLE||''}" loading="lazy" decoding="async"
-                     onerror="this.src='https://via.placeholder.com/600x600?text=Imagen'">
-              </div>
-              <div class="title">${p.TITLE||''}</div>
-              <div class="price">${p.PRICE ? '$'+p.PRICE : ''}</div>
-              <a class="btn" href="${p.AMAZON||'#'}" target="_blank" rel="noopener nofollow sponsored">Ver en Amazon</a>
-            </div>
-          `).join("");
-        }
-      }
-    } catch (e) {
-      console.error("[products.json] Error:", e);
+      return Array.from(map.values());
+    }
+
+    try{
+      const res = await fetch(JSON_URL + "?" + Date.now(), { cache:"no-store" });
+      if(!res.ok) throw new Error("HTTP "+res.status);
+      const data = await res.json();
+      const incoming = Object.values(data.PRODUCTOS || {}).map(normalize);
+
+      const current = lsLoad();
+      const merged = merge(current, incoming);
+      lsSave(merged);
+      // No pintamos nada aquí: tu app leerá LocalStorage y renderizará sola.
+    }catch(e){
+      console.warn("[products.json] No se pudo precargar:", e);
     }
   })();
-})();
-</script><!-- === CARGAR products.json SIN ROMPER LA TIENDA (pegar antes de </body>) === -->
-<script>
-(function () {
-  const JSON_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/main/products.json";
+  </script>
+  <!-- === FIN BLOQUE === -->
 
-  async function loadJSON() {
-    const res = await fetch(JSON_URL + "?t=" + Date.now(), { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status + " al cargar products.json");
-    const data = await res.json();
-    if (!data || !data.PRODUCTOS) throw new Error("El JSON no tiene la clave PRODUCTOS");
-    return Object.entries(data.PRODUCTOS).map(([id, p]) => ({ id, ...p }));
-  }
-
-  function merge(existing, incoming) {
-    const map = new Map();
-    (existing || []).forEach(p => map.set((p.id || p.AMAZON || p.TITLE || Math.random())+"", p));
-    incoming.forEach(p => map.set((p.id || p.AMAZON || p.TITLE)+"", p));
-    return [...map.values()];
-  }
-
-  (async () => {
-    try {
-      const incoming = await loadJSON();
-      // 1) fusiona con lo que ya tenga tu app
-      window.products = merge(window.products, incoming);
-
-      // 2) si tu app ya tiene render, úsalo
-      if (typeof window.renderCategories === "function") {
-        window.renderCategories(window.products);
-        if (typeof window.applyFilters === "function") window.applyFilters();
-        return;
-      }
-
-      // 3) Fallback visual (no cambia estilos globales de tu tienda)
-      let host = document.getElementById("json-products");
-      if (!host) {
-        host = document.createElement("section");
-        host.id = "json-products";
-        host.style.maxWidth = "1200px";
-        host.style.margin = "24px auto";
-        host.style.padding = "16px";
-        host.style.border = "1px dashed #444";
-        host.style.borderRadius = "12px";
-        host.style.background = "rgba(255,255,255,0.03)";
-        document.body.appendChild(host);
-      }
-
-      const cards = window.products.map(p => {
-        const img = (p.IMAGE && p.IMAGE.trim()) ? p.IMAGE : "https://via.placeholder.com/600x600?text=Imagen";
-        return `
-          <div style="background:#111;border:1px solid #2a2a2a;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px">
-            <div style="aspect-ratio:1/1;width:100%;background:#0f0f0f;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden">
-              <img src="${img}" alt="${p.TITLE||''}" loading="lazy" decoding="async"
-                   style="width:100%;height:100%;object-fit:contain"
-                   onerror="this.src='https://via.placeholder.com/600x600?text=Imagen'">
-            </div>
-            <div style="font-weight:600;color:#fff;font-size:14px;line-height:1.3">${p.TITLE||""}</div>
-            <div style="color:#9aa">${p.CATEGORY||""}</div>
-            <div style="color:#0ad;font-weight:700">${p.PRICE ? "$"+p.PRICE : ""}</div>
-            <a href="${p.AMAZON||"#"}" target="_blank" rel="noopener nofollow sponsored"
-               style="text-decoration:none;text-align:center;background:#6c2bd9;color:#fff;padding:10px;border-radius:10px">
-               Ver en Amazon
-            </a>
-          </div>`;
-      }).join("");
-
-      host.innerHTML = `
-        <h2 style="margin:0 0 12px;color:#fff;font-size:18px">
-          Productos cargados: ${window.products.length}
-        </h2>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px">
-          ${cards}
-        </div>
-      `;
-    } catch (e) {
-      console.error("[products.json] Error:", e);
-      alert("Error cargando products.json: " + e.message);
-    }
-  })();
-})();
-</script>
-<!-- === FIN === -->
-<!-- === FIN DEL BLOQUE === -->
 </body>
 </html>
