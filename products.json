@@ -1,46 +1,125 @@
-import json, os, re
 
-# Pre-collected ASINs and guesses from the user's links
-products = [
-    ("B0CZRNH2LN", "Pantalones deportivos de entrenamiento con cremallera (FIRSTGYM)", "Ropa"),
-    ("B0DXZ53V7D", "Pantalones deportivos con bolsillo y cremallera (MGBOYGYM)", "Ropa"),
-    ("B08FSNF4G1", "Pantalones de entrenamiento con cremallera", "Ropa"),
-    ("B07DDH77KG", "Gorra trucker Grace Folly unisex", "Accesorios"),
-    ("B08G15PNCW", "Gorra Grace Folly de béisbol (juvenil)", "Accesorios"),
-    ("B0BBXXHW78", "Mesa de inversión para espalda", "Salud y Fitness"),
-    ("B0DKPG12X1", "Echo Bundle: Echo Dot (5ª generación) (edición limitada)", "Tecnología"),
-    ("B09B1S41YK", "Colgador inteligente con accesorios integrados", "Hogar"),
-    ("B0FB21526X", "Logitech MX Master 3S ratón inalámbrico", "Tecnología"),
-    ("B00BAGTNAQ", "ChomChom Roller removedor de pelo para mascotas", "Mascotas"),
-    ("B0DQJV5D9K", "BISSELL PowerClean FurFinder inalámbrica", "Hogar"),
-    ("B07S652B12", "Aspiradora inalámbrica de mano (con accesorios)", "Hogar"),
-    ("B01N4Q8KO2", "Gafas de sol Carrera 5041 rectangulares Gradient", "Accesorios"),
-    ("B0DFGQHX22", "NORTIV zapatos deportivos antideslizantes", "Calzado"),
-    ("B0F5M4HVMV", "UOVO Flow zapatos cómodos \"Lakemoon\" cobalto", "Calzado"),
-]
-
-def slugify(text):
-    text = text.lower()
-    text = re.sub(r"[^a-z0-9]+", "-", text).strip("-")
-    return text
-
-items = {}
-for asin, title, category in products:
-    slug = f"{slugify(title)}-{asin.lower()}"
-    items[slug] = {
-        "TITLE": title,
-        "PRICE": 0,
-        "CATEGORY": category,
-        "IMAGE": "",
-        "AMAZON": f"https://www.amazon.com/dp/{asin}?tag=kaninosabioan-20",
-        "FEATURE": False
+{
+  "PRODUCTOS": {
+    "pantalones-deportivos-entrenamiento-cremallera-firstgym-b0czrnh2ln": {
+      "TITLE": "Pantalones deportivos de entrenamiento con cremallera (FIRSTGYM)",
+      "PRICE": 0,
+      "CATEGORY": "Ropa",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B0CZRNH2LN?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "pantalones-deportivos-bolsillo-cremallera-mgboygym-b0dxz53v7d": {
+      "TITLE": "Pantalones deportivos con bolsillo y cremallera (MGBOYGYM)",
+      "PRICE": 0,
+      "CATEGORY": "Ropa",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B0DXZ53V7D?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "pantalones-entrenamiento-con-cremallera-b08fsnf4g1": {
+      "TITLE": "Pantalones de entrenamiento con cremallera",
+      "PRICE": 0,
+      "CATEGORY": "Ropa",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B08FSNF4G1?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "gorra-trucker-grace-folly-unisex-b07ddh77kg": {
+      "TITLE": "Gorra trucker Grace Folly unisex",
+      "PRICE": 0,
+      "CATEGORY": "Accesorios",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B07DDH77KG?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "gorra-grace-folly-beisbol-juvenil-b08g15pncw": {
+      "TITLE": "Gorra Grace Folly de béisbol (juvenil)",
+      "PRICE": 0,
+      "CATEGORY": "Accesorios",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B08G15PNCW?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "mesa-de-inversion-para-espalda-b0bbxxhw78": {
+      "TITLE": "Mesa de inversión para espalda",
+      "PRICE": 0,
+      "CATEGORY": "Salud y Fitness",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B0BBXXHW78?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "echo-bundle-echo-dot-5a-gen-edicion-limitada-b0dkpg12x1": {
+      "TITLE": "Echo Bundle: Echo Dot (5ª generación) (edición limitada)",
+      "PRICE": 0,
+      "CATEGORY": "Tecnología",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B0DKPG12X1?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "colgador-inteligente-accesorios-integrados-b09b1s41yk": {
+      "TITLE": "Colgador inteligente con accesorios integrados",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B09B1S41YK?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "logitech-mx-master-3s-raton-inalambrico-b0fb21526x": {
+      "TITLE": "Logitech MX Master 3S ratón inalámbrico",
+      "PRICE": 0,
+      "CATEGORY": "Tecnología",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B0FB21526X?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "chomchom-roller-removedor-pelo-mascotas-b00bagtnaq": {
+      "TITLE": "ChomChom Roller removedor de pelo para mascotas",
+      "PRICE": 0,
+      "CATEGORY": "Mascotas",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B00BAGTNAQ?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "bissell-powerclean-furfinder-inalambrica-b0dqjv5d9k": {
+      "TITLE": "BISSELL PowerClean FurFinder inalámbrica",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B0DQJV5D9K?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "aspiradora-inalambrica-de-mano-con-accesorios-b07s652b12": {
+      "TITLE": "Aspiradora inalámbrica de mano (con accesorios)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B07S652B12?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "gafas-sol-carrera-5041-rectangulares-gradient-b01n4q8ko2": {
+      "TITLE": "Gafas de sol Carrera 5041 rectangulares Gradient",
+      "PRICE": 0,
+      "CATEGORY": "Accesorios",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B01N4Q8KO2?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "nortiv-zapatos-deportivos-antideslizantes-b0dfgqhx22": {
+      "TITLE": "NORTIV zapatos deportivos antideslizantes",
+      "PRICE": 0,
+      "CATEGORY": "Calzado",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B0DFGQHX22?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "uovo-flow-zapatos-comodos-lakemoon-cobalto-b0f5m4hvmv": {
+      "TITLE": "UOVO Flow zapatos cómodos \"Lakemoon\" cobalto",
+      "PRICE": 0,
+      "CATEGORY": "Calzado",
+      "IMAGE": "",
+      "AMAZON": "https://www.amazon.com/dp/B0F5M4HVMV?tag=kaninosabioan-20",
+      "FEATURE": false
     }
-
-data = {"PRODUCTOS": items}
-
-os.makedirs("/mnt/data", exist_ok=True)
-out_path = "/mnt/data/productos.json"
-with open(out_path, "w", encoding="utf-8") as f:
-    json.dump(data, f, ensure_ascii=False, indent=2)
-
-out_path
+  }
+}
