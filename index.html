@@ -10,7 +10,7 @@
   <meta name="keywords" content="Amazon afiliados, tienda, mejores productos, tecnología, J_A MEGA STORE 360">
   <meta name="robots" content="index,follow">
 
-  <!-- Open Graph para que en WhatsApp/Facebook muestren la imagen correcta -->
+  <!-- Open Graph -->
   <meta property="og:title" content="J_A MEGA STORE 360 — Tienda de Afiliados" />
   <meta property="og:description" content="Descubre los productos más buscados y ve a Amazon con tu enlace de afiliado." />
   <meta property="og:image" content="https://images.unsplash.com/photo-1516387938699-a93567ec168e?q=80&w=1200&auto=format&fit=crop" />
@@ -23,9 +23,7 @@
       theme: {
         extend: {
           fontFamily: { outfit: ['Outfit','ui-sans-serif','system-ui'] },
-          boxShadow: {
-            glow: '0 0 25px rgba(99,102,241,0.35), 0 0 45px rgba(236,72,153,0.25)'
-          },
+          boxShadow: { glow: '0 0 25px rgba(99,102,241,0.35), 0 0 45px rgba(236,72,153,0.25)' },
           backgroundImage: {
             'grad-neo': 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 35%, #EC4899 70%, #F59E0B 100%)',
             'grad-neo-soft': 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(236,72,153,0.15))'
@@ -51,13 +49,11 @@
       @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-semibold border border-white/15 text-white/90 hover:bg-white/5;
     }
     @keyframes move { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-    .line-clamp-2 {
-      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
-    }
+    .line-clamp-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
     dialog::backdrop { background: rgb(0 0 0 / 0.6); }
   </style>
 
-  <!-- Firebase SDKs (Compat para facilidad) -->
+  <!-- Firebase SDKs (Compat) -->
   <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -89,9 +85,7 @@
         <h2 class="text-2xl sm:text-4xl font-black leading-tight">
           Encuentra <span class="text-transparent bg-clip-text bg-grad-neo">los más buscados</span> y compra con tu enlace de Amazon
         </h2>
-        <p class="mt-3 text-white/80">
-          100% responsive: lo que ves en tu web es lo mismo que verán en su teléfono.
-        </p>
+        <p class="mt-3 text-white/80">100% responsive: lo que ves en tu web es lo mismo que verán en su teléfono.</p>
 
         <!-- Buscador -->
         <div class="mt-5 flex gap-2">
@@ -106,13 +100,10 @@
           <button id="btnQR" class="btn-ghost">QR del canal</button>
         </div>
 
-        <!-- Aviso Amazon -->
-        <p class="mt-3 text-xs text-white/60">
-          Aviso: Como Asociado de Amazon, puedo ganar comisiones por compras que califiquen.
-        </p>
+        <p class="mt-3 text-xs text-white/60">Aviso: Como Asociado de Amazon, puedo ganar comisiones por compras que califiquen.</p>
       </div>
 
-      <!-- Perro y Gato portada -->
+      <!-- Imagen portada -->
       <div class="relative">
         <div class="aspect-[4/3] sm:aspect-[5/4] rounded-2xl overflow-hidden ring-2 ring-white/10 shadow-glow">
           <img src="https://images.unsplash.com/photo-1511735111819-9a3f7709049c?q=80&w=1200&auto=format&fit=crop" alt="Perro y gato" class="h-full w-full object-cover">
@@ -121,7 +112,7 @@
     </div>
   </section>
 
-  <!-- FILTROS RÁPIDOS -->
+  <!-- FILTROS -->
   <section class="max-w-7xl mx-auto px-4">
     <div class="flex flex-wrap gap-2">
       <button data-cat="all" class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm hover:bg-white/10">Todo</button>
@@ -234,7 +225,7 @@
   btnYoutube.href = YOUTUBE_URL;
   btnYoutubeTop.href = YOUTUBE_URL;
 
-  // Generar QR simple (no cambia diseño)
+  // QR
   const qrApi = (url) => `https://quickchart.io/qr?text=${encodeURIComponent(url)}&size=512&margin=2`;
   qrImg.src = qrApi(YOUTUBE_URL);
 
@@ -271,12 +262,11 @@
   // =========================
   window.addEventListener('load', async () => {
     // Botones y modales
-    document.getElementById("btnCloseQR")?.addEventListener("click", ()=> dlgQR.close());
-    document.getElementById("btnQR").addEventListener("click", ()=> dlgQR.showModal());
+    $("#btnCloseQR")?.addEventListener("click", ()=> dlgQR.close());
+    $("#btnQR").addEventListener("click", ()=> dlgQR.showModal());
 
-    // Corregido: Cancelar cierra el modal
-    document.getElementById("btnCloseForm").addEventListener("click",(e)=>{ e.preventDefault(); dlgForm.close(); });
-    // Corregido: cerrar por ESC y clic fuera
+    // Modal: cerrar con Cancelar, ESC y clic fuera
+    $("#btnCloseForm").addEventListener("click",(e)=>{ e.preventDefault(); dlgForm.close(); });
     document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && dlgForm.open) dlgForm.close(); });
     dlgForm.addEventListener('click', (e)=>{
       const rect = dlgForm.getBoundingClientRect();
@@ -285,7 +275,7 @@
     });
     dlgForm.addEventListener("close", ()=> dlgForm.close());
 
-    // Firebase (opcional)
+    // Firebase
     try {
       if (firebaseConfig && typeof firebase !== 'undefined') {
         firebase.initializeApp(firebaseConfig);
@@ -294,7 +284,7 @@
         await auth.signInAnonymously();
         usingDemo = false;
       } else {
-        usingDemo = true; // sin config => cada dispositivo mantiene su demo local
+        usingDemo = true; // sin config => demo local
       }
     } catch (e) {
       console.warn('Firebase no disponible, usando DEMO.', e);
@@ -362,9 +352,7 @@
       const u = new URL(url);
       if (!u.searchParams.has('tag')) u.searchParams.set('tag', AMAZON_TAG);
       return u.toString();
-    } catch {
-      return url;
-    }
+    } catch { return url; }
   }
 
   function filteredProducts() {
@@ -390,7 +378,6 @@
           <div class="mt-1 text-xs text-white/60">${escapeHtml(p.cat||'')}</div>
           <div class="mt-2 flex items-center justify-between">
             <span class="font-semibold">${price}</span>
-            <!-- Corregido: sponsored en rel, sin cambiar estilo -->
             <a href="${url}" target="_blank" rel="nofollow sponsored noopener" class="btn-neo text-sm px-3 py-2" title="Ver en Amazon">Ver en Amazon</a>
           </div>
           ${ADMIN ? `
@@ -453,6 +440,7 @@
     FILTER.text = searchInput.value;
     render();
   });
+
   clearSearch.addEventListener('click', ()=>{
     searchInput.value = '';
     FILTER.text = '';
@@ -469,12 +457,8 @@
   btnAdminSm.addEventListener('click', askAdmin);
 
   btnAdd.addEventListener('click', ()=>{
-    fId.value = "";
-    fTitle.value = "";
-    fCat.value = "Tecnología";
-    fPrice.value = "";
-    fImg.value = "";
-    fUrl.value = "";
+    fId.value = ""; fTitle.value = ""; fCat.value = "Tecnología";
+    fPrice.value = ""; fImg.value = ""; fUrl.value = "";
     dlgForm.showModal();
   });
 
@@ -502,162 +486,6 @@
   // HELPERS
   // =========================
   function escapeHtml(s=""){ return s.replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c])) }
-  </script><!-- === PARCHE SIN CAMBIAR DISEÑO (SYNC + MODAL) === -->
-<script>
-/* =========================
-   0) CONFIG EDITABLE
-========================= */
-const AMAZON_TAG = "kaninosabioan-20"; // tu tag
-const firebaseConfig = null; // <-- Pega aquí tu objeto de Firebase (apiKey, authDomain, projectId, etc.)
-
-/* =========================
-   1) CIERRE FIABLE DEL MODAL (sin tocar estilos)
-========================= */
-// Si usas <dialog id="dlgProduct"> o similar:
-(function fixModalClose(){
-  const dlg = document.querySelector("dialog"); // si tienes más de uno, ajústalo al tuyo (#dlgProduct)
-  if (!dlg) return;
-  // Cerrar por botón "Cancelar"
-  document.querySelectorAll("[data-close-dialog], #btnCloseForm").forEach(btn=>{
-    btn.addEventListener("click", e=>{ e.preventDefault(); dlg.close(); });
-  });
-  // Cerrar por ESC
-  document.addEventListener("keydown", e=>{
-    if (e.key === "Escape" && dlg.open) dlg.close();
-  });
-  // Cerrar por clic fuera
-  dlg.addEventListener("click", e=>{
-    const r = dlg.getBoundingClientRect();
-    const out = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
-    if (out) dlg.close();
-  });
-})();
-
-/* =========================
-   2) CAPA DE SINCRONIZACIÓN (Firestore o localStorage)
-   - NO cambia tu HTML ni tu render()
-   - Espera que tengas una función global render() que pinta desde window.PRODUCTS
-========================= */
-(function syncLayer(){
-  // Si tu código ya define window.PRODUCTS y render(), seguimos usándolo.
-  // Si no, los creamos para no romper nada.
-  window.PRODUCTS = Array.isArray(window.PRODUCTS) ? window.PRODUCTS : [];
-  window.render   = typeof window.render === "function" ? window.render : function(){};
-
-  let db=null, auth=null, usingDemo=true;
-
-  // Helpers
-  function withAffiliate(url){
-    try{
-      const u = new URL(url);
-      if (!u.searchParams.has("tag")) u.searchParams.set("tag", AMAZON_TAG);
-      return u.toString();
-    }catch{return url}
-  }
-
-  // Exponemos API única para toda la app (puedes llamarla desde tu código existente)
-  window.Data = {
-    // Carga inicial
-    async load(){
-      if (db){ // Firestore
-        const snap = await db.collection("products").orderBy("createdAt","desc").get();
-        window.PRODUCTS = snap.docs.map(d=>({ id:d.id, ...d.data() }));
-        window.render();
-      } else {
-        // localStorage (misma clave para no romper lo que ya tienes)
-        const raw = localStorage.getItem("products") || "[]";
-        try{ window.PRODUCTS = JSON.parse(raw) }catch{ window.PRODUCTS = [] }
-        window.render();
-      }
-    },
-    // Crear / Actualizar
-    async save(p){
-      // asegura tag afiliado sin tocar tu HTML
-      p.url = withAffiliate(p.url||"");
-      if (db){
-        if (p.id){
-          const {id, ...rest} = p;
-          await db.collection("products").doc(id).set(rest,{merge:true});
-        }else{
-          await db.collection("products").add({ ...p, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-        }
-      }else{
-        // localStorage
-        if (p.id){
-          window.PRODUCTS = window.PRODUCTS.map(x=> x.id===p.id ? p : x);
-        }else{
-          p.id = "ls-"+Date.now();
-          window.PRODUCTS.unshift(p);
-        }
-        localStorage.setItem("products", JSON.stringify(window.PRODUCTS));
-      }
-      await this.load();
-    },
-    // Borrar
-    async remove(id){
-      if (!id) return;
-      if (db){
-        await db.collection("products").doc(id).delete();
-      }else{
-        window.PRODUCTS = window.PRODUCTS.filter(x=> x.id!==id);
-        localStorage.setItem("products", JSON.stringify(window.PRODUCTS));
-      }
-      await this.load();
-    }
-  };
-
-  // Arranque
-  window.addEventListener("load", async ()=>{
-    // 2.1 Firebase opcional
-    try{
-      if (firebaseConfig && typeof firebase!=="undefined"){
-        firebase.initializeApp(firebaseConfig);
-        auth = firebase.auth();
-        db   = firebase.firestore();
-        await auth.signInAnonymously();
-        usingDemo = false;
-      }
-    }catch(err){
-      console.warn("Firebase no disponible; usando localStorage.", err);
-      usingDemo = true;
-      db = null;
-    }
-
-    // 2.2 Carga inicial (todos verán lo mismo si hay Firebase)
-    await window.Data.load();
-  });
-
-  /* =========================
-     3) Hooks opcionales:
-     Si tu código ya tenía funciones como addProduct(), editProduct(), deleteProduct(),
-     puedes cambiarlas para que llamen a Data.save() / Data.remove().
-     Ejemplo:
-       await Data.save({id, title, cat, price, img, url});
-       await Data.remove(id);
-  ========================= */
-})();
-
-/* =========================
-   4) (Opcional) Asegurar "sponsored" en botones Amazon sin cambiar el HTML
-========================= */
-(function forceSponsoredRel(){
-  const fix = ()=>{
-    document.querySelectorAll('a[target="_blank"]').forEach(a=>{
-      if (!a.href) return;
-      const txt = (a.textContent||"").toLowerCase();
-      if (txt.includes("amazon")){
-        const rel = new Set((a.getAttribute("rel")||"").split(/\s+/).filter(Boolean));
-        rel.add("nofollow"); rel.add("noopener"); rel.add("sponsored");
-        a.setAttribute("rel", Array.from(rel).join(" "));
-      }
-    });
-  };
-  document.addEventListener("DOMContentLoaded", fix);
-  // Si tu render() repinta, vuelve a ajustar
-  const mo = new MutationObserver(fix);
-  mo.observe(document.documentElement, {subtree:true, childList:true});
-})();
-</script>
-<!-- === FIN PARCHE === -->
+  </script>
 </body>
 </html>
