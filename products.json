@@ -2,109 +2,91 @@
   {
     "title": "Apple iPhone 15 Pro (128GB)",
     "brand": "Apple",
-    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
-    "amazon": "https://www.amazon.com/dp/B0CHX3LPPB",
+    "image": "https://m.media-amazon.com/images/I/81CgtwSII3L._AC_SX679_.jpg",
+    "amazon": "https://www.amazon.com/dp/B0CHX3J7TG",
     "price": "999.00",
-    "category": "Teléfonos",
+    "category": "Tecnología",
     "featured": true
   },
   {
     "title": "Samsung Galaxy S24 Ultra",
     "brand": "Samsung",
-    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
-    "amazon": "https://www.amazon.com/dp/B0CSJ3LLQK",
+    "image": "https://m.media-amazon.com/images/I/71RVuBs3q9L._AC_SX679_.jpg",
+    "amazon": "https://www.amazon.com/dp/B0BSHVQ5F8",
     "price": "1199.00",
-    "category": "Teléfonos",
+    "category": "Tecnología",
     "featured": true
-  },
-  {
-    "title": "AirPods Pro (2da gen)",
-    "brand": "Apple",
-    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
-    "amazon": "https://www.amazon.com/dp/B0BDK62PDX",
-    "price": "229.00",
-    "category": "Accesorios",
-    "featured": false
   },
   {
     "title": "Apple Watch Series 9",
     "brand": "Apple",
-    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
-    "amazon": "https://www.amazon.com/dp/B0CHX5Z5GZ",
+    "image": "https://m.media-amazon.com/images/I/71YpM7VyKXL._AC_SX679_.jpg",
+    "amazon": "https://www.amazon.com/dp/B0CHX5MFWN",
     "price": "399.00",
-    "category": "Accesorios",
-    "featured": false
-  },
-  {
-    "title": "Kindle Paperwhite",
-    "brand": "Amazon",
-    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
-    "amazon": "https://www.amazon.com/dp/B08N36XNTT",
-    "price": "149.99",
     "category": "Tecnología",
     "featured": false
   },
   {
-    "title": "Nintendo Switch OLED",
-    "brand": "Nintendo",
-    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
-    "amazon": "https://www.amazon.com/dp/B098RKWHHZ",
-    "price": "349.00",
-    "category": "Gaming",
+    "title": "Máquina de café espresso Breville BES880BSS",
+    "brand": "Breville",
+    "image": "https://m.media-amazon.com/images/I/71V0Z7z5YQL._AC_SX679_.jpg",
+    "amazon": "https://www.amazon.com/dp/B078WMLXXG",
+    "price": "799.95",
+    "category": "Hogar",
     "featured": true
   },
   {
-    "title": "PlayStation 5 Slim",
-    "brand": "Sony",
-    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
-    "amazon": "https://www.amazon.com/dp/B0CLL9P9N8",
-    "price": "499.00",
-    "category": "Gaming",
+    "title": "Cinta de correr plegable NordicTrack T Series",
+    "brand": "NordicTrack",
+    "image": "https://m.media-amazon.com/images/I/71a3r8kF5LL._AC_SX679_.jpg",
+    "amazon": "https://www.amazon.com/dp/B0193V3DJ6",
+    "price": "649.00",
+    "category": "Gym",
+    "featured": true
+  },
+  {
+    "title": "Proteína Whey Optimum Nutrition (5 lb)",
+    "brand": "Optimum Nutrition",
+    "image": "https://m.media-amazon.com/images/I/81+Qd4AYqnL._AC_SX679_.jpg",
+    "amazon": "https://www.amazon.com/dp/B002DYIZEO",
+    "price": "79.99",
+    "category": "Salud",
     "featured": false
   },
   {
-    "title": "Robot Aspirador Roomba i7",
+    "title": "Collar inteligente para perros Tractive GPS",
+    "brand": "Tractive",
+    "image": "https://m.media-amazon.com/images/I/61j14Z1xFpL._AC_SX679_.jpg",
+    "amazon": "https://www.amazon.com/dp/B09XM9WYRQ",
+    "price": "49.99",
+    "category": "Animales",
+    "featured": false
+  },
+  {
+    "title": "Roomba i7 Robot Aspirador",
     "brand": "iRobot",
-    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
-    "amazon": "https://www.amazon.com/dp/B07GNPDMRP",
+    "image": "https://m.media-amazon.com/images/I/71B1YFyiAVL._AC_SX679_.jpg",
+    "amazon": "https://www.amazon.com/dp/B07DL4QY5V",
     "price": "399.00",
     "category": "Hogar",
     "featured": false
   },
   {
-    "title": "Logitech MX Master 3S",
-    "brand": "Logitech",
-    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
-    "amazon": "https://www.amazon.com/dp/B09HM94VDS",
-    "price": "99.00",
-    "category": "Accesorios",
-    "featured": false
+    "title": "Zapatillas deportivas Nike Air Zoom Pegasus",
+    "brand": "Nike",
+    "image": "https://m.media-amazon.com/images/I/71p9F4w37tL._AC_SY675_.jpg",
+    "amazon": "https://www.amazon.com/dp/B0BDZ3ZJQZ",
+    "price": "129.99",
+    "category": "Los más buscados",
+    "featured": true
   },
   {
-    "title": "Monitor 27\" 4K IPS",
-    "brand": "LG",
-    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
-    "amazon": "https://www.amazon.com/dp/B08BV2DH9Z",
-    "price": "299.00",
-    "category": "Tecnología",
-    "featured": false
-  },
-  {
-    "title": "SSD NVMe 1TB",
-    "brand": "Crucial",
-    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
-    "amazon": "https://www.amazon.com/dp/B08K9D8GJ9",
-    "price": "89.00",
-    "category": "Tecnología",
-    "featured": false
-  },
-  {
-    "title": "Echo Dot (5ª gen)",
-    "brand": "Amazon",
-    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
-    "amazon": "https://www.amazon.com/dp/B09B2SBWPX",
-    "price": "49.99",
-    "category": "Hogar",
-    "featured": false
+    "title": "Audífonos inalámbricos Sony WH-1000XM5",
+    "brand": "Sony",
+    "image": "https://m.media-amazon.com/images/I/61d0g+N6mDL._AC_SX679_.jpg",
+    "amazon": "https://www.amazon.com/dp/B09XS7JWHH",
+    "price": "398.00",
+    "category": "Los más buscados",
+    "featured": true
   }
 ]
