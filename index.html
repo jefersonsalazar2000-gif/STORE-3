@@ -208,13 +208,12 @@
   // =========================
   const YOUTUBE_URL = "http://www.youtube.com/@SABIDURIAANIMAL86";
   const AMAZON_TAG  = "kaninosabioan-20"; // Tu tag afiliado
-  // Pega tu firebaseConfig abajo (reemplaza null por tu objeto):
-  // Ejemplo:
+  // Pega tu firebaseConfig abajo (reemplaza null por tu objeto; sin esto, cada dispositivo mantiene sus propios datos)
   // const firebaseConfig = { apiKey:"...", authDomain:"...", projectId:"...", storageBucket:"...", messagingSenderId:"...", appId:"..." };
   const firebaseConfig = null; // <<< PÉGALO AQUÍ
 
   // =========================
-  // UTILIDADES
+  // UTILIDADES / ELEMENTOS
   // =========================
   const $ = (q,root=document)=>root.querySelector(q);
   const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
@@ -231,23 +230,17 @@
   const searchInput = $("#searchInput"), clearSearch=$("#clearSearch");
   const btnYoutube = $("#btnYoutube"), btnYoutubeTop=$("#btnYoutubeTop");
   const btnQR = $("#btnQR"), qrImg=$("#qrImg");
-  const btnCloseForm = $("#btnCloseForm");
 
   btnYoutube.href = YOUTUBE_URL;
   btnYoutubeTop.href = YOUTUBE_URL;
 
-  // Generar QR simple (API chart)
+  // Generar QR simple (no cambia diseño)
   const qrApi = (url) => `https://quickchart.io/qr?text=${encodeURIComponent(url)}&size=512&margin=2`;
   qrImg.src = qrApi(YOUTUBE_URL);
 
-  $("#btnCloseQR")?.addEventListener("click", ()=> dlgQR.close());
-  btnQR.addEventListener("click", ()=> dlgQR.showModal());
-
-  // Cancelar SIEMPRE cierra el modal (incluye botón 'Cancelar' y la X/top)
-  $("#btnCloseForm").addEventListener("click",(e)=>{ e.preventDefault(); dlgForm.close(); });
-  productForm.addEventListener("close", ()=> dlgForm.close()); // seguridad
-
+  // =========================
   // Estado
+  // =========================
   let ADMIN = false;
   let PRODUCTS = []; // cache local
   let FILTER = { text:"", cat:"all" };
@@ -274,23 +267,40 @@
   ];
 
   // =========================
-  // FIREBASE INIT
+  // INICIO
   // =========================
   window.addEventListener('load', async () => {
+    // Botones y modales
+    document.getElementById("btnCloseQR")?.addEventListener("click", ()=> dlgQR.close());
+    document.getElementById("btnQR").addEventListener("click", ()=> dlgQR.showModal());
+
+    // Corregido: Cancelar cierra el modal
+    document.getElementById("btnCloseForm").addEventListener("click",(e)=>{ e.preventDefault(); dlgForm.close(); });
+    // Corregido: cerrar por ESC y clic fuera
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && dlgForm.open) dlgForm.close(); });
+    dlgForm.addEventListener('click', (e)=>{
+      const rect = dlgForm.getBoundingClientRect();
+      const outside = e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom;
+      if (outside) dlgForm.close();
+    });
+    dlgForm.addEventListener("close", ()=> dlgForm.close());
+
+    // Firebase (opcional)
     try {
       if (firebaseConfig && typeof firebase !== 'undefined') {
         firebase.initializeApp(firebaseConfig);
         auth = firebase.auth();
         db = firebase.firestore();
-        await auth.signInAnonymously(); // lectura/escritura simple
+        await auth.signInAnonymously();
         usingDemo = false;
       } else {
-        usingDemo = true;
+        usingDemo = true; // sin config => cada dispositivo mantiene su demo local
       }
     } catch (e) {
       console.warn('Firebase no disponible, usando DEMO.', e);
       usingDemo = true;
     }
+
     await loadProducts();
     render();
   });
@@ -305,7 +315,6 @@
     }
     const snap = await db.collection('products').orderBy('createdAt','desc').get();
     PRODUCTS = snap.docs.map(d=> ({ id:d.id, ...d.data() }));
-    // Si la colección está vacía, sembrar demo 1 sola vez
     if (!PRODUCTS.length) {
       const batch = db.batch();
       DEMO.forEach(p=>{
@@ -319,7 +328,6 @@
 
   async function createOrUpdateProduct(data) {
     if (usingDemo) {
-      // DEMO: modifica en memoria
       if (data.id?.startsWith('demo-')) {
         PRODUCTS = PRODUCTS.map(p=> p.id===data.id ? data : p);
       } else {
@@ -352,9 +360,7 @@
   function affiliateUrl(url) {
     try {
       const u = new URL(url);
-      // Si ya trae tag, respétalo; si no, agrega el tuyo
-      const hasTag = u.searchParams.has('tag');
-      if (!hasTag) u.searchParams.set('tag', AMAZON_TAG);
+      if (!u.searchParams.has('tag')) u.searchParams.set('tag', AMAZON_TAG);
       return u.toString();
     } catch {
       return url;
@@ -384,7 +390,8 @@
           <div class="mt-1 text-xs text-white/60">${escapeHtml(p.cat||'')}</div>
           <div class="mt-2 flex items-center justify-between">
             <span class="font-semibold">${price}</span>
-            <a href="${url}" target="_blank" rel="nofollow noopener" class="btn-neo text-sm px-3 py-2" title="Ver en Amazon">Ver en Amazon</a>
+            <!-- Corregido: sponsored en rel, sin cambiar estilo -->
+            <a href="${url}" target="_blank" rel="nofollow sponsored noopener" class="btn-neo text-sm px-3 py-2" title="Ver en Amazon">Ver en Amazon</a>
           </div>
           ${ADMIN ? `
           <div class="mt-3 flex gap-2">
@@ -401,7 +408,6 @@
     grid.innerHTML = list.map(productCard).join('');
     empty.classList.toggle('hidden', list.length>0);
 
-    // Wire botones editar/eliminar
     if (ADMIN) {
       $$("[data-edit]").forEach(b=>{
         b.onclick = ()=>{
@@ -436,7 +442,6 @@
   // =========================
   // EVENTOS UI
   // =========================
-  // Filtros por categoría
   $$("button[data-cat]").forEach(btn=>{
     btn.addEventListener('click', ()=>{
       FILTER.cat = btn.getAttribute('data-cat');
@@ -454,7 +459,6 @@
     render();
   });
 
-  // Admin toggle con pin simple
   function askAdmin() {
     const pin = prompt("Ingresa PIN de Admin (sugerido: 360):","");
     if (pin === "360") { ADMIN = true; alert("Modo Admin activado"); }
@@ -464,7 +468,6 @@
   btnAdmin.addEventListener('click', askAdmin);
   btnAdminSm.addEventListener('click', askAdmin);
 
-  // Abrir form nuevo
   btnAdd.addEventListener('click', ()=>{
     fId.value = "";
     fTitle.value = "";
@@ -475,7 +478,6 @@
     dlgForm.showModal();
   });
 
-  // Guardar (crear/actualizar)
   productForm.addEventListener('submit', async (e)=>{
     e.preventDefault();
     const data = {
@@ -486,7 +488,6 @@
       img: fImg.value.trim(),
       url: fUrl.value.trim()
     };
-    // Validaciones básicas
     if (!data.title || !data.cat || !data.img || !data.url) {
       alert("Completa título, categoría, imagen y URL de Amazon.");
       return;
