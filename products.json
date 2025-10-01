@@ -2,7 +2,7 @@
   {
     "title": "Apple iPhone 15 Pro (128GB)",
     "brand": "Apple",
-    "image": "https://images.unsplash.com/photo-1695048134231-bc87e1a3e94a?q=80&w=1200&auto=format&fit=crop",
+    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
     "amazon": "https://www.amazon.com/dp/B0CHX3LPPB",
     "price": "999.00",
     "category": "Teléfonos",
@@ -11,7 +11,7 @@
   {
     "title": "Samsung Galaxy S24 Ultra",
     "brand": "Samsung",
-    "image": "https://images.unsplash.com/photo-1580906855280-95e0b1f4a1e7?q=80&w=1200&auto=format&fit=crop",
+    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
     "amazon": "https://www.amazon.com/dp/B0CSJ3LLQK",
     "price": "1199.00",
     "category": "Teléfonos",
@@ -20,7 +20,7 @@
   {
     "title": "AirPods Pro (2da gen)",
     "brand": "Apple",
-    "image": "https://images.unsplash.com/photo-1588421357574-87938a86fa28?q=80&w=1200&auto=format&fit=crop",
+    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
     "amazon": "https://www.amazon.com/dp/B0BDK62PDX",
     "price": "229.00",
     "category": "Accesorios",
@@ -29,7 +29,7 @@
   {
     "title": "Apple Watch Series 9",
     "brand": "Apple",
-    "image": "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1200&auto=format&fit=crop",
+    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
     "amazon": "https://www.amazon.com/dp/B0CHX5Z5GZ",
     "price": "399.00",
     "category": "Accesorios",
@@ -38,7 +38,7 @@
   {
     "title": "Kindle Paperwhite",
     "brand": "Amazon",
-    "image": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1200&auto=format&fit=crop",
+    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
     "amazon": "https://www.amazon.com/dp/B08N36XNTT",
     "price": "149.99",
     "category": "Tecnología",
@@ -47,7 +47,7 @@
   {
     "title": "Nintendo Switch OLED",
     "brand": "Nintendo",
-    "image": "https://images.unsplash.com/photo-1560264280-88b68371db39?q=80&w=1200&auto=format&fit=crop",
+    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
     "amazon": "https://www.amazon.com/dp/B098RKWHHZ",
     "price": "349.00",
     "category": "Gaming",
@@ -56,7 +56,7 @@
   {
     "title": "PlayStation 5 Slim",
     "brand": "Sony",
-    "image": "https://images.unsplash.com/photo-1606813907291-76b1b83b3bf2?q=80&w=1200&auto=format&fit=crop",
+    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
     "amazon": "https://www.amazon.com/dp/B0CLL9P9N8",
     "price": "499.00",
     "category": "Gaming",
@@ -65,7 +65,7 @@
   {
     "title": "Robot Aspirador Roomba i7",
     "brand": "iRobot",
-    "image": "https://images.unsplash.com/photo-1585059895524-7201a72c4183?q=80&w=1200&auto=format&fit=crop",
+    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
     "amazon": "https://www.amazon.com/dp/B07GNPDMRP",
     "price": "399.00",
     "category": "Hogar",
@@ -74,7 +74,7 @@
   {
     "title": "Logitech MX Master 3S",
     "brand": "Logitech",
-    "image": "https://images.unsplash.com/photo-1587825140400-5d526fd05a72?q=80&w=1200&auto=format&fit=crop",
+    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
     "amazon": "https://www.amazon.com/dp/B09HM94VDS",
     "price": "99.00",
     "category": "Accesorios",
@@ -83,7 +83,7 @@
   {
     "title": "Monitor 27\" 4K IPS",
     "brand": "LG",
-    "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop",
+    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
     "amazon": "https://www.amazon.com/dp/B08BV2DH9Z",
     "price": "299.00",
     "category": "Tecnología",
@@ -92,7 +92,7 @@
   {
     "title": "SSD NVMe 1TB",
     "brand": "Crucial",
-    "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop",
+    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
     "amazon": "https://www.amazon.com/dp/B08K9D8GJ9",
     "price": "89.00",
     "category": "Tecnología",
@@ -101,7 +101,7 @@
   {
     "title": "Echo Dot (5ª gen)",
     "brand": "Amazon",
-    "image": "https://images.unsplash.com/photo-1611599539395-054cf3ed266d?q=80&w=1200&auto=format&fit=crop",
+    "image": "PON_AQUI_URL_DE_AMAZON.jpg",
     "amazon": "https://www.amazon.com/dp/B09B2SBWPX",
     "price": "49.99",
     "category": "Hogar",
