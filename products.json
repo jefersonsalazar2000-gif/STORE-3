@@ -1,92 +1,46 @@
-[
-  {
-    "title": "Apple iPhone 15 Pro (128GB)",
-    "brand": "Apple",
-    "image": "https://m.media-amazon.com/images/I/81CgtwSII3L._AC_SX679_.jpg",
-    "amazon": "https://www.amazon.com/dp/B0CHX3J7TG",
-    "price": "999.00",
-    "category": "Tecnología",
-    "featured": true
-  },
-  {
-    "title": "Samsung Galaxy S24 Ultra",
-    "brand": "Samsung",
-    "image": "https://m.media-amazon.com/images/I/71RVuBs3q9L._AC_SX679_.jpg",
-    "amazon": "https://www.amazon.com/dp/B0BSHVQ5F8",
-    "price": "1199.00",
-    "category": "Tecnología",
-    "featured": true
-  },
-  {
-    "title": "Apple Watch Series 9",
-    "brand": "Apple",
-    "image": "https://m.media-amazon.com/images/I/71YpM7VyKXL._AC_SX679_.jpg",
-    "amazon": "https://www.amazon.com/dp/B0CHX5MFWN",
-    "price": "399.00",
-    "category": "Tecnología",
-    "featured": false
-  },
-  {
-    "title": "Máquina de café espresso Breville BES880BSS",
-    "brand": "Breville",
-    "image": "https://m.media-amazon.com/images/I/71V0Z7z5YQL._AC_SX679_.jpg",
-    "amazon": "https://www.amazon.com/dp/B078WMLXXG",
-    "price": "799.95",
-    "category": "Hogar",
-    "featured": true
-  },
-  {
-    "title": "Cinta de correr plegable NordicTrack T Series",
-    "brand": "NordicTrack",
-    "image": "https://m.media-amazon.com/images/I/71a3r8kF5LL._AC_SX679_.jpg",
-    "amazon": "https://www.amazon.com/dp/B0193V3DJ6",
-    "price": "649.00",
-    "category": "Gym",
-    "featured": true
-  },
-  {
-    "title": "Proteína Whey Optimum Nutrition (5 lb)",
-    "brand": "Optimum Nutrition",
-    "image": "https://m.media-amazon.com/images/I/81+Qd4AYqnL._AC_SX679_.jpg",
-    "amazon": "https://www.amazon.com/dp/B002DYIZEO",
-    "price": "79.99",
-    "category": "Salud",
-    "featured": false
-  },
-  {
-    "title": "Collar inteligente para perros Tractive GPS",
-    "brand": "Tractive",
-    "image": "https://m.media-amazon.com/images/I/61j14Z1xFpL._AC_SX679_.jpg",
-    "amazon": "https://www.amazon.com/dp/B09XM9WYRQ",
-    "price": "49.99",
-    "category": "Animales",
-    "featured": false
-  },
-  {
-    "title": "Roomba i7 Robot Aspirador",
-    "brand": "iRobot",
-    "image": "https://m.media-amazon.com/images/I/71B1YFyiAVL._AC_SX679_.jpg",
-    "amazon": "https://www.amazon.com/dp/B07DL4QY5V",
-    "price": "399.00",
-    "category": "Hogar",
-    "featured": false
-  },
-  {
-    "title": "Zapatillas deportivas Nike Air Zoom Pegasus",
-    "brand": "Nike",
-    "image": "https://m.media-amazon.com/images/I/71p9F4w37tL._AC_SY675_.jpg",
-    "amazon": "https://www.amazon.com/dp/B0BDZ3ZJQZ",
-    "price": "129.99",
-    "category": "Los más buscados",
-    "featured": true
-  },
-  {
-    "title": "Audífonos inalámbricos Sony WH-1000XM5",
-    "brand": "Sony",
-    "image": "https://m.media-amazon.com/images/I/61d0g+N6mDL._AC_SX679_.jpg",
-    "amazon": "https://www.amazon.com/dp/B09XS7JWHH",
-    "price": "398.00",
-    "category": "Los más buscados",
-    "featured": true
-  }
+import json, os, re
+
+# Pre-collected ASINs and guesses from the user's links
+products = [
+    ("B0CZRNH2LN", "Pantalones deportivos de entrenamiento con cremallera (FIRSTGYM)", "Ropa"),
+    ("B0DXZ53V7D", "Pantalones deportivos con bolsillo y cremallera (MGBOYGYM)", "Ropa"),
+    ("B08FSNF4G1", "Pantalones de entrenamiento con cremallera", "Ropa"),
+    ("B07DDH77KG", "Gorra trucker Grace Folly unisex", "Accesorios"),
+    ("B08G15PNCW", "Gorra Grace Folly de béisbol (juvenil)", "Accesorios"),
+    ("B0BBXXHW78", "Mesa de inversión para espalda", "Salud y Fitness"),
+    ("B0DKPG12X1", "Echo Bundle: Echo Dot (5ª generación) (edición limitada)", "Tecnología"),
+    ("B09B1S41YK", "Colgador inteligente con accesorios integrados", "Hogar"),
+    ("B0FB21526X", "Logitech MX Master 3S ratón inalámbrico", "Tecnología"),
+    ("B00BAGTNAQ", "ChomChom Roller removedor de pelo para mascotas", "Mascotas"),
+    ("B0DQJV5D9K", "BISSELL PowerClean FurFinder inalámbrica", "Hogar"),
+    ("B07S652B12", "Aspiradora inalámbrica de mano (con accesorios)", "Hogar"),
+    ("B01N4Q8KO2", "Gafas de sol Carrera 5041 rectangulares Gradient", "Accesorios"),
+    ("B0DFGQHX22", "NORTIV zapatos deportivos antideslizantes", "Calzado"),
+    ("B0F5M4HVMV", "UOVO Flow zapatos cómodos \"Lakemoon\" cobalto", "Calzado"),
 ]
+
+def slugify(text):
+    text = text.lower()
+    text = re.sub(r"[^a-z0-9]+", "-", text).strip("-")
+    return text
+
+items = {}
+for asin, title, category in products:
+    slug = f"{slugify(title)}-{asin.lower()}"
+    items[slug] = {
+        "TITLE": title,
+        "PRICE": 0,
+        "CATEGORY": category,
+        "IMAGE": "",
+        "AMAZON": f"https://www.amazon.com/dp/{asin}?tag=kaninosabioan-20",
+        "FEATURE": False
+    }
+
+data = {"PRODUCTOS": items}
+
+os.makedirs("/mnt/data", exist_ok=True)
+out_path = "/mnt/data/productos.json"
+with open(out_path, "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+
+out_path
