@@ -170,7 +170,7 @@
           <div class="flex flex-wrap gap-2 mt-2">
             <button id="btnConnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Conectar nube</button>
             <button id="btnDisconnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Desconectar</button>
-            <!-- botón de reset (no cambia estilos/estructura) -->
+            <!-- botón reset -->
             <button id="btnHardReset" type="button" class="chip px-3 py-1.5 rounded-xl text-sm" onclick="resetStore(true)">
               Resetear caché y recargar
             </button>
@@ -192,7 +192,7 @@
     let editingId = null;
     let products = [];
     let db = null, unsub = null, storage = null;
-    let cloudConfig = null; // firebaseConfig guardado por el usuario
+    let cloudConfig = null;
 
     const grid = document.getElementById('grid');
     const empty = document.getElementById('empty');
@@ -311,7 +311,6 @@
       db = getFirestore(app);
       storage = getStorage(app);
 
-      // Live query
       const q = query(collection(db,'products'), orderBy('createdAt','desc'));
       if(unsub) unsub();
       unsub = onSnapshot(q, snap=>{
@@ -320,7 +319,6 @@
         renderCategories(products); applyFilters();
       });
 
-      // expose helpers for CRUD
       window.cloud_delete = async (id)=>{
         const { deleteDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
         await deleteDoc(doc(db,'products',id));
@@ -389,15 +387,14 @@
       if(!data.title || !data.amazon){
         alert("Título y URL de Amazon son obligatorios."); return;
       }
-      data.amazon = /[?&]tag=/.test(data.amazon) ? data.amazon : `${data.amazon}${data.amazon.includes('?')?'&':'?'}tag=${AFFILIATE_TAG_DEFAULT}`;
+      data.amazon = /[?&]tag=/.test(data.amazon) ? data.amazon : `${data.amazon}${data.amazon.includes('?')?'&':'?'}tag=${"kaninosabioan-20"}`;
 
-      // Imagen (archivo o URL)
       let finalImage = (pImageUrl.value||'').trim();
       if(pImageFile.files[0]){
         if(db){
-          finalImage = await window.cloud_upload(pImageFile.files[0]); // Storage URL
+          finalImage = await window.cloud_upload(pImageFile.files[0]);
         } else {
-          finalImage = await fileToDataURL(pImageFile.files[0]); // base64 local
+          finalImage = await fileToDataURL(pImageFile.files[0]);
         }
       }
       if(!finalImage){ alert("Debes subir una imagen o pegar una URL."); return; }
@@ -494,12 +491,20 @@
     search.addEventListener('input', applyFilters);
     categoryFilter.addEventListener('change', applyFilters);
 
+    // ======== Escuchar bootstrap del JSON (para refrescar sin recargar) ========
+    window.addEventListener('ja_products_updated', ()=>{
+      if(!db){ // solo en modo local
+        products = local_load();
+        renderCategories(products);
+        applyFilters();
+      }
+    });
+
     // ======== Init ========
     window.addEventListener('DOMContentLoaded', async ()=>{
       isAdmin = !!localStorage.getItem('ja_admin');
       btnAdmin.textContent = isAdmin ? 'Admin (ON)' : 'Admin';
 
-      // Si había nube conectada, reconectar
       const savedCfg = localStorage.getItem('ja_cloud_cfg');
       if(savedCfg){
         try{
@@ -510,19 +515,18 @@
           renderCategories(products); applyFilters();
         }
       } else {
-        // Local
         products = local_load();
+        // Si por alguna razón está vacío, igual el importador lo llenará y disparará el evento.
         renderCategories(products); applyFilters();
       }
     });
   </script>
 
-  <!-- === CARGA products.json A LOCALSTORAGE (con recarga 1 sola vez) === -->
+  <!-- === Importa products.json a LocalStorage y dispara evento para refrescar === -->
   <script>
   (async function(){
     const JSON_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
     const LS_KEY = "ja_store_products_v2";
-    const BOOT_KEY = "ja_bootstrap_done";
 
     function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || [] }catch{ return [] } }
     function lsSave(v){ localStorage.setItem(LS_KEY, JSON.stringify(v)); }
@@ -562,12 +566,10 @@
       const merged = merge(current, incoming);
       const changed = merged.length !== current.length;
 
-      lsSave(merged);
-
-      // --- clave: recarga 1 sola vez para que la app lea el nuevo localStorage ---
-      if (changed && !localStorage.getItem(BOOT_KEY)) {
-        localStorage.setItem(BOOT_KEY, "1");
-        location.replace(location.pathname + "?nocache=" + Date.now());
+      if(changed){
+        lsSave(merged);
+        // Notifica a la app para que vuelva a leer y renderizar SIN recargar
+        window.dispatchEvent(new Event('ja_products_updated'));
       }
     }catch(e){
       console.warn("[products.json] No se pudo precargar:", e);
@@ -575,6 +577,25 @@
   })();
   </script>
   <!-- === FIN BLOQUE === -->
+
+  <!-- ==== Auto-kill de Service Worker viejo (una sola vez) ==== -->
+  <script>
+  (function(){
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.getRegistrations().then(regs=>{
+        if(regs && regs.length && !localStorage.getItem('ja_sw_killed')){
+          Promise.all(regs.map(r=>r.unregister()))
+            .then(()=>{
+              localStorage.setItem('ja_sw_killed','1');
+              location.replace(location.pathname + '?nocache=' + Date.now());
+            })
+            .catch(()=>{ /* ignore */ });
+        }
+      });
+    }
+  })();
+  </script>
+  <!-- ==== FIN auto-kill SW ==== -->
 
   <!-- ==== RESET DE CACHÉ / SW / LOCALSTORAGE ==== -->
   <script>
