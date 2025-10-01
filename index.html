@@ -7,7 +7,12 @@
   <meta name="theme-color" content="#0b0f1a"/>
 
   <!-- PWA -->
-  <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="manifest.json?v=5" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192-v5.png">
+  <!-- iOS Home Screen -->
+  <link rel="apple-touch-icon" href="icon-180x180-v5.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -101,7 +106,7 @@
   </footer>
 
   <!-- Modal CRUD -->
-  <dialog id="modal" class="backdrop:bg-black/70 rounded-2xl w-[min(720px,92vw)]">
+  <dialog id="modal" class="backdrop:bg-black/70 rounded-2xl w=[min(720px,92vw)]">
     <form id="form" method="dialog" class="card rounded-2xl p-4 sm:p-6">
       <div class="flex items-center justify-between mb-4">
         <h3 id="modalTitle" class="text-lg font-extrabold neon-title">Nuevo producto</h3>
@@ -152,7 +157,7 @@
   </dialog>
 
   <!-- Modal Ajustes / Conectar Nube -->
-  <dialog id="settings" class="backdrop:bg-black/70 rounded-2xl w-[min(720px,92vw)]">
+  <dialog id="settings" class="backdrop:bg-black/70 rounded-2xl w=[min(720px,92vw)]">
     <form method="dialog" class="card rounded-2xl p-4 sm:p-6">
       <div class="flex items-center justify-between mb-3">
         <h3 class="text-lg font-extrabold neon-title">Ajustes</h3>
