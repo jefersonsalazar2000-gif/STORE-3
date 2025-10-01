@@ -170,6 +170,10 @@
           <div class="flex flex-wrap gap-2 mt-2">
             <button id="btnConnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Conectar nube</button>
             <button id="btnDisconnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Desconectar</button>
+            <!-- botón de reset añadido (no cambia estilos/estructura) -->
+            <button id="btnHardReset" type="button" class="chip px-3 py-1.5 rounded-xl text-sm" onclick="resetStore(true)">
+              Resetear caché y recargar
+            </button>
           </div>
           <p class="text-xs text-white/60 mt-2" id="cloudStatus">Estado: Local</p>
         </div>
@@ -567,6 +571,37 @@
   })();
   </script>
   <!-- === FIN BLOQUE === -->
+
+  <!-- ==== RESET DE CACHÉ / SW / LOCALSTORAGE (añadido, no modifica tu UI) ==== -->
+  <script>
+  async function resetStore(force=false) {
+    try {
+      localStorage.clear();
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+      }
+      if (force) {
+        location.replace(location.pathname + '?nocache=' + Date.now());
+      } else {
+        location.reload();
+      }
+    } catch (e) {
+      console.warn('Reset error:', e);
+      location.reload();
+    }
+  }
+
+  (function () {
+    const params = new URLSearchParams(location.search);
+    if (params.get('reset') === '1') resetStore(true);
+  })();
+  </script>
+  <!-- ==== FIN RESET ==== -->
 
 </body>
 </html>
