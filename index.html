@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>J_A MEGA STORE 360</title>
   <meta name="theme-color" content="#0b0f1a"/>
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
-  <meta http-equiv="Pragma" content="no-cache"/>
-  <meta http-equiv="Expires" content="0"/>
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -27,7 +24,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
 
-  <!-- Estilos -->
   <style>
     :root{
       --grad-1: linear-gradient(135deg,#00E5FF 0%, #7C3AED 50%, #FF0099 100%);
@@ -64,24 +60,29 @@
         <h1 class="text-xl sm:text-2xl font-extrabold neon-title leading-none">MEGA STORE 360</h1>
         <p class="text-xs text-white/70 -mt-0.5">De todo • Tecnología • Hogar • Accesorios</p>
       </div>
-
       <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
+
+      <div class="flex items-center gap-2">
+        <button id="btnSettings" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Ajustes</button>
+        <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Admin</button>
+      </div>
     </div>
   </header>
 
   <!-- Controles -->
-  <section class="max-w-7xl mx-auto px-4 mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
+  <section class="max-w-7xl mx-auto px-4 mt-4 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
     <div class="gradient-border">
       <input id="search" class="input w-full" placeholder="Buscar productos… (ej. iPhone, smartwatch)" />
     </div>
     <select id="categoryFilter" class="input">
       <option value="all">Todas las categorías</option>
     </select>
+    <button id="btnAdd" class="btn-neon px-4 py-2 rounded-xl text-sm disabled:opacity-40" disabled>+ Agregar</button>
   </section>
 
   <!-- Grid -->
   <main class="max-w-7xl mx-auto px-4 py-6">
-    <div id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+    <div id="grid" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
     <p id="empty" class="hidden text-center text-white/60 mt-10">No hay productos que coincidan.</p>
   </main>
 
@@ -96,30 +97,150 @@
     </div>
   </footer>
 
-  <!-- Lógica -->
-  <script>
+  <!-- Modal CRUD -->
+  <dialog id="modal" class="backdrop:bg-black/70 rounded-2xl w-[min(720px,92vw)]">
+    <form id="form" method="dialog" class="card rounded-2xl p-4 sm:p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="modalTitle" class="text-lg font-extrabold neon-title">Nuevo producto</h3>
+        <button type="button" class="chip px-3 py-1.5 rounded-xl" onclick="modal.close()">Cerrar</button>
+      </div>
+
+      <div class="grid gap-3 sm:grid-cols-2">
+        <div class="gradient-border"><input required id="pTitle" class="input w-full" placeholder="Título / Nombre" /></div>
+        <div class="gradient-border"><input id="pBrand" class="input w-full" placeholder="Marca (opcional)" /></div>
+
+        <!-- Imagen: URL o Archivo -->
+        <div class="sm:col-span-2 grid gap-2">
+          <div class="gradient-border"><input id="pImageUrl" class="input w-full" placeholder="URL de imagen (https://… Amazon u otro)" /></div>
+          <div class="text-xs text-white/60">o sube un archivo (se guarda en Nube si está conectada, o local en este dispositivo)</div>
+          <input id="pImageFile" type="file" accept="image/*" class="block text-sm" />
+        </div>
+
+        <div class="gradient-border sm:col-span-2"><input required id="pAmazon" class="input w-full" placeholder="URL de Amazon (con o sin ?tag=)" /></div>
+
+        <div class="gradient-border"><input id="pPrice" class="input w-full" placeholder="Precio (opcional, ej. 799.00)" inputmode="decimal" /></div>
+        <div class="gradient-border">
+          <select id="pCategory" class="input w-full">
+            <option>Tecnología</option>
+            <option>Teléfonos</option>
+            <option>Accesorios</option>
+            <option>Hogar</option>
+            <option>Gaming</option>
+            <option>Gym</option>
+            <option>Salud</option>
+            <option>Animales</option>
+            <option>Los más buscados</option>
+            <option>Otros</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-4 flex items-center justify-between">
+        <label class="flex items-center gap-2 text-sm text-white/80">
+          <input id="pFeatured" type="checkbox" class="accent-fuchsia-500 scale-110" />
+          Destacado
+        </label>
+        <div class="flex items-center gap-2">
+          <button type="button" id="btnDelete" class="px-3 py-2 rounded-xl chip text-sm hidden">Eliminar</button>
+          <button type="submit" class="btn-neon px-4 py-2 rounded-xl">Guardar</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Modal Ajustes / Conectar Nube -->
+  <dialog id="settings" class="backdrop:bg-black/70 rounded-2xl w-[min(720px,92vw)]">
+    <form method="dialog" class="card rounded-2xl p-4 sm:p-6">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-lg font-extrabold neon-title">Ajustes</h3>
+        <button type="submit" class="chip px-3 py-1.5 rounded-xl">Cerrar</button>
+      </div>
+
+      <div class="grid gap-3">
+        <div class="gradient-border p-3 rounded-xl">
+          <label class="text-sm text-white/80 font-semibold">Clave Admin</label>
+          <input id="adminKeyInput" class="input w-full mt-2" placeholder="Escribe tu clave para activar Admin" />
+          <p class="text-xs text-white/60 mt-1">Actual: <span id="adminKeyLabel">mega360</span></p>
+          <button id="saveAdminKey" type="button" class="mt-2 chip px-3 py-1.5 rounded-xl text-sm">Guardar clave</button>
+        </div>
+
+        <div class="gradient-border p-3 rounded-xl">
+          <label class="text-sm text-white/80 font-semibold">Config Nube (pega tu firebaseConfig JSON aquí)</label>
+          <textarea id="firebaseConfigInput" class="input w-full h-40 mt-2" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'></textarea>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <button id="btnConnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Conectar nube</button>
+            <button id="btnDisconnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Desconectar</button>
+          </div>
+          <p class="text-xs text-white/60 mt-2" id="cloudStatus">Estado: Local</p>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- App -->
+  <script type="module">
+    // ======== CONFIG ========
+    let ADMIN_KEY = localStorage.getItem('ja_admin_key') || "mega360";
     const AFFILIATE_TAG_DEFAULT = "kaninosabioan-20";
-    const PRODUCTS_URL = "./products.json"; // <- el archivo del repo que todos verán
+
+    // ======== Estado/UI Refs ========
+    let isAdmin = false;
+    let editingId = null;
+    let products = [];
+    let db = null, unsub = null, storage = null;
+    let cloudConfig = null; // firebaseConfig guardado por el usuario
 
     const grid = document.getElementById('grid');
     const empty = document.getElementById('empty');
     const search = document.getElementById('search');
     const categoryFilter = document.getElementById('categoryFilter');
+    const btnAdd = document.getElementById('btnAdd');
+    const btnAdmin = document.getElementById('btnAdmin');
+    const btnSettings = document.getElementById('btnSettings');
     const year = document.getElementById('year');
+
+    const modal = document.getElementById('modal');
+    const form = document.getElementById('form');
+    const modalTitle = document.getElementById('modalTitle');
+    const pTitle = document.getElementById('pTitle');
+    const pBrand = document.getElementById('pBrand');
+    const pImageUrl = document.getElementById('pImageUrl');
+    const pImageFile = document.getElementById('pImageFile');
+    const pAmazon = document.getElementById('pAmazon');
+    const pPrice = document.getElementById('pPrice');
+    const pCategory = document.getElementById('pCategory');
+    const pFeatured = document.getElementById('pFeatured');
+    const btnDelete = document.getElementById('btnDelete');
+
+    const settings = document.getElementById('settings');
+    const adminKeyInput = document.getElementById('adminKeyInput');
+    const adminKeyLabel = document.getElementById('adminKeyLabel');
+    const saveAdminKey = document.getElementById('saveAdminKey');
+    const firebaseConfigInput = document.getElementById('firebaseConfigInput');
+    const cloudStatus = document.getElementById('cloudStatus');
+    const btnConnectCloud = document.getElementById('btnConnectCloud');
+    const btnDisconnectCloud = document.getElementById('btnDisconnectCloud');
+
     year.textContent = new Date().getFullYear();
+    const uid = () => crypto.randomUUID();
 
-    let products = [];
-
-    // Render helpers
-    function renderCategories(list){
-      const cats = ['all', ...new Set(list.map(p=>p.category))];
-      categoryFilter.innerHTML = cats.map(c => `<option value="${c}">${c==='all'?'Todas las categorías':c}</option>`).join('');
+    // ======== Helpers UI ========
+    function ensureTag(url){
+      if(!url) return "#";
+      if(/[?&]tag=/.test(url)) return url;
+      const sep = url.includes('?') ? '&' : '?';
+      return `${url}${sep}tag=${AFFILIATE_TAG_DEFAULT}`;
     }
 
     function productCard(p){
       const price = p.price?`$${Number(p.price).toLocaleString()}`:'';
       const tag = p.featured?`<span class="tag text-xs px-2 py-1 rounded-lg font-semibold">Destacado</span>`:'';
       const brand = p.brand?`<span class="text-xs text-white/60">${p.brand}</span>`:'';
+      const adminBtns = isAdmin ? `
+        <div class="flex gap-2 mt-3">
+          <button class="chip px-3 py-1.5 rounded-xl text-sm" onclick="editProduct('${p.id}')">Editar</button>
+          <button class="chip px-3 py-1.5 rounded-xl text-sm" onclick="removeProduct('${p.id}')">Eliminar</button>
+        </div>` : '';
       return `
         <article class="card rounded-2xl p-3 sm:p-4 flex flex-col gradient-border">
           <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3]">
@@ -137,16 +258,14 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414L11 19.586V14a1 1 0 0 1 1-1z"/></svg>
               Ver en Amazon
             </a>
+            ${adminBtns}
           </div>
         </article>`;
     }
 
-    function ensureTag(url){
-      if(!url) return "#";
-      const hasTag = /[?&]tag=/.test(url);
-      if(hasTag) return url;
-      const sep = url.includes('?') ? '&' : '?';
-      return `${url}${sep}tag=${AFFILIATE_TAG_DEFAULT}`;
+    function renderCategories(list){
+      const cats = ['all', ...new Set(list.map(p=>p.category))];
+      categoryFilter.innerHTML = cats.map(c => `<option value="${c}">${c==='all'?'Todas las categorías':c}</option>`).join('');
     }
 
     function applyFilters(){
@@ -161,23 +280,236 @@
       empty.classList.toggle('hidden', filtered.length>0);
     }
 
-    // Cargar productos.json (siempre igual para todos)
-    async function loadProducts(){
-      const resp = await fetch(`${PRODUCTS_URL}?v=${Date.now()}`); // anti-caché
-      if(!resp.ok) throw new Error('No se pudo cargar products.json');
-      const data = await resp.json();
-      products = data.map(p => ({ ...p })); // ya vienen con id opcional
-      renderCategories(products);
+    // ======== Local Mode (sin nube) ========
+    const LS_KEY = 'ja_store_products_v2';
+    function local_load(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||[] }catch{ return [] } }
+    function local_save(list){ localStorage.setItem(LS_KEY, JSON.stringify(list)) }
+
+    async function fileToDataURL(file){
+      if(!file) return null;
+      return new Promise((res,rej)=>{
+        const r=new FileReader();
+        r.onload=()=>res(r.result);
+        r.onerror=rej;
+        r.readAsDataURL(file);
+      });
+    }
+
+    // ======== Cloud (Firebase) ========
+    async function cloud_init(config){
+      const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
+      const { getFirestore, collection, onSnapshot, query, orderBy, doc, setDoc, deleteDoc, serverTimestamp } =
+        await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+      const { getStorage, ref, uploadBytes, getDownloadURL } =
+        await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js');
+
+      const app = initializeApp(config);
+      db = getFirestore(app);
+      storage = getStorage(app);
+
+      // Live query
+      const q = query(collection(db,'products'), orderBy('createdAt','desc'));
+      if(unsub) unsub();
+      unsub = onSnapshot(q, snap=>{
+        products = [];
+        snap.forEach(d=> products.push(d.data()));
+        renderCategories(products); applyFilters();
+      });
+
+      // expose helpers for CRUD
+      window.cloud_delete = async (id)=>{
+        const { deleteDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+        await deleteDoc(doc(db,'products',id));
+      };
+      window.cloud_save = async (id, data)=>{
+        const { doc: _doc, setDoc: _setDoc, serverTimestamp: _ts } =
+          await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+        await _setDoc(_doc(db,'products',id), { id, createdAt:_ts(), ...data });
+      };
+      window.cloud_upload = async (file)=>{
+        const fileName = `${Date.now()}_${file.name.replace(/\s+/g,'_')}`;
+        const fileRef = ref(storage, `products/${fileName}`);
+        await uploadBytes(fileRef,file);
+        return await getDownloadURL(fileRef);
+      };
+    }
+
+    // ======== CRUD Handlers ========
+    window.editProduct = (id)=>{
+      const p = products.find(x=>x.id===id); if(!p) return;
+      editingId = id;
+      modalTitle.textContent = "Editar producto";
+      pTitle.value = p.title||'';
+      pBrand.value = p.brand||'';
+      pImageUrl.value = p.image||'';
+      pImageFile.value = "";
+      pAmazon.value = p.amazon||'';
+      pPrice.value = p.price||'';
+      pCategory.value = p.category||'Tecnología';
+      pFeatured.checked = !!p.featured;
+      btnDelete.classList.remove('hidden');
+      modal.showModal();
+    };
+
+    window.removeProduct = async (id)=>{
+      if(!confirm("¿Eliminar este producto?")) return;
+      if(db){
+        await window.cloud_delete(id);
+      } else {
+        products = products.filter(p=>p.id!==id);
+        local_save(products);
+        renderCategories(products); applyFilters();
+      }
+    };
+
+    btnAdd.addEventListener('click', ()=>{
+      editingId = null;
+      modalTitle.textContent = "Nuevo producto";
+      form.reset();
+      pFeatured.checked = false;
+      btnDelete.classList.add('hidden');
+      modal.showModal();
+    });
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+
+      const data = {
+        title: pTitle.value.trim(),
+        brand: pBrand.value.trim(),
+        amazon: pAmazon.value.trim(),
+        price: pPrice.value.trim(),
+        category: pCategory.value,
+        featured: !!pFeatured.checked
+      };
+      if(!data.title || !data.amazon){
+        alert("Título y URL de Amazon son obligatorios."); return;
+      }
+      data.amazon = /[?&]tag=/.test(data.amazon) ? data.amazon : `${data.amazon}${data.amazon.includes('?')?'&':'?'}tag=${AFFILIATE_TAG_DEFAULT}`;
+
+      // Imagen (archivo o URL)
+      let finalImage = (pImageUrl.value||'').trim();
+      if(pImageFile.files[0]){
+        if(db){
+          finalImage = await window.cloud_upload(pImageFile.files[0]); // Storage URL
+        } else {
+          finalImage = await fileToDataURL(pImageFile.files[0]); // base64 local
+        }
+      }
+      if(!finalImage){ alert("Debes subir una imagen o pegar una URL."); return; }
+      data.image = finalImage;
+
+      const id = editingId || uid();
+
+      if(db){
+        await window.cloud_save(id, data);
+      } else {
+        if(editingId){
+          products = products.map(p=> p.id===id ? ({...p, ...data}) : p);
+        } else {
+          products = [{ id, ...data, createdAt: Date.now() }, ...products];
+        }
+        local_save(products);
+        renderCategories(products); applyFilters();
+      }
+
+      editingId = null; form.reset(); pFeatured.checked = false; btnDelete.classList.add('hidden'); modal.close();
+    });
+
+    btnDelete.addEventListener('click', async ()=>{
+      if(editingId){ await window.removeProduct(editingId); }
+      editingId = null; modal.close();
+    });
+
+    // ======== Admin / Settings ========
+    function updateAdminUI(){
+      btnAdd.disabled = !isAdmin;
       applyFilters();
     }
 
+    btnAdmin.addEventListener('click', ()=>{
+      if(isAdmin){
+        isAdmin = false;
+        localStorage.removeItem('ja_admin');
+        btnAdmin.textContent = 'Admin';
+        updateAdminUI();
+        return;
+      }
+      const key = prompt("Clave Admin:");
+      if(key === ADMIN_KEY){
+        isAdmin = true;
+        localStorage.setItem('ja_admin','1');
+        btnAdmin.textContent = 'Admin (ON)';
+        updateAdminUI();
+      } else {
+        alert("Clave incorrecta.");
+      }
+    });
+
+    btnSettings.addEventListener('click', ()=>{
+      adminKeyLabel.textContent = ADMIN_KEY;
+      adminKeyInput.value = '';
+      firebaseConfigInput.value = localStorage.getItem('ja_cloud_cfg') || '';
+      cloudStatus.textContent = db ? 'Estado: Nube conectada' : 'Estado: Local';
+      settings.showModal();
+    });
+
+    saveAdminKey.addEventListener('click', ()=>{
+      const k = (adminKeyInput.value||'').trim();
+      if(!k){ alert('Escribe una clave'); return; }
+      ADMIN_KEY = k;
+      localStorage.setItem('ja_admin_key', k);
+      adminKeyLabel.textContent = k;
+      alert('Clave guardada');
+    });
+
+    btnConnectCloud.addEventListener('click', async ()=>{
+      const raw = (firebaseConfigInput.value||'').trim();
+      if(!raw){ alert('Pega aquí tu firebaseConfig JSON'); return; }
+      try{
+        const cfg = JSON.parse(raw);
+        cloudConfig = cfg;
+        localStorage.setItem('ja_cloud_cfg', JSON.stringify(cfg));
+        await cloud_init(cfg);
+        cloudStatus.textContent = 'Estado: Nube conectada';
+        alert('¡Nube conectada! Ahora todo se sincroniza entre web y teléfono.');
+      }catch(e){ console.error(e); alert('Config inválida. Asegúrate de pegar JSON válido.'); }
+    });
+
+    btnDisconnectCloud.addEventListener('click', ()=>{
+      localStorage.removeItem('ja_cloud_cfg');
+      cloudConfig = null;
+      if(unsub) unsub();
+      db = null; storage=null; products = local_load();
+      renderCategories(products); applyFilters();
+      cloudStatus.textContent = 'Estado: Local';
+      alert('Se desconectó la nube. Ahora estás en modo local.');
+    });
+
+    // ======== Filtros ========
     search.addEventListener('input', applyFilters);
     categoryFilter.addEventListener('change', applyFilters);
 
-    loadProducts().catch(err=>{
-      console.error(err);
-      empty.classList.remove('hidden');
-      empty.textContent = 'No se pudieron cargar los productos.';
+    // ======== Init ========
+    window.addEventListener('DOMContentLoaded', async ()=>{
+      isAdmin = !!localStorage.getItem('ja_admin');
+      btnAdmin.textContent = isAdmin ? 'Admin (ON)' : 'Admin';
+
+      // Si había nube conectada, reconectar
+      const savedCfg = localStorage.getItem('ja_cloud_cfg');
+      if(savedCfg){
+        try{
+          await cloud_init(JSON.parse(savedCfg));
+        }catch(e){
+          console.warn('No se pudo reconectar a la nube. Usando local.', e);
+          products = local_load();
+          renderCategories(products); applyFilters();
+        }
+      } else {
+        // Local
+        products = local_load();
+        renderCategories(products); applyFilters();
+      }
     });
   </script>
 </body>
