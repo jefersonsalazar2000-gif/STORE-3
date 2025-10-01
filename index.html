@@ -6,7 +6,7 @@
   <title>J_A MEGA STORE 360</title>
   <meta name="theme-color" content="#0b0f1a"/>
 
-  <!-- PWA (ADD) -->
+  <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
 
   <!-- Tailwind -->
@@ -173,10 +173,7 @@
           <div class="flex flex-wrap gap-2 mt-2">
             <button id="btnConnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Conectar nube</button>
             <button id="btnDisconnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Desconectar</button>
-            <!-- botón reset -->
-            <button id="btnHardReset" type="button" class="chip px-3 py-1.5 rounded-xl text-sm" onclick="resetStore(true)">
-              Resetear caché y recargar
-            </button>
+            <button id="btnHardReset" type="button" class="chip px-3 py-1.5 rounded-xl text-sm" onclick="resetStore(true)">Resetear caché y recargar</button>
           </div>
           <p class="text-xs text-white/60 mt-2" id="cloudStatus">Estado: Local</p>
         </div>
@@ -519,13 +516,12 @@
         }
       } else {
         products = local_load();
-        // Si por alguna razón está vacío, igual el importador lo llenará y disparará el evento.
         renderCategories(products); applyFilters();
       }
     });
   </script>
 
-  <!-- === Importa products.json a LocalStorage y dispara evento para refrescar === -->
+  <!-- Importa products.json a LocalStorage -->
   <script>
   (async function(){
     const JSON_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
@@ -571,7 +567,6 @@
 
       if(changed){
         lsSave(merged);
-        // Notifica a la app para que vuelva a leer y renderizar SIN recargar
         window.dispatchEvent(new Event('ja_products_updated'));
       }
     }catch(e){
@@ -579,28 +574,8 @@
     }
   })();
   </script>
-  <!-- === FIN BLOQUE === -->
 
-  <!-- ==== Auto-kill de Service Worker viejo (una sola vez) ==== -->
-  <script>
-  (function(){
-    if('serviceWorker' in navigator){
-      navigator.serviceWorker.getRegistrations().then(regs=>{
-        if(regs && regs.length && !localStorage.getItem('ja_sw_killed')){
-          Promise.all(regs.map(r=>r.unregister()))
-            .then(()=>{
-              localStorage.setItem('ja_sw_killed','1');
-              location.replace(location.pathname + '?nocache=' + Date.now());
-            })
-            .catch(()=>{ /* ignore */ });
-        }
-      });
-    }
-  })();
-  </script>
-  <!-- ==== FIN auto-kill SW ==== -->
-
-  <!-- ==== RESET DE CACHÉ / SW / LOCALSTORAGE ==== -->
+  <!-- RESET DE CACHÉ / SW / LOCALSTORAGE -->
   <script>
   async function resetStore(force=false) {
     try {
@@ -613,24 +588,16 @@
         const regs = await navigator.serviceWorker.getRegistrations();
         await Promise.all(regs.map(r => r.unregister()));
       }
-      if (force) {
-        location.replace(location.pathname + '?nocache=' + Date.now());
-      } else {
-        location.reload();
-      }
+      if (force) location.replace(location.pathname + '?nocache=' + Date.now());
+      else location.reload();
     } catch (e) {
       console.warn('Reset error:', e);
       location.reload();
     }
   }
-  (function () {
-    const params = new URLSearchParams(location.search);
-    if (params.get('reset') === '1') resetStore(true);
-  })();
   </script>
-  <!-- ==== FIN RESET ==== -->
 
-  <!-- PWA: Registrar Service Worker (ADD) -->
+  <!-- PWA: registrar Service Worker -->
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
@@ -638,7 +605,5 @@
       });
     }
   </script>
-  <!-- FIN PWA -->
-
 </body>
 </html>
