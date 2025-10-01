@@ -511,6 +511,70 @@
         renderCategories(products); applyFilters();
       }
     });
-  </script>
+  </script><!-- === CARGA NO INTRUSIVA DE products.json (pegar al final, antes de </body>) === -->
+<script>
+(function () {
+  const JSON_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/main/products.json";
+
+  async function fetchJSONProducts() {
+    const res = await fetch(JSON_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error("No pude cargar products.json (" + res.status + ")");
+    const data = await res.json();
+    if (!data || !data.PRODUCTOS) throw new Error("El JSON no tiene la clave PRODUCTOS");
+    return Object.entries(data.PRODUCTOS).map(([id, p]) => ({ id, ...p }));
+  }
+
+  function mergeProducts(existing, incoming) {
+    // Evita duplicados usando id/AMAZON/TITLE como clave de comparación
+    const map = new Map();
+    (existing || []).forEach(p => {
+      const key = (p.id || p.AMAZON || p.TITLE || Math.random()).toString();
+      map.set(key, p);
+    });
+    incoming.forEach(p => {
+      const key = (p.id || p.AMAZON || p.TITLE).toString();
+      if (!map.has(key)) map.set(key, p);
+    });
+    return Array.from(map.values());
+  }
+
+  (async () => {
+    try {
+      const incoming = await fetchJSONProducts();
+
+      // Fusiona con lo que ya tenga tu app (NO borra nada)
+      window.products = mergeProducts(window.products, incoming);
+
+      // Si tu app ya tiene funciones de render, úsalas
+      if (typeof window.renderCategories === "function") {
+        window.renderCategories(window.products);
+      }
+      if (typeof window.applyFilters === "function") {
+        window.applyFilters();
+      } else {
+        // Fallback súper ligero por si no existen (no cambia estilos de tu tienda)
+        const app = document.querySelector("#app");
+        if (app) {
+          app.innerHTML = window.products.map(p => `
+            <div class="card">
+              <div class="thumb">
+                <img src="${(p.IMAGE||'').trim() || 'https://via.placeholder.com/600x600?text=Imagen'}"
+                     alt="${p.TITLE||''}" loading="lazy" decoding="async"
+                     onerror="this.src='https://via.placeholder.com/600x600?text=Imagen'">
+              </div>
+              <div class="title">${p.TITLE||''}</div>
+              <div class="price">${p.PRICE ? '$'+p.PRICE : ''}</div>
+              <a class="btn" href="${p.AMAZON||'#'}" target="_blank" rel="noopener nofollow sponsored">Ver en Amazon</a>
+            </div>
+          `).join("");
+        }
+      }
+    } catch (e) {
+      console.error("[products.json] Error:", e);
+    }
+  })();
+})();
+</script>
+<!-- === FIN DEL BLOQUE === -->
 </body>
 </html>
