@@ -1,14 +1,14 @@
-// sw.js — MEGA STORE 360 (v5)
-const CACHE_NAME = 'ms360-v5'; // súbele el número cuando cambies íconos/manifest
+// sw.js — MEGA STORE 360 (v6)
+const CACHE_NAME = 'ms360-v6';
 
 const CORE = [
   './',
   './index.html',
-  './manifest.json?v=5',
-  './icon-192x192-v5.png',
-  './icon-256x256-v5.png',
-  './icon-512x512-v5.png',
-  './icon-180x180-v5.png'
+  './manifest.json?v=6',
+  './icon-192x192-v6.png',
+  './icon-256x256-v6.png',
+  './icon-512x512-v6.png',
+  './icon-180x180-v6.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -30,7 +30,7 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
 
   const isDoc = req.destination === 'document' || (req.headers.get('accept')||'').includes('text/html');
-  const isIcon = /icon-.*-v5\.png$/.test(url.pathname);
+  const isIcon = /icon-.*-v6\.png$/.test(url.pathname);
   const isManifest = url.pathname.endsWith('/manifest.json');
 
   if (isDoc) event.respondWith(staleWhileRevalidate(req));
@@ -47,6 +47,7 @@ async function cacheFirst(request){
   if (fresh) cache.put(request, fresh.clone());
   return fresh || new Response('Offline', { status:503 });
 }
+
 async function networkFirst(request){
   const cache = await caches.open(CACHE_NAME);
   try {
@@ -58,6 +59,7 @@ async function networkFirst(request){
     return cached || new Response('Offline', { status:503 });
   }
 }
+
 async function staleWhileRevalidate(request){
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request, { ignoreSearch:true });
