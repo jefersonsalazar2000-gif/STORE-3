@@ -335,47 +335,49 @@
       "IMAGE": "https://m.media-amazon.com/images/I/611dLx7nDJL._AC_UL640_FMwebp_QL65_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B01N4Q8KO2?tag=kaninosabioan-20",
       "FEATURE": false
+    },
+
+    /* === NUEVOS HOT WHEELS SUPRA === */
+    "hotwheels-gr-supra-speed-graphics-b09z9x31r8": {
+      "TITLE": "Hot Wheels '20 Toyota GR Supra, Speed Graphics 5/10 (Negro)",
+      "PRICE": 0,
+      "CATEGORY": "Coleccionables",
+      "IMAGE": "https://m.media-amazon.com/images/I/71qg+kWjNbL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/Wheels-Toyota-Supra-Speed-Graphics/dp/B09Z9X31R8?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "hotwheels-boulevard-2021-supra-b0dfhrqd7x": {
+      "TITLE": "Hot Wheels Boulevard 2021 Toyota Supra (Negro)",
+      "PRICE": 0,
+      "CATEGORY": "Coleccionables",
+      "IMAGE": "https://m.media-amazon.com/images/I/61+-nTiUOsL._AC_UL640_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/Wheels-Boulevard-2021-Toyota-Supra/dp/B0DFHRQD7X?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "hotwheels-toyota-supra-l2593-b0bld27gm2": {
+      "TITLE": "Hot Wheels Toyota Supra L2593 (Negro)",
+      "PRICE": 0,
+      "CATEGORY": "Coleccionables",
+      "IMAGE": "https://m.media-amazon.com/images/I/71g8aeeiFcL._AC_UL640_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/Hot-Wheels-Toyota-Supra-L2593/dp/B0BLD27GM2?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "hotwheels-toyota-supra-perla-cromo-b0dnkdpnbt": {
+      "TITLE": "Hot Wheels Toyota Supra Perla Cromo (Negro metalizado)",
+      "PRICE": 0,
+      "CATEGORY": "Coleccionables",
+      "IMAGE": "https://m.media-amazon.com/images/I/41i6j2V8CrL._AC_UL640_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/Wheels-Toyota-Supra-Perla-Cromo/dp/B0DNKDPNBT?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "hotwheels-toyota-supra-naranja-b09hsn6rd7": {
+      "TITLE": "Hot Wheels Toyota Supra Naranja (Fast & Furious Superestrellas Rápidas)",
+      "PRICE": 0,
+      "CATEGORY": "Coleccionables",
+      "IMAGE": "https://m.media-amazon.com/images/I/918u0ZMu7FL._AC_UL640_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/Wheels-Toyota-Naranja-Superestrellas-r%C3%A1pidas/dp/B09HSN6RD7?tag=kaninosabioan-20",
+      "FEATURE": false
     }
+    
   }
-}
-,
-"hotwheels-gr-supra-speed-graphics-b09z9x31r8": {
-  "TITLE": "Hot Wheels '20 Toyota GR Supra, Speed Graphics 5/10 (Negro)",
-  "PRICE": 0,
-  "CATEGORY": "Coleccionables",
-  "IMAGE": "https://m.media-amazon.com/images/I/71qg+kWjNbL._AC_SL1500_.jpg",
-  "AMAZON": "https://www.amazon.com/Wheels-Toyota-Supra-Speed-Graphics/dp/B09Z9X31R8?tag=kaninosabioan-20",
-  "FEATURE": false
-},
-"hotwheels-boulevard-2021-supra-b0dfhrqd7x": {
-  "TITLE": "Hot Wheels Boulevard 2021 Toyota Supra (Negro)",
-  "PRICE": 0,
-  "CATEGORY": "Coleccionables",
-  "IMAGE": "https://m.media-amazon.com/images/I/61+-nTiUOsL._AC_UL640_QL65_.jpg",
-  "AMAZON": "https://www.amazon.com/-/es/Wheels-Boulevard-2021-Toyota-Supra/dp/B0DFHRQD7X?tag=kaninosabioan-20",
-  "FEATURE": false
-},
-"hotwheels-toyota-supra-l2593-b0bld27gm2": {
-  "TITLE": "Hot Wheels Toyota Supra L2593 (Negro)",
-  "PRICE": 0,
-  "CATEGORY": "Coleccionables",
-  "IMAGE": "https://m.media-amazon.com/images/I/71g8aeeiFcL._AC_UL640_QL65_.jpg",
-  "AMAZON": "https://www.amazon.com/-/es/Hot-Wheels-Toyota-Supra-L2593/dp/B0BLD27GM2?tag=kaninosabioan-20",
-  "FEATURE": false
-},
-"hotwheels-toyota-supra-perla-cromo-b0dnkdpnbt": {
-  "TITLE": "Hot Wheels Toyota Supra Perla Cromo (Negro metalizado)",
-  "PRICE": 0,
-  "CATEGORY": "Coleccionables",
-  "IMAGE": "https://m.media-amazon.com/images/I/41i6j2V8CrL._AC_UL640_QL65_.jpg",
-  "AMAZON": "https://www.amazon.com/-/es/Wheels-Toyota-Supra-Perla-Cromo/dp/B0DNKDPNBT?tag=kaninosabioan-20",
-  "FEATURE": false
-},
-"hotwheels-toyota-supra-naranja-b09hsn6rd7": {
-  "TITLE": "Hot Wheels Toyota Supra Naranja (Fast & Furious Superestrellas Rápidas)",
-  "PRICE": 0,
-  "CATEGORY": "Coleccionables",
-  "IMAGE": "https://m.media-amazon.com/images/I/918u0ZMu7FL._AC_UL640_QL65_.jpg",
-  "AMAZON": "https://www.amazon.com/-/es/Wheels-Toyota-Naranja-Superestrellas-r%C3%A1pidas/dp/B09HSN6RD7?tag=kaninosabioan-20",
-  "FEATURE": false
 }
