@@ -30,7 +30,7 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(req.url);
 
-  // 1) products.json: NETWORK-FIRST (actualiza caché al volar)
+  // 1) products.json: NETWORK-FIRST
   if (url.origin === self.location.origin && url.pathname.endsWith('/products.json')) {
     event.respondWith((async () => {
       try {
@@ -42,14 +42,13 @@ self.addEventListener('fetch', (event) => {
       } catch {
         const cached = await caches.match(req);
         if (cached) return cached;
-        // último recurso: 404 simple
         return new Response('Offline y sin caché de products.json', { status: 503 });
       }
     })());
     return;
   }
 
-  // 2) Misma-origen: CACHE with UPDATE (stale-while-revalidate simple)
+  // 2) Misma-origen: stale-while-revalidate simple
   if (url.origin === self.location.origin) {
     event.respondWith((async () => {
       const cached = await caches.match(req);
@@ -58,14 +57,12 @@ self.addEventListener('fetch', (event) => {
         caches.open(CACHE_NAME).then(c => c.put(req, clone));
         return res;
       }).catch(() => cached);
-
-      // sirve rápido si hay caché; si no, espera red
       return cached || fetchAndUpdate;
     })());
     return;
   }
 
-  // 3) Terceros (CDN, fuentes…): network-first con fallback a caché
+  // 3) Terceros: network-first con fallback a caché
   event.respondWith((async () => {
     try {
       const net = await fetch(req);
@@ -75,7 +72,6 @@ self.addEventListener('fetch', (event) => {
     } catch {
       const cached = await caches.match(req);
       if (cached) return cached;
-      // como último recurso, deja que falle normal
       throw new Error('Network error and no cache.');
     }
   })());
