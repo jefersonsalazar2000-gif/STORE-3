@@ -1,123 +1,27 @@
 {
   "PRODUCTOS": {
-    "pantalones-deportivos-entrenamiento-cremallera-firstgym-b0czrnh2ln": {
-      "TITLE": "Pantalones deportivos de entrenamiento con cremallera (FIRSTGYM)",
-      "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B0CZRNH2LN?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "pantalones-deportivos-bolsillo-cremallera-mgboygym-b0dxz53v7d": {
-      "TITLE": "Pantalones deportivos con bolsillo y cremallera (MGBOYGYM)",
-      "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B0DXZ53V7D?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "pantalones-entrenamiento-con-cremallera-b08fsnf4g1": {
-      "TITLE": "Pantalones de entrenamiento con cremallera",
-      "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B08FSNF4G1?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "gorra-trucker-grace-folly-unisex-b07ddh77kg": {
-      "TITLE": "Gorra trucker Grace Folly unisex",
-      "PRICE": 0,
-      "CATEGORY": "Accesorios",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B07DDH77KG?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "gorra-grace-folly-beisbol-juvenil-b08g15pncw": {
-      "TITLE": "Gorra Grace Folly de béisbol (juvenil)",
-      "PRICE": 0,
-      "CATEGORY": "Accesorios",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B08G15PNCW?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "mesa-de-inversion-para-espalda-b0bbxxhw78": {
-      "TITLE": "Mesa de inversión para espalda",
-      "PRICE": 0,
-      "CATEGORY": "Salud y Fitness",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B0BBXXHW78?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "echo-bundle-echo-dot-5a-gen-edicion-limitada-b0dkpg12x1": {
-      "TITLE": "Echo Bundle: Echo Dot (5ª generación) (edición limitada)",
-      "PRICE": 0,
+    "mongdio-taza-autoagitable-b0dqxzk5cc": {
+      "TITLE": "Mongdio Taza de café autoagitable con pantalla de temperatura",
+      "PRICE": 15.99,
       "CATEGORY": "Tecnología",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B0DKPG12X1?tag=kaninosabioan-20",
+      "IMAGE": "https://m.media-amazon.com/images/I/61zkCY9ogPL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DQXZKSCC",
       "FEATURE": false
     },
-    "colgador-inteligente-accesorios-integrados-b09b1s41yk": {
-      "TITLE": "Colgador inteligente con accesorios integrados",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B09B1S41YK?tag=kaninosabioan-20",
+    "rare-beauty-blush-b0d8jcc51f": {
+      "TITLE": "Rare Beauty Soft Pinch Liquid Blush (Mini, Grateful)",
+      "PRICE": 23.00,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/61bm+nd06kL._AC_UL640_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0D8JCC51F",
       "FEATURE": false
     },
-    "logitech-mx-master-3s-raton-inalambrico-b0fb21526x": {
-      "TITLE": "Logitech MX Master 3S ratón inalámbrico",
-      "PRICE": 0,
-      "CATEGORY": "Tecnología",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B0FB21526X?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "chomchom-roller-removedor-pelo-mascotas-b00bagtnaq": {
-      "TITLE": "ChomChom Roller removedor de pelo para mascotas",
-      "PRICE": 0,
-      "CATEGORY": "Mascotas",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B00BAGTNAQ?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "bissell-powerclean-furfinder-inalambrica-b0dqjv5d9k": {
-      "TITLE": "BISSELL PowerClean FurFinder inalámbrica",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B0DQJV5D9K?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "aspiradora-inalambrica-de-mano-con-accesorios-b07s652b12": {
-      "TITLE": "Aspiradora inalámbrica de mano (con accesorios)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B07S652B12?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "gafas-sol-carrera-5041-rectangulares-gradient-b01n4q8ko2": {
-      "TITLE": "Gafas de sol Carrera 5041 rectangulares Gradient",
-      "PRICE": 0,
-      "CATEGORY": "Accesorios",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B01N4Q8KO2?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "nortiv-zapatos-deportivos-antideslizantes-b0dfgqhx22": {
-      "TITLE": "NORTIV zapatos deportivos antideslizantes",
-      "PRICE": 0,
-      "CATEGORY": "Calzado",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B0DFGQHX22?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "uovo-flow-zapatos-comodos-lakemoon-cobalto-b0f5m4hvmv": {
-      "TITLE": "UOVO Flow zapatos cómodos \"Lakemoon\" cobalto",
-      "PRICE": 0,
-      "CATEGORY": "Calzado",
-      "IMAGE": "",
-      "AMAZON": "https://www.amazon.com/dp/B0F5M4HVMV?tag=kaninosabioan-20",
+    "mascara-frio-ojos-b07hd61pyn": {
+      "TITLE": "Máscara de gel frío para ojos - alivio de hinchazón y migrañas",
+      "PRICE": 12.99,
+      "CATEGORY": "Salud",
+      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71J157-uKML._AC_UL200_SR200,200_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B07HD61PYN",
       "FEATURE": false
     }
   }
