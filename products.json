@@ -336,8 +336,6 @@
       "AMAZON": "https://www.amazon.com/dp/B01N4Q8KO2?tag=kaninosabioan-20",
       "FEATURE": false
     },
-
-    /* === NUEVOS HOT WHEELS SUPRA === */
     "hotwheels-gr-supra-speed-graphics-b09z9x31r8": {
       "TITLE": "Hot Wheels '20 Toyota GR Supra, Speed Graphics 5/10 (Negro)",
       "PRICE": 0,
@@ -378,6 +376,5 @@
       "AMAZON": "https://www.amazon.com/-/es/Wheels-Toyota-Naranja-Superestrellas-r%C3%A1pidas/dp/B09HSN6RD7?tag=kaninosabioan-20",
       "FEATURE": false
     }
-    
   }
 }
