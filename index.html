@@ -73,6 +73,9 @@
       <div class="flex items-center gap-2">
         <button id="btnSettings" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Ajustes</button>
         <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Admin</button>
+        <!-- === NUEVOS BOTONES ADMIN (ocultos si Admin OFF) === -->
+        <button id="btnVerify" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 hidden">Verificar Tag</button>
+        <button id="btnFix" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 hidden">Auto-Fix Tag</button>
       </div>
     </div>
   </header>
@@ -230,6 +233,10 @@
     const btnConnectCloud = document.getElementById('btnConnectCloud');
     const btnDisconnectCloud = document.getElementById('btnDisconnectCloud');
 
+    /* === NUEVOS BOTONES ADMIN === */
+    const btnVerify = document.getElementById('btnVerify');
+    const btnFix = document.getElementById('btnFix');
+
     year.textContent = new Date().getFullYear();
     const uid = () => crypto.randomUUID();
 
@@ -287,6 +294,66 @@
       });
       grid.innerHTML = filtered.map(productCard).join('');
       empty.classList.toggle('hidden', filtered.length>0);
+    }
+
+    // ===== Verificador y Auto-Fix del tag de Amazon (Admin) =====
+    const TAG = "kaninosabioan-20";
+    const LS_VERIFY_KEY = "ja_store_products_v2";
+
+    function verifyDOM() {
+      const as = Array.from(document.querySelectorAll('a[href*="amazon."]'));
+      const rows = as.map((a,i) => {
+        let tag = null;
+        try { tag = new URL(a.href, location.href).searchParams.get("tag"); } catch {}
+        return { idx: i+1, text: (a.textContent||'').trim(), tag, href: a.href, ok: tag === TAG };
+      });
+      console.log("[DOM] Verificación enlaces Amazon");
+      console.table(rows);
+      const bad = rows.filter(r => !r.ok);
+      return { total: rows.length, ok: rows.length - bad.length, fail: bad.length, bad };
+    }
+
+    function verifyLS() {
+      let list = [];
+      try { list = JSON.parse(localStorage.getItem(LS_VERIFY_KEY)) || []; } catch {}
+      const rows = list.map((p,i) => {
+        let tag = null;
+        try { tag = new URL(p.amazon, location.href).searchParams.get("tag"); }
+        catch { const m = /\btag=([^&#]+)/.exec(p.amazon||""); tag = m && m[1] || null; }
+        return { idx: i+1, id:p.id, title:p.title, tag, ok: tag === TAG, amazon:p.amazon };
+      });
+      console.log("[LS] Verificación productos LocalStorage");
+      console.table(rows);
+      const bad = rows.filter(r => !r.ok);
+      return { total: rows.length, ok: rows.length - bad.length, fail: bad.length, bad };
+    }
+
+    function fixDOM() {
+      document.querySelectorAll('a[href*="amazon."]').forEach(a => {
+        try {
+          const u = new URL(a.getAttribute("href"), location.href);
+          u.searchParams.set("tag", TAG);
+          a.href = u.toString();
+          a.setAttribute("rel","nofollow noopener sponsored");
+          a.setAttribute("target","_blank");
+        } catch(e) {
+          const href = a.getAttribute("href")||"";
+          const sep = href.includes("?") ? "&" : "?";
+          a.href = href + sep + "tag=" + TAG;
+        }
+      });
+    }
+
+    function fixLS() {
+      let list = [];
+      try { list = JSON.parse(localStorage.getItem(LS_VERIFY_KEY)) || []; } catch {}
+      const fix = (url) => {
+        if (!url) return url;
+        try { const u = new URL(url, location.href); u.searchParams.set("tag", TAG); return u.toString(); }
+        catch { const sep = url.includes("?") ? "&" : "?"; return url + sep + "tag=" + TAG; }
+      };
+      list = list.map(p => ({ ...p, amazon: fix(p.amazon) }));
+      localStorage.setItem(LS_VERIFY_KEY, JSON.stringify(list));
     }
 
     // ======== Local Mode (sin nube) ========
@@ -430,6 +497,9 @@
     // ======== Admin / Settings ========
     function updateAdminUI(){
       btnAdd.disabled = !isAdmin;
+      // mostrar herramientas de verificación solo en modo admin
+      btnVerify.classList.toggle('hidden', !isAdmin);
+      btnFix.classList.toggle('hidden', !isAdmin);
       applyFilters();
     }
 
@@ -496,6 +566,25 @@
     search.addEventListener('input', applyFilters);
     categoryFilter.addEventListener('change', applyFilters);
 
+    // ======== Eventos NUEVOS: Verificar y Auto-Fix ========
+    btnVerify.addEventListener('click', () => {
+      const dom = verifyDOM();
+      const ls = verifyLS();
+      const msg =
+        `DOM → Total: ${dom.total} | OK: ${dom.ok} | FAIL: ${dom.fail}\n` +
+        `LS  → Total: ${ls.total} | OK: ${ls.ok} | FAIL: ${ls.fail}\n\n` +
+        `Detalles en la consola (F12 → Console).`;
+      alert(msg);
+      console.log("[Resumen] DOM:", dom, "| LS:", ls);
+    });
+
+    btnFix.addEventListener('click', () => {
+      if(!confirm("¿Aplicar Auto-Fix? (DOM + LocalStorage)\nLuego recarga la página para ver los cambios en las tarjetas)")) return;
+      fixDOM();
+      fixLS();
+      alert("✅ Auto-Fix aplicado.\n• DOM corregido\n• LocalStorage normalizado\n\nRecarga la página para reflejarlo en las tarjetas.");
+    });
+
     // ======== Escuchar bootstrap del JSON (para refrescar sin recargar) ========
     window.addEventListener('ja_products_updated', ()=>{
       if(!db){ // solo en modo local
@@ -544,7 +633,7 @@
         if(!/amazon\./i.test(u.hostname)) return url;
         u.searchParams.set("tag", TAG);
         return u.toString();
-      }catch{ // por si viene parcial
+      }catch{
         const sep = url.includes('?') ? '&' : '?';
         return `${url}${sep}tag=${TAG}`;
       }
