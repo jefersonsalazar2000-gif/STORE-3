@@ -733,6 +733,49 @@
         navigator.serviceWorker.register("sw.js").catch(()=>{});
       });
     }
-  </script>
+  </script><script>
+  // 1) URL del JSON (cámbiale el número si actualizas productos: ?v=8, ?v=9, etc.)
+  const JSON_URL = "products.json?v=7";
+
+  // 2) Render simple de tarjeta
+  const tplCard = (p) => `
+    <article class="rounded-2xl p-3 bg-[#0f1526] border border-white/10 shadow">
+      <div class="aspect-[4/3] overflow-hidden rounded-xl bg-black/20">
+        <img src="${p.IMAGE}"
+             alt="${p.TITLE}"
+             class="w-full h-full object-cover"
+             onerror="this.src='https://placehold.co/800x600/0b0f1a/FFFFFF?text=Sin+imagen'">
+      </div>
+      <div class="mt-3">
+        <div class="text-xs px-2 py-1 rounded-full inline-block bg-white/10">
+          ${p.CATEGORY ?? "General"}
+        </div>
+        <h3 class="mt-2 font-semibold leading-snug">${p.TITLE}</h3>
+        <a href="${p.AMAZON}"
+           target="_blank"
+           rel="nofollow sponsored noopener"
+           class="mt-3 inline-flex items-center justify-center w-full rounded-xl px-4 py-2
+                  bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white font-semibold">
+          Ver en Amazon
+        </a>
+      </div>
+    </article>
+  `;
+
+  // 3) Cargar y pintar
+  fetch(JSON_URL, { cache: "no-store" })
+    .then(r => r.json())
+    .then(data => {
+      const grid = document.getElementById("grid");
+      const items = Object.values(data.PRODUCTOS || {});
+      grid.innerHTML = items.map(tplCard).join("");
+    })
+    .catch(err => {
+      console.error("Error cargando productos:", err);
+      const grid = document.getElementById("grid");
+      if (grid) grid.innerHTML = `
+        <div class="text-red-400">No se pudieron cargar los productos.</div>`;
+    });
+</script>
 </body>
 </html>
