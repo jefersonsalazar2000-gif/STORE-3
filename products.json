@@ -28,7 +28,7 @@
       "TITLE": "Mascarilla moldeadora de mandíbula con ácido hialurónico",
       "PRICE": 0,
       "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/81h8V+eyxgL._SL1500_.jpg",
+      "IMAGE": "https://m.media-amazon.com/images/I/81h8V%2BeyxgL._SL1500_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0CNDCKXDX?tag=kaninosabioan-20",
       "FEATURE": false
     },
@@ -36,7 +36,7 @@
       "TITLE": "Breville Barista Touch Impress (acero inoxidable)",
       "PRICE": 0,
       "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/51OhcC8+9WL._AC_SL1120_.jpg",
+      "IMAGE": "https://m.media-amazon.com/images/I/51OhcC8%2B9WL._AC_SL1120_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0C1T4W797?tag=kaninosabioan-20",
       "FEATURE": false
     },
@@ -167,11 +167,7 @@
       "IMAGE": "https://m.media-amazon.com/images/I/61oN5YmTGoL._AC_SL1500_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0FCFFGPBV?tag=kaninosabioan-20",
       "FEATURE": false
-    }
-  }
-}
-{
-  "PRODUCTOS": {
+    },
     "mongdio-taza-autoagitable-b0dqxzk5cc": {
       "TITLE": "Mongdio Taza de café autoagitable con pantalla de temperatura",
       "PRICE": 0,
@@ -184,7 +180,7 @@
       "TITLE": "Rare Beauty Soft Pinch Liquid Blush (Mini, Grateful)",
       "PRICE": 0,
       "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/61bm+nd06kL._AC_UL640_QL65_.jpg",
+      "IMAGE": "https://m.media-amazon.com/images/I/61bm%2Bnd06kL._AC_UL640_QL65_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0D8JCC51F?tag=kaninosabioan-20",
       "FEATURE": false
     },
@@ -240,7 +236,7 @@
       "TITLE": "Mascarilla natural para eliminar impurezas y acné",
       "PRICE": 0,
       "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/71X4Cr9yE+L._AC_UL640_FMwebp_QL65_.jpg",
+      "IMAGE": "https://m.media-amazon.com/images/I/71X4Cr9yE%2BL._AC_UL640_FMwebp_QL65_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B01NCM25K7?tag=kaninosabioan-20",
       "FEATURE": false
     },
@@ -338,349 +334,6 @@
       "CATEGORY": "Accesorios",
       "IMAGE": "https://m.media-amazon.com/images/I/611dLx7nDJL._AC_UL640_FMwebp_QL65_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B01N4Q8KO2?tag=kaninosabioan-20",
-      "FEATURE": false
-    }
-  }
-}
-{
-  "PRODUCTOS": {
-    "auriculares-inalambricos-b09ld2d1tv": {
-      "TITLE": "Auriculares inalámbricos intrauditivos impermeables",
-      "PRICE": 0,
-      "CATEGORY": "Electrónica",
-      "IMAGE": "https://m.media-amazon.com/images/I/7112aOlyUhL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B09LD2D1TV?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "dispositivo-streaming-4k-b0cqmrkrv5": {
-      "TITLE": "Dispositivo de streaming 4K con control por voz Alexa",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/61weCavnG7L._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0CQMRKRV5?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "echo-show-5-b09b2sbhqk": {
-      "TITLE": "Echo Show 5 (pantalla inteligente)",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/71j-zo5SuhL._AC_SL1000_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B09B2SBHQK?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "mascarilla-moldeadora-mandibula-b0cndckxdx": {
-      "TITLE": "Mascarilla moldeadora de mandíbula con ácido hialurónico",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/81h8V+eyxgL._SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0CNDCKXDX?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "breville-barista-touch-impress-b0c1t4w797": {
-      "TITLE": "Breville Barista Touch Impress (acero inoxidable)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/51OhcC8+9WL._AC_SL1120_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0C1T4W797?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "keurig-k-supreme-b0892tw82k": {
-      "TITLE": "Keurig K-Supreme con tecnología MultiStream",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/71zSOVj2G9L._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0892TW82K?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "fire-hd-10-kids-pro-b0bl6dcngr": {
-      "TITLE": "Fire HD 10 Kids Pro (tableta)",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/71xfcT-AUBL._AC_SL1000_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0BL6DCNGR?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "pantalones-microforro-pack-b0ddkm4g6h": {
-      "TITLE": "Paquete de pantalones con microforro (descanso, bolsillos)",
-      "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "https://m.media-amazon.com/images/I/81DqznzG-qL._AC_SY879_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DDKM4G6H?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "vela-calabaza-otono-b0f66zx4fn": {
-      "TITLE": "Vela perfumada leche de calabaza (otoño)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/71OdnfmwCqL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0F66ZX4FN?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "pantuflas-gdazzio-b0fdqp89zs": {
-      "TITLE": "Gdazzio – Pantuflas acogedoras esponjosas",
-      "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "https://m.media-amazon.com/images/I/716JyG3iNkL._AC_SY695_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FDQP89ZS?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "echo-dot-5a-gen-b09b93zdg4": {
-      "TITLE": "Echo Dot (modelo reciente, 5ª gen)",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/61E80QtGeCL._AC_SL1000_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B09B93ZDG4?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "beats-solo-inalambricos-b0fhlps8zf": {
-      "TITLE": "Beats Solo – Auriculares inalámbricos",
-      "PRICE": 0,
-      "CATEGORY": "Electrónica",
-      "IMAGE": "https://m.media-amazon.com/images/I/51kJvfwJSWL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FHLPS8ZF?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "olaplex-no7-b07vr1ndsq": {
-      "TITLE": "OLAPLEX Nº7 Bonding Oil (30 ml)",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/71ACqtMWo2L._SX522_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B07VR1NDSQ?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "biodance-parches-hidrogel-b0dr7p1tkl": {
-      "TITLE": "BIODANCE – Parches refrescantes de hidrogel (contorno de ojos)",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/61U3Gm7btOL._SL1280_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DR7P1TKL?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "laneige-lip-glowy-balm-b07dy2qrf6": {
-      "TITLE": "LANEIGE Lip Glowy Balm (bálsamo labial hidratante)",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/61fxw5KBBKL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B07DY2QRF6?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "stanley-quencher-protour-b0fb7pr5pv": {
-      "TITLE": "Stanley Quencher ProTour (vaso térmico)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/61PVfly17gL._SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FB7PR5PV?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "espresso-electrica-b086r7bd6q": {
-      "TITLE": "Máquina eléctrica de espresso/capuccino",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/815VjjYcnXL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B086R7BD6Q?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "insignia-fire-tv-65-b0f1c882rx": {
-      "TITLE": "INSIGNIA Fire TV 65\" 4K UHD",
-      "PRICE": 0,
-      "CATEGORY": "Electrónica",
-      "IMAGE": "https://m.media-amazon.com/images/I/8107AeAPxhL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0F1C882RX?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "tratamiento-capilar-proteina-b0dsq61fw4": {
-      "TITLE": "Tratamiento capilar con proteína, efecto volumen (mujeres)",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/81nfC5HJnbL._SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DSQ61FW4?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "quay-nightfall-shield-b0bw5llkxy": {
-      "TITLE": "QUAY Nightfall Shield – Gafas de sol (negro)",
-      "PRICE": 0,
-      "CATEGORY": "Accesorios",
-      "IMAGE": "https://m.media-amazon.com/images/I/61oN5YmTGoL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0BW5LLKXY?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "difusor-aceites-esenciales-b0fcffgpbv": {
-      "TITLE": "Difusor de aceites esenciales (PMsusoow)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/61oN5YmTGoL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FCFFGPBV?tag=kaninosabioan-20",
-      "FEATURE": false
-    }
-  }
-}{
-  "PRODUCTOS": {
-    "auriculares-inalambricos-b09ld2d1tv": {
-      "TITLE": "Auriculares inalámbricos intrauditivos impermeables",
-      "PRICE": 0,
-      "CATEGORY": "Electrónica",
-      "IMAGE": "https://m.media-amazon.com/images/I/7112aOlyUhL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B09LD2D1TV?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "dispositivo-streaming-4k-b0cqmrkrv5": {
-      "TITLE": "Dispositivo de streaming 4K con control por voz Alexa",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/61weCavnG7L._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0CQMRKRV5?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "echo-show-5-b09b2sbhqk": {
-      "TITLE": "Echo Show 5 (pantalla inteligente)",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/71j-zo5SuhL._AC_SL1000_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B09B2SBHQK?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "mascarilla-moldeadora-mandibula-b0cndckxdx": {
-      "TITLE": "Mascarilla moldeadora de mandíbula con ácido hialurónico",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/81h8V+eyxgL._SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0CNDCKXDX?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "breville-barista-touch-impress-b0c1t4w797": {
-      "TITLE": "Breville Barista Touch Impress (acero inoxidable)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/51OhcC8+9WL._AC_SL1120_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0C1T4W797?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "keurig-k-supreme-b0892tw82k": {
-      "TITLE": "Keurig K-Supreme con tecnología MultiStream",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/71zSOVj2G9L._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0892TW82K?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "fire-hd-10-kids-pro-b0bl6dcngr": {
-      "TITLE": "Fire HD 10 Kids Pro (tableta)",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/71xfcT-AUBL._AC_SL1000_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0BL6DCNGR?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "pantalones-microforro-pack-b0ddkm4g6h": {
-      "TITLE": "Paquete de pantalones con microforro (descanso, bolsillos)",
-      "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "https://m.media-amazon.com/images/I/81DqznzG-qL._AC_SY879_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DDKM4G6H?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "vela-calabaza-otono-b0f66zx4fn": {
-      "TITLE": "Vela perfumada leche de calabaza (otoño)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/71OdnfmwCqL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0F66ZX4FN?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "pantuflas-gdazzio-b0fdqp89zs": {
-      "TITLE": "Gdazzio – Pantuflas acogedoras esponjosas",
-      "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "https://m.media-amazon.com/images/I/716JyG3iNkL._AC_SY695_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FDQP89ZS?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "echo-dot-5a-gen-b09b93zdg4": {
-      "TITLE": "Echo Dot (modelo reciente, 5ª gen)",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/61E80QtGeCL._AC_SL1000_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B09B93ZDG4?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "beats-solo-inalambricos-b0fhlps8zf": {
-      "TITLE": "Beats Solo – Auriculares inalámbricos",
-      "PRICE": 0,
-      "CATEGORY": "Electrónica",
-      "IMAGE": "https://m.media-amazon.com/images/I/51kJvfwJSWL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FHLPS8ZF?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "olaplex-no7-b07vr1ndsq": {
-      "TITLE": "OLAPLEX Nº7 Bonding Oil (30 ml)",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/71ACqtMWo2L._SX522_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B07VR1NDSQ?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "biodance-parches-hidrogel-b0dr7p1tkl": {
-      "TITLE": "BIODANCE – Parches refrescantes de hidrogel (contorno de ojos)",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/61U3Gm7btOL._SL1280_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DR7P1TKL?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "laneige-lip-glowy-balm-b07dy2qrf6": {
-      "TITLE": "LANEIGE Lip Glowy Balm (bálsamo labial hidratante)",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/61fxw5KBBKL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B07DY2QRF6?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "stanley-quencher-protour-b0fb7pr5pv": {
-      "TITLE": "Stanley Quencher ProTour (vaso térmico)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/61PVfly17gL._SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FB7PR5PV?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "espresso-electrica-b086r7bd6q": {
-      "TITLE": "Máquina eléctrica de espresso/capuccino",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/815VjjYcnXL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B086R7BD6Q?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "insignia-fire-tv-65-b0f1c882rx": {
-      "TITLE": "INSIGNIA Fire TV 65\" 4K UHD",
-      "PRICE": 0,
-      "CATEGORY": "Electrónica",
-      "IMAGE": "https://m.media-amazon.com/images/I/8107AeAPxhL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0F1C882RX?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "tratamiento-capilar-proteina-b0dsq61fw4": {
-      "TITLE": "Tratamiento capilar con proteína, efecto volumen (mujeres)",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/81nfC5HJnbL._SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DSQ61FW4?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "quay-nightfall-shield-b0bw5llkxy": {
-      "TITLE": "QUAY Nightfall Shield – Gafas de sol (negro)",
-      "PRICE": 0,
-      "CATEGORY": "Accesorios",
-      "IMAGE": "https://m.media-amazon.com/images/I/61oN5YmTGoL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0BW5LLKXY?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "difusor-aceites-esenciales-b0fcffgpbv": {
-      "TITLE": "Difusor de aceites esenciales (PMsusoow)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/61oN5YmTGoL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FCFFGPBV?tag=kaninosabioan-20",
       "FEATURE": false
     }
   }
