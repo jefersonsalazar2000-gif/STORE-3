@@ -1,171 +1,19 @@
 {
   "PRODUCTOS": {
-    "mongdio-taza-autoagitable-b0dqxzk5cc": {
-      "TITLE": "Mongdio Taza de café autoagitable con pantalla de temperatura",
+    "hoka-one-one-clifton-b0dd12b5": {
+      "TITLE": "HOKA ONE ONE Clifton – Zapatillas de correr (hombre)",
       "PRICE": 0,
-      "CATEGORY": "Tecnología",
-      "IMAGE": "https://m.media-amazon.com/images/I/61zkCY9ogPL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DQXZKSCC",
+      "CATEGORY": "Calzado",
+      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/61VuQn6nvDL._AC_UL330_SR330,330_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DD12BZB5",
       "FEATURE": false
     },
-    "rare-beauty-blush-b0d8jcc51f": {
-      "TITLE": "Rare Beauty Soft Pinch Liquid Blush (Mini, Grateful)",
+    "mascarilla-labios-bc9qqg8r6-v2": {
+      "TITLE": "Mascarilla hidratante de labios para dormir (variante)",
       "PRICE": 0,
       "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/61bm+nd06kL._AC_UL640_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0D8JCC51F",
-      "FEATURE": false
-    },
-    "mascara-frio-ojos-b07hd61pyn": {
-      "TITLE": "Máscara de gel frío para ojos - alivio de hinchazón y migrañas",
-      "PRICE": 0,
-      "CATEGORY": "Salud",
-      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71J157-uKML._AC_UL200_SR200,200_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B07HD61PYN",
-      "FEATURE": false
-    },
-    "taza-autoagitacion-b0drgfyqbq": {
-      "TITLE": "Taza de café autoagitada de acero inoxidable (recargable)",
-      "PRICE": 0,
-      "CATEGORY": "Tecnología",
-      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71Oxr26MmUL._AC_UL200_SR200,200_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DRGFYQBQ",
-      "FEATURE": false
-    },
-    "nortiv-zapatillas-b0dfgqhx22": {
-      "TITLE": "Zapatillas deportivas NORTIV antideslizantes acolchadas",
-      "PRICE": 0,
-      "CATEGORY": "Deportes",
-      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71xK9byUarL._AC_UL200_SR200,200_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DFGQHX22",
-      "FEATURE": false
-    },
-    "mascarilla-labios-b0c9qqg8r6": {
-      "TITLE": "Mascarilla hidratante de labios para dormir",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/710tW-jQW5L._AC_UL640_FMwebp_QL65_.jpg",
+      "IMAGE": "https://m.media-amazon.com/images/I/81pTX8oBkSL._AC_UL640_FMwebp_QL65_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0C9QQG8R6",
-      "FEATURE": false
-    },
-    "cerave-clay-foam-b0dw5yyb4p": {
-      "TITLE": "CeraVe Clay Foam – limpiador facial con ácido salicílico",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/610GCE0xaLL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DW5YYB4P",
-      "FEATURE": false
-    },
-    "eliminador-acne-b0793p98mw": {
-      "TITLE": "Eliminador de acné y purificador facial portátil",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/71o3CBID0gL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0793P98MW",
-      "FEATURE": false
-    },
-    "mascarilla-natural-b01ncm25k7": {
-      "TITLE": "Mascarilla natural para eliminar impurezas y acné",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/71X4Cr9yE+L._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B01NCM25K7",
-      "FEATURE": false
-    },
-    "juego-mascarillas-b0d5m975jl": {
-      "TITLE": "Juego de mascarillas faciales de arcilla (acné/iluminación)",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/71o3CBID0gL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0D5M975JL",
-      "FEATURE": false
-    },
-    "firstgym-pants-ajustados-b08kw3yy5d": {
-      "TITLE": "FIRSTGYM Pantalones deportivos ajustados (entrenamiento)",
-      "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "https://m.media-amazon.com/images/I/715b1KVxYDL._AC_SY879_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B08KW3YY5D",
-      "FEATURE": false
-    },
-    "firstgym-pants-cremallera-b093pmfdlc": {
-      "TITLE": "FIRSTGYM Pantalones deportivos con cremallera",
-      "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "https://m.media-amazon.com/images/I/71kD4Pe411L._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B093PMFDLC",
-      "FEATURE": false
-    },
-    "grace-folly-trucker-b07jgddlcn": {
-      "TITLE": "Grace Folly – Gorra trucker unisex (flamingo)",
-      "PRICE": 0,
-      "CATEGORY": "Accesorios",
-      "IMAGE": "https://m.media-amazon.com/images/I/51AjpH9DoAL._AC_SX679_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B07JGDDLCN",
-      "FEATURE": false
-    },
-    "grace-folly-trucker-b07gb1bkbc": {
-      "TITLE": "Grace Folly – Gorra trucker unisex (variante)",
-      "PRICE": 0,
-      "CATEGORY": "Accesorios",
-      "IMAGE": "https://m.media-amazon.com/images/I/61Osm9iWEVL._AC_SX679_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B07GB1BKBC",
-      "FEATURE": false
-    },
-    "teeter-ep560-mesa-inversion-b0bbxxhw78": {
-      "TITLE": "Teeter EP-560 Ltd. – Mesa de inversión (certificada UL)",
-      "PRICE": 0,
-      "CATEGORY": "Deportes",
-      "IMAGE": "https://m.media-amazon.com/images/I/718g6S-3iTL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0BBXXHW78",
-      "FEATURE": false
-    },
-    "echo-dot-ironman-b0dkpfn5pw": {
-      "TITLE": "Echo Bundle: Echo Dot (5ª gen) + Soporte Iron Man (edición limitada)",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/61Jxyc8DlWL._AC_UY436_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DKPFN5PW",
-      "FEATURE": false
-    },
-    "echo-dot-jack-b0dfhq5nxv": {
-      "TITLE": "Echo Bundle: Echo Dot (5ª gen) + Jack Skellington (edición limitada)",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/61sFu-oDQAL._AC_UY436_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DFHQ5NXV",
-      "FEATURE": false
-    },
-    "logitech-mx-master-3s-b09hm94vds": {
-      "TITLE": "Logitech MX Master 3S – Mouse inalámbrico Bluetooth (8K DPI, clics silenciosos)",
-      "PRICE": 0,
-      "CATEGORY": "Electrónica",
-      "IMAGE": "https://m.media-amazon.com/images/I/71YFOZ2k0XL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B09HM94VDS",
-      "FEATURE": false
-    },
-    "chomchom-roller-b00bagtnaq": {
-      "TITLE": "ChomChom Roller – Removedor de pelo de mascotas",
-      "PRICE": 0,
-      "CATEGORY": "Mascotas",
-      "IMAGE": "https://m.media-amazon.com/images/I/71YFOZ2k0XL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B00BAGTNAQ",
-      "FEATURE": false
-    },
-    "bissell-powerclean-furfinder-b0dqllpygm": {
-      "TITLE": "BISSELL PowerClean FurFinder – Aspiradora inalámbrica 200W",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/61F6VNlUc7L._AC_UY436_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DQLLPYGM",
-      "FEATURE": false
-    },
-    "carrera-5041s-gafas-b01n4q8ko2": {
-      "TITLE": "Carrera 5041/S – Gafas de sol rectangulares (Black/Dark Gray Gradient)",
-      "PRICE": 0,
-      "CATEGORY": "Accesorios",
-      "IMAGE": "https://m.media-amazon.com/images/I/611dLx7nDJL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B01N4Q8KO2",
       "FEATURE": false
     }
   }
