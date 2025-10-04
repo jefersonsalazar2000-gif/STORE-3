@@ -531,9 +531,24 @@
   (async function(){
     const JSON_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
     const LS_KEY = "ja_store_products_v2";
+    const TAG = "kaninosabioan-20";
 
     function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || [] }catch{ return [] } }
     function lsSave(v){ localStorage.setItem(LS_KEY, JSON.stringify(v)); }
+
+    // Normaliza URL Amazon para que siempre lleve ?tag=kaninosabioan-20
+    function tagify(url){
+      if(!url) return "#";
+      try{
+        const u = new URL(url);
+        if(!/amazon\./i.test(u.hostname)) return url;
+        u.searchParams.set("tag", TAG);
+        return u.toString();
+      }catch{ // por si viene parcial
+        const sep = url.includes('?') ? '&' : '?';
+        return `${url}${sep}tag=${TAG}`;
+      }
+    }
 
     function normalize(entry){
       const p = entry || {};
@@ -542,7 +557,7 @@
         title: p.TITLE || "",
         brand: p.BRAND || "",
         image: (p.IMAGE && p.IMAGE.trim()) || "https://via.placeholder.com/800x600?text=Imagen",
-        amazon: p.AMAZON || "#",
+        amazon: tagify(p.AMAZON || "#"),
         price: p.PRICE || "",
         category: p.CATEGORY || "Otros",
         featured: !!p.FEATURE,
@@ -602,7 +617,27 @@
   }
   </script>
 
-  <!-- PWA: registrar Service Worker -->
+  <!-- Afiliado Amazon: forzar tag también en enlaces del DOM -->
+  <script>
+  (function(){
+    const TAG = "kaninosabioan-20";
+    function fixHref(h){
+      try{ const u=new URL(h, location.href); if(!/amazon\./i.test(u.hostname)) return h; u.searchParams.set("tag", TAG); return u.toString(); }
+      catch{ const sep = h.includes('?') ? '&' : '?'; return `${h}${sep}tag=${TAG}`; }
+    }
+    function patchLinks(){
+      document.querySelectorAll('a[href*="amazon."]').forEach(a=>{
+        a.href = fixHref(a.getAttribute('href'));
+        a.setAttribute('rel','nofollow noopener sponsored');
+        a.setAttribute('target','_blank');
+      });
+    }
+    window.addEventListener('load', patchLinks);
+    new MutationObserver(patchLinks).observe(document.body, { childList:true, subtree:true });
+  })();
+  </script>
+
+  <!-- PWA: registrar Service Worker (único) -->
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
