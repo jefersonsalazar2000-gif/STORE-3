@@ -497,7 +497,6 @@
     // ======== Admin / Settings ========
     function updateAdminUI(){
       btnAdd.disabled = !isAdmin;
-      // mostrar herramientas de verificación solo en modo admin
       btnVerify.classList.toggle('hidden', !isAdmin);
       btnFix.classList.toggle('hidden', !isAdmin);
       applyFilters();
@@ -615,17 +614,17 @@
     });
   </script>
 
-  <!-- Importa products.json a LocalStorage -->
+  <!-- ===== Auto-SYNC con GitHub: trae products.json y actualiza cada 30s ===== -->
   <script>
-  (async function(){
-    const JSON_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
-    const LS_KEY = "ja_store_products_v2";
-    const TAG = "kaninosabioan-20";
+  (function(){
+    const RAW_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
+    const LS_KEY  = "ja_store_products_v2";
+    const TAG     = "kaninosabioan-20";
+    const REFRESH_MS = 30000; // 30s (ajusta si quieres)
 
     function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || [] }catch{ return [] } }
     function lsSave(v){ localStorage.setItem(LS_KEY, JSON.stringify(v)); }
 
-    // Normaliza URL Amazon para que siempre lleve ?tag=kaninosabioan-20
     function tagify(url){
       if(!url) return "#";
       try{
@@ -654,33 +653,47 @@
       };
     }
 
-    function merge(existing, incoming){
+    // reemplaza existentes por los nuevos si coinciden por "amazon" o "title"
+    function upsert(existing, incoming){
       const keyOf = (x)=> (x.amazon || x.title || "").toLowerCase();
       const map = new Map(existing.map(x=>[keyOf(x), x]));
       for(const p of incoming){
-        const k = keyOf(p);
-        if(!map.has(k)) map.set(k, p);
+        map.set(keyOf(p), p); // upsert (actualiza si existe, agrega si no)
       }
       return Array.from(map.values());
     }
 
-    try{
-      const res = await fetch(JSON_URL + "?" + Date.now(), { cache:"no-store" });
-      if(!res.ok) throw new Error("HTTP "+res.status);
-      const data = await res.json();
-      const incoming = Object.values(data.PRODUCTOS || {}).map(normalize);
+    let lastText = null;
 
-      const current = lsLoad();
-      const merged = merge(current, incoming);
-      const changed = merged.length !== current.length;
+    async function pull(){
+      try{
+        const res = await fetch(RAW_URL + "?" + Date.now(), { cache:"no-store" });
+        if(!res.ok) throw new Error("HTTP "+res.status);
+        const text = await res.text();
+        if(text === lastText) return; // sin cambios
+        lastText = text;
 
-      if(changed){
-        lsSave(merged);
-        window.dispatchEvent(new Event('ja_products_updated'));
+        const data = JSON.parse(text);
+        const incoming = Object.values(data.PRODUCTOS || {}).map(normalize);
+
+        const current = lsLoad();
+        const merged  = upsert(current, incoming);
+        const changed = JSON.stringify(merged) !== JSON.stringify(current);
+
+        if(changed){
+          lsSave(merged);
+          window.dispatchEvent(new Event('ja_products_updated'));
+          console.log("✅ Auto-sync: productos actualizados desde GitHub");
+        }
+      }catch(e){
+        console.warn("[auto-sync] No se pudo leer products.json:", e);
       }
-    }catch(e){
-      console.warn("[products.json] No se pudo precargar:", e);
     }
+
+    // primera carga + intervalos + al volver al tab
+    pull();
+    setInterval(pull, REFRESH_MS);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
   })();
   </script>
 
@@ -733,123 +746,6 @@
         navigator.serviceWorker.register("sw.js").catch(()=>{});
       });
     }
-  </script><script>
-  // 1) URL del JSON (cámbiale el número si actualizas productos: ?v=8, ?v=9, etc.)
-  const JSON_URL = "products.json?v=7";
-
-  // 2) Render simple de tarjeta
-  const tplCard = (p) => `
-    <article class="rounded-2xl p-3 bg-[#0f1526] border border-white/10 shadow">
-      <div class="aspect-[4/3] overflow-hidden rounded-xl bg-black/20">
-        <img src="${p.IMAGE}"
-             alt="${p.TITLE}"
-             class="w-full h-full object-cover"
-             onerror="this.src='https://placehold.co/800x600/0b0f1a/FFFFFF?text=Sin+imagen'">
-      </div>
-      <div class="mt-3">
-        <div class="text-xs px-2 py-1 rounded-full inline-block bg-white/10">
-          ${p.CATEGORY ?? "General"}
-        </div>
-        <h3 class="mt-2 font-semibold leading-snug">${p.TITLE}</h3>
-        <a href="${p.AMAZON}"
-           target="_blank"
-           rel="nofollow sponsored noopener"
-           class="mt-3 inline-flex items-center justify-center w-full rounded-xl px-4 py-2
-                  bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white font-semibold">
-          Ver en Amazon
-        </a>
-      </div>
-    </article>
-  `;
-
-  // 3) Cargar y pintar
-  fetch(JSON_URL, { cache: "no-store" })
-    .then(r => r.json())
-    .then(data => {
-      const grid = document.getElementById("grid");
-      const items = Object.values(data.PRODUCTOS || {});
-      grid.innerHTML = items.map(tplCard).join("");
-    })
-    .catch(err => {
-      console.error("Error cargando productos:", err);
-      const grid = document.getElementById("grid");
-      if (grid) grid.innerHTML = `
-        <div class="text-red-400">No se pudieron cargar los productos.</div>`;
-    });
-</script><!-- Auto-refresh de productos (no toca tu diseño) -->
-<script>
-(() => {
-  const REFRESH_MS = 60000;                 // ← cambia el intervalo si quieres
-  const JSON_URL   = window.JSON_URL || "./products.json?v=7";
-  const $grid      = document.getElementById("grid");
-  const $cat       = document.getElementById("cat");
-
-  // Fallbacks seguros si tu script no expone estas funciones
-  const applyFilters = window.applyFilters || function () {
-    if (!window.DATA || !$grid) return;
-    // Render básico de respaldo (normalmente NO se usa si ya tienes tu render)
-    $grid.innerHTML = window.DATA.map(p => `
-      <article class="rounded-2xl p-3 bg-[#0f1526] border border-white/10 shadow">
-        <div class="aspect-[4/3] overflow-hidden rounded-xl bg-black/20">
-          <img src="${p.IMAGE}" alt="${p.TITLE}" class="w-full h-full object-cover"
-               onerror="this.src='https://placehold.co/800x600/0b0f1a/FFFFFF?text=Sin+imagen'">
-        </div>
-        <div class="mt-3">
-          <div class="text-[11px] px-2 py-1 rounded-full inline-block bg-white/10">${p.CATEGORY ?? "General"}</div>
-          <h3 class="mt-2 font-semibold leading-snug">${p.TITLE}</h3>
-          <a href="${p.AMAZON}" target="_blank" rel="nofollow sponsored noopener"
-             class="mt-3 inline-flex items-center justify-center w-full rounded-xl px-4 py-2
-                    bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white font-semibold">
-            Ver en Amazon
-          </a>
-        </div>
-      </article>
-    `).join("");
-  };
-
-  function rebuildCategories(items){
-    if (!$cat) return;
-    const keep = $cat.value;
-    const cats = Array.from(new Set(items.map(p => p.CATEGORY).filter(Boolean))).sort();
-    $cat.innerHTML = '<option value="">Todas las categorías</option>' +
-                     cats.map(c => `<option value="${c}">${c}</option>`).join('');
-    if (cats.includes(keep)) $cat.value = keep;
-  }
-
-  let lastText = null;
-
-  async function pull() {
-    try {
-      // Rompe caché sin tocar tu JSON_URL
-      const url = JSON_URL + (JSON_URL.includes('?') ? '&' : '?') + 't=' + Date.now();
-      const res = await fetch(url, { cache: 'no-store' });
-      if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
-      const text = await res.text();
-      if (text === lastText) return;         // nada cambió
-      lastText = text;
-
-      const data  = JSON.parse(text);
-      const items = Object.values(data.PRODUCTOS || {});
-      if (!items.length) return;
-
-      // Actualiza DATA global y refresca vista
-      window.DATA = items;
-      rebuildCategories(items);
-      applyFilters();
-      console.log('✅ Productos actualizados automáticamente');
-    } catch (e) {
-      console.warn('Auto-refresh falló:', e);
-    }
-  }
-
-  // Primera carga + intervalos + al volver al tab
-  pull();
-  setInterval(pull, REFRESH_MS);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
-
-  // Por si quieres refrescar manual: window.refreshProducts()
-  window.refreshProducts = pull;
-})();
-</script>
+  </script>
 </body>
 </html>
