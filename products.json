@@ -165,7 +165,7 @@
       "TITLE": "QUAY Nightfall Shield – Gafas de sol (negro)",
       "PRICE": 0,
       "CATEGORY": "Accesorios",
-      "IMAGE": "https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=B0BW5LLKXY&Format=_SL1000_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=kaninosabioan-20",
+      "IMAGE": "https://m.media-amazon.com/images/I/61oN5YmTGoL._AC_SL1500_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0BW5LLKXY?tag=kaninosabioan-20",
       "FEATURE": false
     },
@@ -325,7 +325,7 @@
       "TITLE": "ChomChom Roller – Removedor de pelo de mascotas",
       "PRICE": 0,
       "CATEGORY": "Mascotas",
-      "IMAGE": "https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=B00BAGTNAQ&Format=_SL1000_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=kaninosabioan-20",
+      "IMAGE": "https://m.media-amazon.com/images/I/71YFOZ2k0XL._AC_UL640_FMwebp_QL65_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B00BAGTNAQ?tag=kaninosabioan-20",
       "FEATURE": false
     },
@@ -385,7 +385,10 @@
       "AMAZON": "https://www.amazon.com/-/es/Wheels-Toyota-Naranja-Superestrellas-r%C3%A1pidas/dp/B09HSN6RD7?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "cortapelos-pro-b0dqg5rrdb": {
+
+    /* ===== NUEVOS (sin duplicados) ===== */
+
+    "cortapelos-pro-kit-8p-b0dqg5rrdb": {
       "TITLE": "Cortapelos profesional inalámbrico + recortadora (kit 8 pzs, LED)",
       "PRICE": 0,
       "CATEGORY": "Belleza",
@@ -417,15 +420,15 @@
       "AMAZON": "https://www.amazon.com/dp/B0DSW249MG?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "caja-huevos-rodante-b0fj699dqn": {
-      "TITLE": "Caja rodante para huevos – almacenamiento para refrigerador",
+    "caja-rodante-huevos-b0fj699dqn": {
+      "TITLE": "Caja rodante para huevos – almacenamiento para refrigerador (crema)",
       "PRICE": 0,
       "CATEGORY": "Cocina",
-      "IMAGE": "https://m.media-amazon.com/images/I/712in-kP0kL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "IMAGE": "https://m.media-amazon.com/images/I/51cTGBEymQL._AC_SX679_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0FJ699DQN?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "calentador-alimentos-b08mlhz86g": {
+    "calentador-alimentos-portatil-b08mlhz86g": {
       "TITLE": "Calentador de alimentos eléctrico portátil (110V/12V, 0.4 gal, INOX)",
       "PRICE": 0,
       "CATEGORY": "Hogar",
@@ -433,15 +436,15 @@
       "AMAZON": "https://www.amazon.com/dp/B08MLHZ86G?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "gimbal-telefono-3ejes-b0c89t698j": {
-      "TITLE": "Estabilizador de teléfono 3 ejes plegable con rueda de enfoque (iPhone/Android)",
+    "estabilizador-3-ejes-b0c89t698j": {
+      "TITLE": "Estabilizador de teléfono 3 ejes plegable con rueda de enfoque",
       "PRICE": 0,
       "CATEGORY": "Tecnología",
-      "IMAGE": "https://m.media-amazon.com/images/I/71HsdAHeC0L._AC_SX466_.jpg",
+      "IMAGE": "https://m.media-amazon.com/images/I/712in-kP0kL._AC_SY300_SX300_QL70_FMwebp_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0C89T698J?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "yijiu-nightgown-b0fg84zpkq": {
+    "camison-yijiu-b0fg84zpkq": {
       "TITLE": "YIJIU – Camisón sin mangas ajustable, tirantes finos (estampado)",
       "PRICE": 0,
       "CATEGORY": "Ropa",
