@@ -579,6 +579,39 @@
       "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71J157-uKML._AC_UL200_SR200,200_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B07HD61PYN?tag=kaninosabioan-20",
       "FEATURE": false
+    },
+
+    "telesin-kit-agarre-magnetico-b0fp4q2tjg": {
+      "TITLE": "TELESIN — Kit de agarre magnético maestro para iPhone 17 Pro Max (batería integrada 3200 mAh)",
+      "PRICE": 0,
+      "CATEGORY": "Tecnología",
+      "IMAGE": "https://m.media-amazon.com/images/I/61Avj8UZ8mL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FP4Q2TJG?tag=kaninosabioan-20",
+      "FEATURE": true
+    },
+    "carcasa-metalica-iphone17pro-b0fk56r11j": {
+      "TITLE": "Carcasa rígida de metal con marco de aluminio para iPhone 17 Pro Max (protección grado militar, color azul)",
+      "PRICE": 0,
+      "CATEGORY": "Accesorios",
+      "IMAGE": "https://m.media-amazon.com/images/I/61QVThszDUL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FK56R11J?tag=kaninosabioan-20",
+      "FEATURE": true
+    },
+    "obturador-bluetooth-ergonomico-b0fccxg46b": {
+      "TITLE": "Agarre de obturador de cámara Bluetooth para iPhone y Android (rotación 360°, control remoto inalámbrico)",
+      "PRICE": 0,
+      "CATEGORY": "Tecnología",
+      "IMAGE": "https://m.media-amazon.com/images/I/61P6LJVH3qL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FCCXG46B?tag=kaninosabioan-20",
+      "FEATURE": true
+    },
+    "bloques-magneticos-150-piezas-b0fh4wxjnj": {
+      "TITLE": "Bloques magnéticos de 150 piezas — Juego de construcción sensorial Montessori STEM para niños",
+      "PRICE": 0,
+      "CATEGORY": "Juguetes",
+      "IMAGE": "https://m.media-amazon.com/images/I/81TEoesfZ4L._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FH4WXJNJ?tag=kaninosabioan-20",
+      "FEATURE": true
     }
   }
 }
