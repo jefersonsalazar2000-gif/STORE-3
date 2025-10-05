@@ -1,5 +1,6 @@
 {
   "PRODUCTOS": {
+    /* ===================== ACCESORIOS ===================== */
     "quay-nightfall-shield-b0bw5llkxy": {
       "TITLE": "QUAY Nightfall Shield – Gafas de sol (negro)",
       "PRICE": 0,
@@ -32,7 +33,24 @@
       "AMAZON": "https://www.amazon.com/dp/B07GB1BKBC?tag=kaninosabioan-20",
       "FEATURE": false
     },
+    "youshares-paravientos-dji-b0dshwqtz9": {
+      "TITLE": "YOUSHARES — Paravientos peludo para micrófono (DJI Mic Mini, 2 pzs)",
+      "PRICE": 0,
+      "CATEGORY": "Accesorios",
+      "IMAGE": "https://m.media-amazon.com/images/I/71DbOckXRdL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DSHWQTZ9?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "mini-tripode-insta360-b0cnrgl6rb": {
+      "TITLE": "Coyktonty — Mini trípode de escritorio (Insta360/DJI/Gopro)",
+      "PRICE": 0,
+      "CATEGORY": "Accesorios",
+      "IMAGE": "https://m.media-amazon.com/images/I/41Q+GftHqGL._AC_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0CNRGL6RB?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
 
+    /* ===================== AUTOMOTRIZ ===================== */
     "carfidant-removedor-raspones-b0f6768lqb": {
       "TITLE": "Carfidant – Removedor de rayones para autos (3.4 fl oz)",
       "PRICE": 0,
@@ -41,7 +59,16 @@
       "AMAZON": "https://www.amazon.com/dp/B0F6768LQB?tag=kaninosabioan-20",
       "FEATURE": false
     },
+    "difusor-auto-sin-agua-b0f2fgphr5": {
+      "TITLE": "Ambientador/difusor inteligente sin agua (para coche)",
+      "PRICE": 0,
+      "CATEGORY": "Automotriz",
+      "IMAGE": "https://m.media-amazon.com/images/I/81G89-YvybL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0F2FGPHR5?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
 
+    /* ===================== BELLEZA ===================== */
     "mascarilla-moldeadora-mandibula-b0cndckxdx": {
       "TITLE": "Mascarilla moldeadora de mandíbula con ácido hialurónico",
       "PRICE": 0,
@@ -155,6 +182,7 @@
       "FEATURE": false
     },
 
+    /* ===================== COCINA ===================== */
     "gevi-espresso-b0f3hh834m": {
       "TITLE": "Gevi Cafetera Espresso 20 Bar con vaporizador (acero inoxidable)",
       "PRICE": 0,
@@ -162,6 +190,22 @@
       "IMAGE": "https://m.media-amazon.com/images/I/71sZoZpDubL._AC_SL1370_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0F3HH834M?tag=kaninosabioan-20",
       "FEATURE": true
+    },
+    "recipientes-hermeticos-b0cs358xvs": {
+      "TITLE": "Set de recipientes herméticos para alimentos (preparación y almacenamiento)",
+      "PRICE": 0,
+      "CATEGORY": "Cocina",
+      "IMAGE": "https://m.media-amazon.com/images/I/71l7wYKykxL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0CS358XVS?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "starseeker-edge-molinillo-b0c5t5l8vq": {
+      "TITLE": "STARSEEKER EDGE — Molinillo eléctrico de café (ajuste de finura)",
+      "PRICE": 0,
+      "CATEGORY": "Cocina",
+      "IMAGE": "https://m.media-amazon.com/images/I/71Zd3ENGSyL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0C5T5L8VQ?tag=kaninosabioan-20",
+      "FEATURE": false
     },
     "caja-rodante-huevos-b0fj699dqn": {
       "TITLE": "Caja rodante para huevos – almacenamiento para refrigerador (crema)",
@@ -172,12 +216,13 @@
       "FEATURE": false
     },
 
+    /* ===================== COLECCIONABLES ===================== */
     "hotwheels-gr-supra-speed-graphics-b09z9x31r8": {
       "TITLE": "Hot Wheels '20 Toyota GR Supra, Speed Graphics 5/10 (Negro)",
       "PRICE": 0,
       "CATEGORY": "Coleccionables",
       "IMAGE": "https://m.media-amazon.com/images/I/71qg+kWjNbL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/Wheels-Toyota-Supra-Speed-Graphics/dp/B09Z9X31R8?tag=kaninosabioan-20",
+      "AMAZON": "https://www.amazon.com/dp/B09Z9X31R8?tag=kaninosabioan-20",
       "FEATURE": false
     },
     "hotwheels-boulevard-2021-supra-b0dfhrqd7x": {
@@ -185,7 +230,7 @@
       "PRICE": 0,
       "CATEGORY": "Coleccionables",
       "IMAGE": "https://m.media-amazon.com/images/I/61+-nTiUOsL._AC_UL640_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/-/es/Wheels-Boulevard-2021-Toyota-Supra/dp/B0DFHRQD7X?tag=kaninosabioan-20",
+      "AMAZON": "https://www.amazon.com/dp/B0DFHRQD7X?tag=kaninosabioan-20",
       "FEATURE": false
     },
     "hotwheels-toyota-supra-l2593-b0bld27gm2": {
@@ -193,7 +238,7 @@
       "PRICE": 0,
       "CATEGORY": "Coleccionables",
       "IMAGE": "https://m.media-amazon.com/images/I/71g8aeeiFcL._AC_UL640_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/-/es/Hot-Wheels-Toyota-Supra-L2593/dp/B0BLD27GM2?tag=kaninosabioan-20",
+      "AMAZON": "https://www.amazon.com/dp/B0BLD27GM2?tag=kaninosabioan-20",
       "FEATURE": false
     },
     "hotwheels-toyota-supra-perla-cromo-b0dnkdpnbt": {
@@ -201,7 +246,7 @@
       "PRICE": 0,
       "CATEGORY": "Coleccionables",
       "IMAGE": "https://m.media-amazon.com/images/I/41i6j2V8CrL._AC_UL640_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/-/es/Wheels-Toyota-Supra-Perla-Cromo/dp/B0DNKDPNBT?tag=kaninosabioan-20",
+      "AMAZON": "https://www.amazon.com/dp/B0DNKDPNBT?tag=kaninosabioan-20",
       "FEATURE": false
     },
     "hotwheels-toyota-supra-naranja-b09hsn6rd7": {
@@ -209,10 +254,11 @@
       "PRICE": 0,
       "CATEGORY": "Coleccionables",
       "IMAGE": "https://m.media-amazon.com/images/I/918u0ZMu7FL._AC_UL640_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/-/es/Wheels-Toyota-Naranja-Superestrellas-r%C3%A1pidas/dp/B09HSN6RD7?tag=kaninosabioan-20",
+      "AMAZON": "https://www.amazon.com/dp/B09HSN6RD7?tag=kaninosabioan-20",
       "FEATURE": false
     },
 
+    /* ===================== DEPORTES ===================== */
     "teeter-ep560-mesa-inversion-b0bbxxhw78": {
       "TITLE": "Teeter EP-560 Ltd. – Mesa de inversión (certificada UL)",
       "PRICE": 0,
@@ -229,7 +275,16 @@
       "AMAZON": "https://www.amazon.com/dp/B0DFGQHX22?tag=kaninosabioan-20",
       "FEATURE": false
     },
+    "savadeck-bicicleta-carbono-b0bztzf2sx": {
+      "TITLE": "SAVADECK — Bicicleta de carretera de fibra de carbono (discos hidráulicos)",
+      "PRICE": 0,
+      "CATEGORY": "Deportes",
+      "IMAGE": "https://m.media-amazon.com/images/I/71ZbokC6QlL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0BZTZF2SX?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
 
+    /* ===================== DISPOSITIVOS AMAZON ===================== */
     "dispositivo-streaming-4k-b0cqmrkrv5": {
       "TITLE": "Dispositivo de streaming 4K con control por voz Alexa",
       "PRICE": 0,
@@ -279,6 +334,7 @@
       "FEATURE": false
     },
 
+    /* ===================== ELECTRÓNICA ===================== */
     "auriculares-inalambricos-b09ld2d1tv": {
       "TITLE": "Auriculares inalámbricos intrauditivos impermeables",
       "PRICE": 0,
@@ -311,7 +367,48 @@
       "AMAZON": "https://www.amazon.com/dp/B09HM94VDS?tag=kaninosabioan-20",
       "FEATURE": false
     },
+    "powerbank-maxiaeon-b0ffshn5mm": {
+      "TITLE": "MAXIAEON — Cargador portátil 100000 mAh (Power Bank)",
+      "PRICE": 0,
+      "CATEGORY": "Electrónica",
+      "IMAGE": "https://m.media-amazon.com/images/I/613Er1UHM9L._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FFSHN5MM?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "botella-cafe-calefaccion-b0d54fwmyj": {
+      "TITLE": "Mini botella de agua/café con función de calefacción (portátil)",
+      "PRICE": 0,
+      "CATEGORY": "Electrónica",
+      "IMAGE": "https://m.media-amazon.com/images/I/61i5DzzIQyL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0D54FWMYJ?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "mongdio-taza-autoagitable-b0dqxzk5cc": {
+      "TITLE": "Mongdio Taza de café autoagitable con pantalla de temperatura",
+      "PRICE": 0,
+      "CATEGORY": "Tecnología",
+      "IMAGE": "https://m.media-amazon.com/images/I/61zkCY9ogPL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DQXZKSCC?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "taza-autoagitacion-b0drgfyqbq": {
+      "TITLE": "Taza de café autoagitada de acero inoxidable (recargable)",
+      "PRICE": 0,
+      "CATEGORY": "Tecnología",
+      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71Oxr26MmUL._AC_UL200_SR200,200_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DRGFYQBQ?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "estabilizador-3-ejes-b0c89t698j": {
+      "TITLE": "Estabilizador de teléfono 3 ejes plegable con rueda de enfoque",
+      "PRICE": 0,
+      "CATEGORY": "Tecnología",
+      "IMAGE": "https://m.media-amazon.com/images/I/712in-kP0kL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0C89T698J?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
 
+    /* ===================== HOGAR ===================== */
     "breville-barista-touch-impress-b0c1t4w797": {
       "TITLE": "Breville Barista Touch Impress (acero inoxidable)",
       "PRICE": 0,
@@ -376,7 +473,56 @@
       "AMAZON": "https://www.amazon.com/dp/B0FCFFGPBV?tag=kaninosabioan-20",
       "FEATURE": false
     },
+    "botella-inteligente-led-b09lm3kzhs": {
+      "TITLE": "Botella de agua inteligente con pantalla de temperatura (LED)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/41q4AwNjQnL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B09LM3KZHS?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "hervidor-electrico-portatil-b0dfwfbg2l": {
+      "TITLE": "Hervidor eléctrico portátil (autoapagado e indicadores)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/71yPLDoKwLL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DFWFBG2L?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "maquina-cafe-capsulas-2en1-b0fjlxnk76": {
+      "TITLE": "Máquina portátil de café de cápsulas 2 en 1 (carga USB)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/61wpCz6-v5L._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FJLXNK76?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "cafetera-molinillo-espumador-b0fp2wmqpy": {
+      "TITLE": "Cafetera espresso con molinillo y espumador (inoxidable)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/71RRfyuG8NL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FP2WMQPY?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "cabilock-calentador-bebidas-b0cr7twb3h": {
+      "TITLE": "Cabilock — Calentador de bebidas con control termostático",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/61ZNdttOOAL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0CR7TWB3H?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "yatmung-bote-basura-inteligente-b0d41qnl2b": {
+      "TITLE": "Yatmung — Bote de basura inteligente 2.5 gal con sensor",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/618Y+n0xZUL._SX522_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0D41QNL2B?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
 
+    /* ===================== MASCOTAS ===================== */
     "chomchom-roller-b00bagtnaq": {
       "TITLE": "ChomChom Roller – Removedor de pelo de mascotas",
       "PRICE": 0,
@@ -386,6 +532,7 @@
       "FEATURE": false
     },
 
+    /* ===================== ROPA ===================== */
     "pantalones-microforro-pack-b0ddkm4g6h": {
       "TITLE": "Paquete de pantalones con microforro (descanso, bolsillos)",
       "PRICE": 0,
@@ -426,7 +573,16 @@
       "AMAZON": "https://www.amazon.com/dp/B0FG84ZPKQ?tag=kaninosabioan-20",
       "FEATURE": false
     },
+    "boxers-personalizados-b0dsd4tdjn": {
+      "TITLE": "ElYIECD — Boxers personalizados con foto (Estilo 7)",
+      "PRICE": 0,
+      "CATEGORY": "Ropa",
+      "IMAGE": "https://m.media-amazon.com/images/I/710XgOTAcjL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DSD4TDJN?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
 
+    /* ===================== SALUD ===================== */
     "mascara-frio-ojos-b07hd61pyn": {
       "TITLE": "Máscara de gel frío para ojos - alivio de hinchazón y migrañas",
       "PRICE": 0,
@@ -434,32 +590,6 @@
       "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71J157-uKML._AC_UL200_SR200,200_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B07HD61PYN?tag=kaninosabioan-20",
       "FEATURE": false
-    },
-
-    "mongdio-taza-autoagitable-b0dqxzk5cc": {
-      "TITLE": "Mongdio Taza de café autoagitable con pantalla de temperatura",
-      "PRICE": 0,
-      "CATEGORY": "Tecnología",
-      "IMAGE": "https://m.media-amazon.com/images/I/61zkCY9ogPL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DQXZKSCC?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "taza-autoagitacion-b0drgfyqbq": {
-      "TITLE": "Taza de café autoagitada de acero inoxidable (recargable)",
-      "PRICE": 0,
-      "CATEGORY": "Tecnología",
-      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71Oxr26MmUL._AC_UL200_SR200,200_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DRGFYQBQ?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "estabilizador-3-ejes-b0c89t698j": {
-      "TITLE": "Estabilizador de teléfono 3 ejes plegable con rueda de enfoque",
-      "PRICE": 0,
-      "CATEGORY": "Tecnología",
-      "IMAGE": "https://m.media-amazon.com/images/I/712in-kP0kL._AC_SY300_SX300_QL70_FMwebp_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0C89T698J?tag=kaninosabioan-20",
-      "FEATURE": false
     }
   }
 }
-
