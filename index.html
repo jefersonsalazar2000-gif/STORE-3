@@ -14,20 +14,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <!-- Perf: preconnect/dns-prefetch -->
-  <link rel="preconnect" href="https://m.media-amazon.com">
-  <link rel="dns-prefetch" href="//m.media-amazon.com">
-  <link rel="preconnect" href="https://raw.githubusercontent.com">
-  <link rel="dns-prefetch" href="//raw.githubusercontent.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <!-- SEO / Social -->
-  <meta name="description" content="J_A MEGA STORE 360 — Tecnología, hogar y accesorios con experiencia rápida y elegante.">
-  <meta property="og:title" content="J_A MEGA STORE 360">
-  <meta property="og:description" content="Productos seleccionados + experiencia pro y ultra rápida.">
-  <meta property="og:image" content="/og-cover.png">
-  <meta name="twitter:card" content="summary_large_image">
-
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -55,7 +41,7 @@
     body{ font-family:'Outfit',sans-serif }
     .neon-title{ background:var(--grad-1); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 0 18px rgba(124,58,237,.25) }
     .btn-neon{ background:var(--btn-grad); color:#0b0f1a; font-weight:800; box-shadow:0 0 24px rgba(124,58,237,.35); transition:transform .12s, box-shadow .12s, opacity .12s }
-    .btn-neon:hover{ transform:translateY(-1px) scale(1.005); box-shadow:0 0 32px rgba(124,58,237,.55) }
+    .btn-neon:hover{ transform:translateY(-1px) scale(1.005); box-shadow:0 0 32px rgba(124,58,237,.55) } /* suavizado */
     .chip{ background:rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.35) }
     .card{ background:radial-gradient(1200px 500px at -10% -10%, rgba(124,58,237,.12), transparent 50%), radial-gradient(1000px 400px at 120% 120%, rgba(0,229,255,.10), transparent 45%), #12172a; border:1px solid rgba(124,58,237,.25) }
     .toolbar{ background:linear-gradient(180deg, rgba(18,23,42,.85), rgba(18,23,42,.6) 60%, rgba(18,23,42,.1)); border-bottom:1px solid rgba(124,58,237,.25); backdrop-filter:blur(8px) }
@@ -71,29 +57,6 @@
     body { touch-action: pan-y; overscroll-behavior-x: none; }
     #grid { overflow-x:hidden; }
     *, *::before, *::after { box-sizing:border-box; }
-
-    /* === Mejora rendimiento visual (sin romper tu render) === */
-    #grid > article { content-visibility:auto; contain-intrinsic-size: 320px 420px; }
-
-    /* LQIP/Blur-up para imágenes (se desactiva cuando cargan) */
-    .ms360-imgwrap{position:relative; overflow:hidden}
-    .ms360-imgwrap img{filter:blur(14px); transform:scale(1.02); transition:filter .25s ease, transform .25s ease}
-    .ms360-imgwrap img[data-loaded="1"]{filter:blur(0); transform:none}
-
-    /* Toolbar PRO (orden/favoritos/comparar) */
-    #probar { position:sticky; top:56px; z-index:25; backdrop-filter:blur(10px) }
-    #probar .prochip{ background:rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.35) }
-
-    /* Barra de comparar (flotante) */
-    #comparebar{position:fixed; left:50%; transform:translateX(-50%); bottom:80px; z-index:60; display:none}
-    #comparebar.show{display:block}
-  </style>
-
-  <!-- Respeta reducción de movimiento -->
-  <style>
-  @media (prefers-reduced-motion: reduce){
-    *{animation:none !important; transition:none !important}
-  }
   </style>
 
   <!-- ===== MS360 Add-on Styles (no sustituye los tuyos) ===== -->
@@ -141,25 +104,6 @@
       </div>
     </div>
   </header>
-
-  <!-- Toolbar PRO (inyectada también por JS por si no existiera) -->
-  <div id="probar" class="mx-auto max-w-7xl px-4 mt-2">
-    <div class="card rounded-2xl px-3 py-2 flex items-center gap-2 justify-between">
-      <div class="flex items-center gap-2">
-        <button id="pro-favs" class="prochip px-3 py-1.5 rounded-lg text-sm">❤️ Favoritos</button>
-        <button id="pro-cmp"  class="prochip px-3 py-1.5 rounded-lg text-sm">⇄ Comparar</button>
-      </div>
-      <div class="flex items-center gap-2">
-        <label class="text-sm text-white/70">Orden:</label>
-        <select id="pro-sort" class="input text-sm">
-          <option value="featured">Destacados</option>
-          <option value="priceAsc">Precio ↑</option>
-          <option value="priceDesc">Precio ↓</option>
-          <option value="az">A–Z</option>
-        </select>
-      </div>
-    </div>
-  </div>
 
   <!-- Controles -->
   <section class="max-w-7xl mx-auto px-4 mt-4 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
@@ -341,13 +285,12 @@
         </div>` : '';
       return `
         <article class="card rounded-2xl p-3 sm:p-4 flex flex-col gradient-border">
-          <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3] ms360-imgwrap">
+          <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3]">
             <img src="${p.image}${p.image.includes('?')?'&':'?'}v=10"
                  alt="${p.title}"
                  class="w-full h-full object-cover"
                  loading="lazy"
-                 onload="this.setAttribute('data-loaded','1')"
-                 onerror="this.onerror=null;this.src='https://via.placeholder.com/800x600?text=Imagen';this.setAttribute('data-loaded','1');" />
+                 onerror="this.onerror=null;this.src='https://via.placeholder.com/800x600?text=Imagen';" />
           </div>
           <div class="mt-3 flex items-start justify-between gap-3">
             <div class="min-w-0">
@@ -384,8 +327,6 @@
         });
       grid.innerHTML = filtered.map(productCard).join('');
       empty.classList.toggle('hidden', filtered.length>0);
-      // re-enhance (favoritos/compartir/compare) cuando se vuelve a pintar
-      queueMicrotask(()=>window.dispatchEvent(new Event('ja_products_updated')));
     }
 
     // ===== Verificador y Auto-Fix del tag de Amazon (Admin) =====
@@ -678,7 +619,7 @@
 
     // ======== Escuchar bootstrap del JSON (para refrescar sin recargar) ========
     window.addEventListener('ja_products_updated', ()=>{
-      if(!db){
+      if(!db){ // solo en modo local
         products = local_load();
         renderCategories(products);
         applyFilters();
@@ -712,7 +653,7 @@
     const RAW_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
     const LS_KEY  = "ja_store_products_v2";
     const TAG     = "kaninosabioan-20";
-    const REFRESH_MS = 30000;
+    const REFRESH_MS = 30000; // 30s
 
     function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || [] }catch{ return [] } }
     function lsSave(v){ localStorage.setItem(LS_KEY, JSON.stringify(v)) }
@@ -932,6 +873,8 @@
   <!-- === Script activador MS360 Pro (sin forzar clases del grid) === -->
   <script>
   (() => {
+    // (ELIMINADO el forceTwoColsOnMobile: ya arrancamos con 2 columnas por CSS)
+
     const modal   = document.getElementById('ms360-pro');
     const mainImg = document.getElementById('ms360-main');
     const zoomBox = document.getElementById('ms360-zoom');
@@ -1125,212 +1068,6 @@
   })();
   </script>
 
-  <!-- ===== Toolbar PRO + Favoritos + Comparador + Orden (Aditivo) ===== -->
-  <script>
-  (()=>{'use strict';
-    const $=(s,r=document)=>r.querySelector(s);
-    const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
-    const LS_FAV='ja_favs_v1', LS_CMP='ja_cmp_v1';
-
-    const store = {
-      get favs(){ try{ return new Set(JSON.parse(localStorage.getItem(LS_FAV)||'[]')) }catch{ return new Set() } },
-      set favs(v){ localStorage.setItem(LS_FAV, JSON.stringify([...v])) },
-      get cmp(){ try{ return new Set(JSON.parse(localStorage.getItem(LS_CMP)||'[]')) }catch{ return new Set() } },
-      set cmp(v){ localStorage.setItem(LS_CMP, JSON.stringify([...v])) },
-    };
-
-    function enhanceCards(){
-      $$('.card').forEach(card=>{
-        if(card.dataset.favcmpEnhanced) return;
-        card.dataset.favcmpEnhanced='1';
-
-        const imgWrap = card.querySelector('.aspect-[4\\/3]') || card;
-        imgWrap.classList.add('ms360-imgwrap');
-        const img=imgWrap.querySelector('img');
-        if(img){
-          const done=()=> img.setAttribute('data-loaded','1');
-          if(img.complete) done(); else img.addEventListener('load', done, {once:true});
-          img.setAttribute('decoding','async'); img.setAttribute('fetchpriority','low');
-        }
-
-        const title=(card.querySelector('h3')?.textContent||'').trim();
-        const id='t:'+title.toLowerCase().replace(/\s+/g,' ').trim();
-
-        // Reutiliza caja de acciones si ya existe (share/copy)
-        let box = card.querySelector('.ms360-actions');
-        if(!box){
-          box = document.createElement('div');
-          box.className='ms360-actions';
-          imgWrap.appendChild(box);
-        }
-
-        // Botón Favorito
-        const bFav=document.createElement('button');
-        bFav.className='ms360-ibtn'; bFav.title='Guardar en Favoritos'; bFav.textContent='❤️';
-        const f=store.favs; if(f.has(id)) bFav.style.borderColor='rgba(255,255,255,.4)';
-        bFav.addEventListener('click', (e)=>{
-          e.stopPropagation();
-          const favs=store.favs; favs.has(id)?favs.delete(id):favs.add(id); store.favs=favs;
-          bFav.style.borderColor=favs.has(id)?'rgba(255,255,255,.4)':'rgba(255,255,255,.12)';
-        });
-
-        // Botón Comparar
-        const bCmp=document.createElement('button');
-        bCmp.className='ms360-ibtn'; bCmp.title='Añadir a comparar'; bCmp.textContent='⇄';
-        const c=store.cmp; if(c.has(id)) bCmp.style.borderColor='rgba(255,255,255,.4)';
-        bCmp.addEventListener('click',(e)=>{
-          e.stopPropagation();
-          const cmps=store.cmp; cmps.has(id)?cmps.delete(id):cmps.add(id);
-          if(cmps.size>4){ cmps.delete([...cmps][0]); } // máximo 4
-          store.cmp=cmps;
-          bCmp.style.borderColor=cmps.has(id)?'rgba(255,255,255,.4)':'rgba(255,255,255,.12)';
-          updateCompareBar();
-        });
-
-        // Inserta primero nuestros botones, luego quedan los de share/copy
-        box.prepend(bCmp); box.prepend(bFav);
-      });
-    }
-
-    // Ordenamiento DOM-only
-    function applySort(mode){
-      const grid=$('#grid'); if(!grid) return;
-      const cards=$$('.card', grid);
-      const read=(card)=>({
-        el: card,
-        title: card.querySelector('h3')?.textContent?.trim()||'',
-        price: (()=>{
-          const t=card.querySelector('.text-white\\/90.font-semibold')?.textContent||'';
-          const m=t.replace(/[^0-9.,]/g,'').replace(/\./g,'').replace(',','.');
-          return m? Number(m): NaN;
-        })(),
-        featured: !!card.querySelector('.tag')
-      });
-      const arr=cards.map(read);
-      if(mode==='priceAsc') arr.sort((a,b)=>(a.price||9e15)-(b.price||9e15));
-      else if(mode==='priceDesc') arr.sort((a,b)=>(b.price||-1)-(a.price||-1));
-      else if(mode==='az') arr.sort((a,b)=>a.title.localeCompare(b.title));
-      else arr.sort((a,b)=>(Number(b.featured)-Number(a.featured))||a.title.localeCompare(b.title));
-      grid.innerHTML=''; arr.forEach(x=> grid.appendChild(x.el));
-    }
-
-    // Filtro de favoritos
-    let favFilterOn=false;
-    function toggleFavFilter(){
-      favFilterOn=!favFilterOn;
-      const favs=store.favs;
-      $$('.card').forEach(card=>{
-        const title=(card.querySelector('h3')?.textContent||'').trim();
-        const id='t:'+title.toLowerCase().replace(/\s+/g,' ').trim();
-        card.style.display = (!favFilterOn || favs.has(id)) ? '' : 'none';
-      });
-      const btn=$('#pro-favs'); if(btn) btn.textContent = favFilterOn ? '❤️ Favoritos (ON)' : '❤️ Favoritos';
-    }
-
-    // Barra y modal de comparar
-    function mountCompareBar(){
-      if($('#comparebar')) return;
-      const bar=document.createElement('div');
-      bar.id='comparebar'; bar.className='card rounded-xl px-3 py-2';
-      bar.innerHTML=`
-        <div class="flex items-center gap-2">
-          <span class="text-sm text-white/80">Comparar (<b id="cmp-count">0</b>/4)</span>
-          <button id="cmp-open" class="chip px-3 py-1.5 rounded-lg text-sm">Ver tabla</button>
-          <button id="cmp-clear" class="chip px-3 py-1.5 rounded-lg text-sm">Limpiar</button>
-        </div>`;
-      document.body.appendChild(bar);
-      $('#cmp-clear').addEventListener('click', ()=>{ store.cmp=new Set(); updateCompareBar(); });
-      $('#cmp-open').addEventListener('click', openCompareModal);
-      updateCompareBar();
-    }
-    function updateCompareBar(){
-      const n=store.cmp.size;
-      const c=$('#cmp-count'); if(c) c.textContent=n;
-      $('#comparebar')?.classList.toggle('show', n>0);
-    }
-    function openCompareModal(){
-      let list=[];
-      try{ list=JSON.parse(localStorage.getItem('ja_store_products_v2')||'[]') }catch{}
-      const ids=[...store.cmp];
-      const pick=list.filter(p=>{
-        const pid = p.id || ('t:'+String(p.title||'').toLowerCase().replace(/\s+/g,' ').trim());
-        return ids.includes(pid);
-      });
-
-      const dlg=document.createElement('dialog');
-      dlg.className='backdrop:bg-black/70 rounded-2xl w-[min(920px,96vw)]';
-      dlg.innerHTML=`
-        <form method="dialog" class="card rounded-2xl p-4 sm:p-6">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-lg font-extrabold neon-title">Comparador</h3>
-            <button class="chip px-3 py-1.5 rounded-lg text-sm">Cerrar</button>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead class="text-white/70">
-                <tr>
-                  <th class="text-left py-2">Producto</th>
-                  <th class="text-left py-2">Marca</th>
-                  <th class="text-left py-2">Categoría</th>
-                  <th class="text-left py-2">Precio</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${pick.map(p=>`
-                  <tr class="border-t border-white/10">
-                    <td class="py-2">${p.title||''}</td>
-                    <td class="py-2">${p.brand||''}</td>
-                    <td class="py-2">${p.category||''}</td>
-                    <td class="py-2">${p.price?('$'+Number(p.price).toLocaleString()):''}</td>
-                  </tr>`).join('')}
-              </tbody>
-            </table>
-          </div>
-        </form>`;
-      document.body.appendChild(dlg); dlg.showModal();
-      dlg.addEventListener('close', ()=> dlg.remove());
-    }
-
-    // Métricas suaves en console
-    function setupMetrics(){
-      const io=new IntersectionObserver(entries=>{
-        entries.forEach(e=>{
-          if(e.isIntersecting){
-            const title=e.target.querySelector('h3')?.textContent?.trim();
-            if(title) console.log('[view]', title);
-            io.unobserve(e.target);
-          }
-        });
-      }, {threshold:0.25, rootMargin:'0px 0px -20% 0px'});
-      $$('.card').forEach(c=> io.observe(c));
-      document.addEventListener('click', (ev)=>{
-        const a=ev.target.closest('a[href*="amazon."]'); if(!a) return;
-        const card=ev.target.closest('.card');
-        const title=card?.querySelector('h3')?.textContent?.trim();
-        console.log('[click_out_amazon]', {title, href:a.href});
-      }, {passive:true});
-    }
-
-    // Eventos
-    window.addEventListener('DOMContentLoaded', ()=>{
-      mountCompareBar();
-      enhanceCards();
-      setupMetrics();
-      // Toolbar
-      $('#pro-sort')?.addEventListener('change', (e)=> applySort(e.target.value));
-      $('#pro-favs')?.addEventListener('click', toggleFavFilter);
-      $('#pro-cmp')?.addEventListener('click', openCompareModal);
-    });
-
-    // Re-enhance cuando cambia el grid
-    window.addEventListener('ja_products_updated', ()=>{ enhanceCards(); setupMetrics(); });
-
-    // También tras búsqueda/categoría
-    document.addEventListener('input', e=>{ if(e.target?.id==='search') setTimeout(()=>{ enhanceCards(); setupMetrics(); }, 0); }, {passive:true});
-    document.addEventListener('change', e=>{ if(e.target?.id==='categoryFilter' || e.target?.id==='pro-sort') setTimeout(()=>{ enhanceCards(); setupMetrics(); }, 0); }, {passive:true});
-  })();
-  </script>
-
   <!-- ===== MS360 Add-on Script (encapsulado) ===== -->
   <script>
   (() => { 'use strict';
@@ -1374,7 +1111,6 @@
       window.addEventListener('scroll', ()=> { const y = window.scrollY || document.documentElement.scrollTop; btn.classList.toggle('ms360-show', y>380); }, {passive:true});
     });
 
-    // Share/Copy (ya lo tenías)
     safe(()=> {
       const enhance = () => {
         $$('.card').forEach(card => {
@@ -1414,7 +1150,6 @@
       document.addEventListener('change', e=>{ if(e.target && e.target.id==='categoryFilter') setTimeout(enhance, 0) }, {passive:true});
     });
 
-    // Aviso red
     safe(()=> {
       const bar = document.createElement('div');
       bar.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999;display:none";
@@ -1432,7 +1167,6 @@
       if(!navigator.onLine) off();
     });
 
-    // PWA install nudge
     safe(()=> {
       let deferred=null;
       window.addEventListener('beforeinstallprompt', (e)=>{
@@ -1451,24 +1185,10 @@
         }, 2200);
       }, {once:true});
     });
+
   })();
   </script>
   <!-- ===== /MS360 Add-on Script ===== -->
-
-  <!-- Accesibilidad ARIA mínima -->
-  <script>
-  (()=>{'use strict';
-    const set=(el, attrs)=> el && Object.entries(attrs).forEach(([k,v])=> el.setAttribute(k,v));
-    window.addEventListener('DOMContentLoaded', ()=>{
-      set(document.getElementById('modal'), {'aria-modal':'true','aria-labelledby':'modalTitle'});
-      set(document.getElementById('settings'), {'aria-modal':'true'});
-      set(document.getElementById('ms360-prev'), {'aria-label':'Imagen anterior'});
-      set(document.getElementById('ms360-next'), {'aria-label':'Imagen siguiente'});
-      set(document.getElementById('ms360-full'), {'aria-label':'Ver a pantalla completa'});
-      set(document.getElementById('ms360-close'), {'aria-label':'Cerrar visor'});
-    });
-  })();
-  </script>
 
 </body>
 </html>
