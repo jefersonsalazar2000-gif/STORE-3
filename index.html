@@ -260,7 +260,12 @@
       return `
         <article class="card rounded-2xl p-3 sm:p-4 flex flex-col gradient-border">
           <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3]">
-            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover" loading="lazy" />
+            <!-- FIX: cache-buster + fallback si la imagen falla -->
+            <img src="${p.image}${p.image.includes('?')?'&':'?'}v=10"
+                 alt="${p.title}"
+                 class="w-full h-full object-cover"
+                 loading="lazy"
+                 onerror="this.onerror=null;this.src='https://via.placeholder.com/800x600?text=Imagen';" />
           </div>
           <div class="mt-3 flex items-start justify-between gap-3">
             <div class="min-w-0">
@@ -287,11 +292,14 @@
     function applyFilters(){
       const term = (search.value||'').toLowerCase().trim();
       const cat = categoryFilter.value||'all';
-      const filtered = products.filter(p=>{
-        const t = !term || p.title.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term);
-        const c = cat==='all' || p.category===cat;
-        return t && c;
-      });
+      const filtered = products
+        .slice()
+        .sort((a,b)=> (b.featured - a.featured) || a.title.localeCompare(b.title)) // FIX: orden estable
+        .filter(p=>{
+          const t = !term || p.title.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term);
+          const c = cat==='all' || p.category===cat;
+          return t && c;
+        });
       grid.innerHTML = filtered.map(productCard).join('');
       empty.classList.toggle('hidden', filtered.length>0);
     }
@@ -620,10 +628,49 @@
     const RAW_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
     const LS_KEY  = "ja_store_products_v2";
     const TAG     = "kaninosabioan-20";
-    const REFRESH_MS = 30000; // 30s (ajusta si quieres)
+    const REFRESH_MS = 30000; // 30s
 
     function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || [] }catch{ return [] } }
     function lsSave(v){ localStorage.setItem(LS_KEY, JSON.stringify(v)); }
+
+    // FIX: extraer ASIN de URLs variadas de Amazon
+    function asinFrom(url){
+      try{
+        const u = new URL(url);
+        const m1 = u.pathname.match(/\/dp\/([A-Z0-9]{10})/i);
+        const m2 = u.pathname.match(/\/gp\/product\/([A-Z0-9]{10})/i);
+        const m3 = u.pathname.match(/\/([A-Z0-9]{10})(?:[/?]|$)/i);
+        const asin = (m1?.[1] || m2?.[1] || m3?.[1] || "").toUpperCase();
+        return /^[A-Z0-9]{10}$/.test(asin) ? asin : null;
+      }catch{ return null; }
+    }
+
+    // FIX: canonicalizar URL de Amazon (quita ruido pero conserva ?tag=)
+    function canonicalAmazon(url){
+      if(!url) return "#";
+      try{
+        const u = new URL(url);
+        if(!/amazon\./i.test(u.hostname)) return url;
+        const asin = asinFrom(url);
+        if(asin){
+          u.pathname = `/dp/${asin}`;
+          // conserva solo 'tag'
+          const tag = u.searchParams.get('tag');
+          u.search = "";
+          if(tag) u.searchParams.set('tag', tag);
+          return u.toString();
+        }
+        return url;
+      }catch{ return url; }
+    }
+
+    // FIX: clave estable por ASIN o por título normalizado
+    function stableKey(p){
+      const asin = asinFrom(p.AMAZON || p.amazon || "");
+      if(asin) return `asin:${asin}`;
+      const t = (p.TITLE || p.title || "").toLowerCase().replace(/\s+/g,' ').trim();
+      return `t:${t}`;
+    }
 
     function tagify(url){
       if(!url) return "#";
@@ -640,12 +687,14 @@
 
     function normalize(entry){
       const p = entry || {};
+      const canon = canonicalAmazon(p.AMAZON || "");
+      const key = stableKey({ ...p, AMAZON: canon });
       return {
-        id: crypto.randomUUID(),
+        id: key, // FIX: id determinista
         title: p.TITLE || "",
         brand: p.BRAND || "",
         image: (p.IMAGE && p.IMAGE.trim()) || "https://via.placeholder.com/800x600?text=Imagen",
-        amazon: tagify(p.AMAZON || "#"),
+        amazon: tagify(canon || p.AMAZON || "#"),
         price: p.PRICE || "",
         category: p.CATEGORY || "Otros",
         featured: !!p.FEATURE,
@@ -653,14 +702,15 @@
       };
     }
 
-    // reemplaza existentes por los nuevos si coinciden por "amazon" o "title"
+    // FIX: upsert estable por id (sin mezclar campos)
     function upsert(existing, incoming){
-      const keyOf = (x)=> (x.amazon || x.title || "").toLowerCase();
-      const map = new Map(existing.map(x=>[keyOf(x), x]));
+      const map = new Map(existing.map(x=>[x.id || stableKey(x), x]));
       for(const p of incoming){
-        map.set(keyOf(p), p); // upsert (actualiza si existe, agrega si no)
+        map.set(p.id || stableKey(p), p);
       }
-      return Array.from(map.values());
+      // orden final estable
+      return Array.from(map.values())
+        .sort((a,b)=> (b.featured - a.featured) || a.title.localeCompare(b.title));
     }
 
     let lastText = null;
@@ -678,13 +728,10 @@
 
         const current = lsLoad();
         const merged  = upsert(current, incoming);
-        const changed = JSON.stringify(merged) !== JSON.stringify(current);
 
-        if(changed){
-          lsSave(merged);
-          window.dispatchEvent(new Event('ja_products_updated'));
-          console.log("✅ Auto-sync: productos actualizados desde GitHub");
-        }
+        lsSave(merged);
+        window.dispatchEvent(new Event('ja_products_updated'));
+        console.log("✅ Auto-sync: productos actualizados desde GitHub");
       }catch(e){
         console.warn("[auto-sync] No se pudo leer products.json:", e);
       }
