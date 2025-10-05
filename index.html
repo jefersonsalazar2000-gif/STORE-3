@@ -276,7 +276,7 @@
           </div>
           <div class="mt-3">
             <a href="${ensureTag(p.amazon)}" target="_blank" rel="nofollow sponsored noopener" class="btn-neon w-full justify-center px-4 py-2 rounded-xl inline-flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414L11 19.586V14a1 1 0 0 1 1-1z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a 1 1 0 1 1 1.414-1.414L11 19.586V14a1 1 0 0 1 1-1z"/></svg>
               Ver en Amazon
             </a>
             ${adminBtns}
@@ -622,7 +622,7 @@
     });
   </script>
 
-  <!-- ===== Auto-SYNC con GitHub: trae products.json y actualiza cada 30s ===== -->
+  <!-- ===== Auto-SYNC con GitHub: trae products.json y actualiza cada 30s (dedupe) ===== -->
   <script>
   (function(){
     const RAW_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
@@ -631,9 +631,9 @@
     const REFRESH_MS = 30000; // 30s
 
     function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || [] }catch{ return [] } }
-    function lsSave(v){ localStorage.setItem(LS_KEY, JSON.stringify(v)); }
+    function lsSave(v){ localStorage.setItem(LS_KEY, JSON.stringify(v)) }
 
-    // FIX: extraer ASIN de URLs variadas de Amazon
+    // ASIN extractor robusto
     function asinFrom(url){
       try{
         const u = new URL(url);
@@ -645,7 +645,7 @@
       }catch{ return null; }
     }
 
-    // FIX: canonicalizar URL de Amazon (quita ruido pero conserva ?tag=)
+    // Canonicaliza Amazon y conserva ?tag=
     function canonicalAmazon(url){
       if(!url) return "#";
       try{
@@ -653,9 +653,8 @@
         if(!/amazon\./i.test(u.hostname)) return url;
         const asin = asinFrom(url);
         if(asin){
-          u.pathname = `/dp/${asin}`;
-          // conserva solo 'tag'
           const tag = u.searchParams.get('tag');
+          u.pathname = `/dp/${asin}`;
           u.search = "";
           if(tag) u.searchParams.set('tag', tag);
           return u.toString();
@@ -664,11 +663,12 @@
       }catch{ return url; }
     }
 
-    // FIX: clave estable por ASIN o por título normalizado
-    function stableKey(p){
-      const asin = asinFrom(p.AMAZON || p.amazon || "");
-      if(asin) return `asin:${asin}`;
-      const t = (p.TITLE || p.title || "").toLowerCase().replace(/\s+/g,' ').trim();
+    // Clave estable (primero ASIN; si no hay, por título)
+    function stableKey(obj){
+      const amazon = obj.amazon || obj.AMAZON || "";
+      const asin = asinFrom(amazon);
+      if (asin) return `asin:${asin}`;
+      const t = (obj.title || obj.TITLE || "").toLowerCase().replace(/\s+/g,' ').trim();
       return `t:${t}`;
     }
 
@@ -687,30 +687,44 @@
 
     function normalize(entry){
       const p = entry || {};
-      const canon = canonicalAmazon(p.AMAZON || "");
-      const key = stableKey({ ...p, AMAZON: canon });
-      return {
-        id: key, // FIX: id determinista
-        title: p.TITLE || "",
-        brand: p.BRAND || "",
+      const canon = canonicalAmazon(p.AMAZON || p.amazon || "");
+      const obj = {
+        id: null, // se fija más abajo
+        title: p.TITLE || p.title || "",
+        brand: p.BRAND || p.brand || "",
         image: (p.IMAGE && p.IMAGE.trim()) || "https://via.placeholder.com/800x600?text=Imagen",
-        amazon: tagify(canon || p.AMAZON || "#"),
-        price: p.PRICE || "",
-        category: p.CATEGORY || "Otros",
-        featured: !!p.FEATURE,
+        amazon: tagify(canon || p.AMAZON || p.amazon || "#"),
+        price: p.PRICE || p.price || "",
+        category: p.CATEGORY || p.category || "Otros",
+        featured: !!(p.FEATURE || p.featured),
         createdAt: Date.now()
       };
+      obj.id = stableKey(obj); // id determinista en incoming
+      return obj;
     }
 
-    // FIX: upsert estable por id (sin mezclar campos)
-    function upsert(existing, incoming){
-      const map = new Map(existing.map(x=>[x.id || stableKey(x), x]));
-      for(const p of incoming){
-        map.set(p.id || stableKey(p), p);
+    // DEDUPE: incoming (GitHub) es la “verdad”; el local queda solo si no choca por clave estable
+    function mergeDedup(existingList, incomingList){
+      const map = new Map();
+
+      // 1) Primero, incoming (GitHub) — GANA sobre cualquier duplicado
+      for (const inc of incomingList) {
+        const k = stableKey(inc);
+        map.set(k, { ...inc, id: k });
       }
-      // orden final estable
+
+      // 2) Luego, existentes que no choquen por la misma clave estable
+      for (const ex of existingList) {
+        const k = stableKey(ex);
+        if (!map.has(k)) {
+          // Respetamos su id local
+          map.set(k, { ...ex });
+        }
+      }
+
+      // 3) Lista final ordenada (destacados primero, luego alfabético)
       return Array.from(map.values())
-        .sort((a,b)=> (b.featured - a.featured) || a.title.localeCompare(b.title));
+        .sort((a,b)=> (b.featured - a.featured) || String(a.title).localeCompare(String(b.title)));
     }
 
     let lastText = null;
@@ -720,18 +734,18 @@
         const res = await fetch(RAW_URL + "?" + Date.now(), { cache:"no-store" });
         if(!res.ok) throw new Error("HTTP "+res.status);
         const text = await res.text();
-        if(text === lastText) return; // sin cambios
+        if(text === lastText) return; // sin cambios en remoto
         lastText = text;
 
         const data = JSON.parse(text);
         const incoming = Object.values(data.PRODUCTOS || {}).map(normalize);
 
         const current = lsLoad();
-        const merged  = upsert(current, incoming);
+        const merged  = mergeDedup(current, incoming);
 
         lsSave(merged);
         window.dispatchEvent(new Event('ja_products_updated'));
-        console.log("✅ Auto-sync: productos actualizados desde GitHub");
+        console.log("✅ Auto-sync: productos actualizados (dedupe por ASIN/título)");
       }catch(e){
         console.warn("[auto-sync] No se pudo leer products.json:", e);
       }
