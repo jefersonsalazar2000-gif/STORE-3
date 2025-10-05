@@ -383,6 +383,80 @@
       "IMAGE": "https://m.media-amazon.com/images/I/918u0ZMu7FL._AC_UL640_QL65_.jpg",
       "AMAZON": "https://www.amazon.com/-/es/Wheels-Toyota-Naranja-Superestrellas-r%C3%A1pidas/dp/B09HSN6RD7?tag=kaninosabioan-20",
       "FEATURE": false
+    },
+
+    /* === NUEVOS PRODUCTOS === */
+    "cortapelos-pro-b0dqg5rrdb": {
+      "TITLE": "Cortapelos profesional inalámbrico + recortadora (kit 8 pzs, LED)",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/61IvewicF9L._AC_SL1000_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DQG5RRDB?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "cortapelos-pro-led-b0fg7k9zhn": {
+      "TITLE": "Cortapelos profesional inalámbrico recargable (pantalla LED)",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/61m671SrF5L._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FG7K9ZHN?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "cortapelos-pro-inalambrica-b0f83mxts6": {
+      "TITLE": "Cortapelos y recortadora profesional inalámbrica (barbero)",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/71cvUaZ-w3L._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0F83MXTS6?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "cortapelos-pro-b0dsw249mg": {
+      "TITLE": "Cortapelos profesional inalámbrico (kit completo)",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/51cTGBEymQL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DSW249MG?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "caja-huevos-rodante-b0fj699dqn": {
+      "TITLE": "Caja rodante para huevos – almacenamiento para refrigerador",
+      "PRICE": 0,
+      "CATEGORY": "Cocina",
+      "IMAGE": "https://m.media-amazon.com/images/I/712in-kP0kL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FJ699DQN?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "calentador-alimentos-b08mlhz86g": {
+      "TITLE": "Calentador de alimentos eléctrico portátil (110V/12V, 0.4 gal, INOX)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/61Yc634u-EL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B08MLHZ86G?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "gimbal-telefono-3ejes-b0c89t698j": {
+      "TITLE": "Estabilizador de teléfono 3 ejes plegable con rueda de enfoque (iPhone/Android)",
+      "PRICE": 0,
+      "CATEGORY": "Tecnología",
+      "IMAGE": "https://m.media-amazon.com/images/I/71HsdAHeC0L._AC_SX466_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0C89T698J?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "yijiu-nightgown-b0fg84zpkq": {
+      "TITLE": "YIJIU – Camisón sin mangas ajustable, tirantes finos (estampado)",
+      "PRICE": 0,
+      "CATEGORY": "Ropa",
+      "IMAGE": "https://m.media-amazon.com/images/I/51%2BTLNud5HL._AC_SY741_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FG84ZPKQ?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "carfidant-removedor-raspones-b0f6768lqb": {
+      "TITLE": "Carfidant – Removedor de rayones para autos (3.4 fl oz)",
+      "PRICE": 0,
+      "CATEGORY": "Automotriz",
+      "IMAGE": "https://m.media-amazon.com/images/I/61eS8DAvt6L._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0F6768LQB?tag=kaninosabioan-20",
+      "FEATURE": false
     }
   }
 }
