@@ -52,6 +52,55 @@
     .input:focus{ box-shadow:var(--ring) }
     .tag{ background:rgba(10,239,255,.12); border:1px solid rgba(10,239,255,.35) }
   </style>
+
+  <!-- 🔧 BLOQUE A — Estilos PRO (añadidos, no reemplazan lo anterior) -->
+  <style>
+    /* Accesibilidad & foco */
+    :focus-visible { outline: 2px solid #7C3AED; outline-offset: 2px }
+    .focus-soft:focus-visible { box-shadow: var(--ring) }
+
+    /* Skeleton shimmer */
+    .skeleton { position:relative; overflow:hidden; background:#0f1430 }
+    .skeleton::after{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+      transform: translateX(-100%); animation: shimmer 1.2s infinite
+    }
+    @keyframes shimmer { 100% { transform: translateX(100%) } }
+
+    /* Tilt/Elevación en hover */
+    @media (hover:hover){
+      .tilt { transform: perspective(800px) rotateX(0) rotateY(0) translateY(0); transition: transform .25s ease, box-shadow .25s ease }
+      .tilt:hover{ transform: perspective(800px) rotateX(2deg) rotateY(-2deg) translateY(-2px) }
+    }
+
+    /* Botón “Volver arriba” */
+    #toTop{ position:fixed; right:14px; bottom:14px; z-index:9998; opacity:0; pointer-events:none;
+      transition: opacity .2s, transform .2s; transform: translateY(8px) }
+    #toTop.show{ opacity:1; pointer-events:auto; transform: translateY(0) }
+
+    /* Toasts */
+    #toastWrap{ position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+      z-index: 10000; display: grid; gap: 8px }
+    .toast{ background: rgba(18,23,42,.96); border:1px solid rgba(124,58,237,.35);
+      color:#fff; padding:10px 14px; border-radius:12px; box-shadow: 0 8px 30px rgba(0,0,0,.35) }
+
+    /* Chips de sugerencia de filtro */
+    .chip-sug{ background:rgba(124,58,237,.14); border:1px solid rgba(124,58,237,.35);
+      color:#fff; font-weight:600; padding:.45rem .7rem; border-radius:9999px }
+    .chip-sug:hover{ background:rgba(124,58,237,.24) }
+
+    /* Acciones en cards (Share/Copy) */
+    .card-action{ position:absolute; top:10px; right:10px; display:flex; gap:6px }
+    .icon-btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:36px; height:36px; border-radius:10px;
+      background:rgba(14,20,48,.75); border:1px solid rgba(255,255,255,.12);
+      color:#fff; backdrop-filter: blur(6px);
+      transition: transform .12s ease, background .12s ease, border-color .12s ease
+    }
+    .icon-btn:hover{ transform: translateY(-1px) scale(1.03); border-color: rgba(255,255,255,.25) }
+  </style>
 </head>
 
 <body class="min-h-full text-white bg-[radial-gradient(1200px_600px_at_20%_-10%,rgba(124,58,237,.15),transparent_55%),radial-gradient(900px_500px_at_120%_10%,rgba(0,229,255,.12),transparent_50%),#0b0f1a]">
@@ -327,7 +376,7 @@
       const rows = list.map((p,i) => {
         let tag = null;
         try { tag = new URL(p.amazon, location.href).searchParams.get("tag"); }
-        catch { const m = /\btag=([^&#]+)/.exec(p.amazon||""); tag = m && m[1] || null; }
+        catch { const m = /\btag=([^&#]+)/.exec(p.amazon||""); tag = m y m[1] || null; }
         return { idx: i+1, id:p.id, title:p.title, tag, ok: tag === TAG, amazon:p.amazon };
       });
       console.log("[LS] Verificación productos LocalStorage");
@@ -692,7 +741,7 @@
         id: null, // se fija más abajo
         title: p.TITLE || p.title || "",
         brand: p.BRAND || p.brand || "",
-        image: (p.IMAGE && p.IMAGE.trim()) || "https://via.placeholder.com/800x600?text=Imagen",
+        image: (p.IMAGE y p.IMAGE.trim()) || "https://via.placeholder.com/800x600?text=Imagen",
         amazon: tagify(canon || p.AMAZON || p.amazon || "#"),
         price: p.PRICE || p.price || "",
         category: p.CATEGORY || p.category || "Otros",
@@ -1087,6 +1136,167 @@
 
     // ====== Arranque ======
     window.addEventListener('DOMContentLoaded', forceTwoColsOnMobile);
+  })();
+  </script>
+
+  <!-- 🧠 BLOQUE B — JS de mejoras UX (añadido, no modifica tu lógica) -->
+  <script>
+  (() => {
+    /** Utils **/
+    const $ = (s, r=document)=>r.querySelector(s);
+    const $$ = (s, r=document)=>[...r.querySelectorAll(s)];
+    const copy = async (t)=>{ try{ await navigator.clipboard.writeText(t); toast("Copiado ✅") }catch{ toast("No se pudo copiar") } };
+    const toastWrap = document.createElement('div');
+    toastWrap.id = 'toastWrap'; document.body.appendChild(toastWrap);
+    function toast(msg){ const el=document.createElement('div'); el.className='toast'; el.textContent=msg; toastWrap.appendChild(el);
+      setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(6px)'; setTimeout(()=>el.remove(),200)}, 2200) }
+
+    /** 1) Skeleton en la primera carga (si aún no hay productos) **/
+    const grid = $('#grid');
+    const empty = $('#empty');
+    function paintSkeleton(n=8){
+      if(!grid) return;
+      const item = i => `
+        <article class="card rounded-2xl p-3 sm:p-4 gradient-border tilt">
+          <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3] skeleton"></div>
+          <div class="mt-3 space-y-2">
+            <div class="h-4 rounded-md skeleton"></div>
+            <div class="h-3 w-1/2 rounded-md skeleton"></div>
+            <div class="h-9 rounded-lg skeleton"></div>
+          </div>
+        </article>`;
+      grid.innerHTML = Array.from({length:n}).map(item).join('');
+      empty?.classList.add('hidden');
+    }
+    if (grid && (!window.products || !window.products.length)) {
+      paintSkeleton(8);
+      window.addEventListener('ja_products_updated', ()=>{/* tu render lo sustituirá */}, { once:true });
+    }
+
+    /** 2) Chips de sugerencia bajo el buscador **/
+    function injectChips(){
+      const search = $('#search'); if(!search) return;
+      const host = document.createElement('div');
+      host.className = 'max-w-7xl mx-auto px-4 mt-2 flex flex-wrap gap-2';
+      const chips = ['Tecnología','Hogar','Gaming','Gym','Salud','Animales','Los más buscados'];
+      chips.forEach(txt=>{
+        const b=document.createElement('button');
+        b.className='chip-sug focus-soft'; b.type='button'; b.textContent = txt;
+        b.addEventListener('click', ()=>{
+          const sel = $('#categoryFilter');
+          if(sel){ sel.value = txt; sel.dispatchEvent(new Event('change')) }
+          if(search){ search.value = ''; search.dispatchEvent(new Event('input')) }
+        });
+        host.appendChild(b);
+      });
+      const controlsSection = search.closest('section');
+      (controlsSection?.parentNode)?.insertBefore(host, controlsSection.nextSibling);
+    }
+    window.addEventListener('DOMContentLoaded', injectChips, { once:true });
+
+    /** 3) Botón flotante “↑ Arriba” **/
+    const toTop = document.createElement('button');
+    toTop.id = 'toTop';
+    toTop.className = 'btn-neon rounded-full px-4 py-3 font-extrabold';
+    toTop.textContent = '↑ Arriba';
+    toTop.addEventListener('click', ()=> window.scrollTo({ top:0, behavior:'smooth' }));
+    document.body.appendChild(toTop);
+    window.addEventListener('scroll', ()=>{
+      const y = window.scrollY || document.documentElement.scrollTop;
+      toTop.classList.toggle('show', y > 380);
+    }, { passive:true });
+
+    /** 4) Acciones Share/Copy en cada card (sin romper tus botones) **/
+    function enhanceCards(){
+      $$('.card').forEach((card)=>{
+        if(card.dataset.ms360Enhanced) return; card.dataset.ms360Enhanced = '1';
+        card.classList.add('tilt');
+
+        const box = document.createElement('div');
+        box.className = 'card-action';
+        const bShare = document.createElement('button');
+        bShare.className = 'icon-btn'; bShare.type='button'; bShare.title='Compartir';
+        bShare.innerHTML = '⤴︎';
+        const bCopy = document.createElement('button');
+        bCopy.className = 'icon-btn'; bCopy.type='button'; bCopy.title='Copiar enlace';
+        bCopy.innerHTML = '⧉';
+
+        const title = card.querySelector('h3')?.textContent?.trim() || 'Producto';
+        const amz = card.querySelector('a[href*="amazon."]')?.href;
+
+        bShare.addEventListener('click', async (e)=>{
+          e.stopPropagation();
+          if(navigator.share y amz){
+            try{
+              await navigator.share({ title: title, text: 'Mira este producto', url: amz });
+              toast('Compartido ✅');
+            }catch{}
+          } else {
+            if(amz){ await copy(amz) } else { toast('Sin enlace disponible') }
+          }
+        });
+        bCopy.addEventListener('click', async (e)=>{
+          e.stopPropagation();
+          if(amz){ await copy(amz) } else { toast('Sin enlace disponible') }
+        });
+
+        box.appendChild(bShare); box.appendChild(bCopy);
+        const imgWrap = card.querySelector('.aspect-[4/3]') || card;
+        imgWrap.style.position='relative';
+        imgWrap.appendChild(box);
+      });
+    }
+    window.addEventListener('DOMContentLoaded', enhanceCards);
+    window.addEventListener('ja_products_updated', enhanceCards);
+    document.addEventListener('input', (e)=>{ if(e.target.id==='search') setTimeout(enhanceCards, 0) }, { passive:true });
+    document.addEventListener('change', (e)=>{ if(e.target.id==='categoryFilter') setTimeout(enhanceCards, 0) }, { passive:true });
+
+    /** 5) Banner de estado de red **/
+    const netBar = document.createElement('div');
+    netBar.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999;display:none";
+    netBar.innerHTML = `
+      <div class="mx-auto max-w-7xl px-4 py-2">
+        <div class="rounded-xl px-3 py-2 text-sm font-semibold text-white"
+             style="background:linear-gradient(90deg,#ff3b3b,#ff784e)">
+          Estás sin conexión. Navegación limitada (modo offline).
+        </div>
+      </div>`;
+    document.body.appendChild(netBar);
+    const on = ()=>{ netBar.style.display='none'; toast('Vuelta a online 🌐') };
+    const off = ()=>{ netBar.style.display='block'; toast('Sin conexión 🔌') };
+    window.addEventListener('online', on); window.addEventListener('offline', off);
+    if(!navigator.onLine) off();
+
+    /** 6) Nudge para instalar como App (PWA) **/
+    let deferredPrompt=null;
+    window.addEventListener('beforeinstallprompt', (e)=>{
+      e.preventDefault(); deferredPrompt = e;
+      setTimeout(()=>{ 
+        const ask = document.createElement('div');
+        ask.className = 'toast';
+        ask.innerHTML = `
+          📲 ¿Instalar <b>MEGA STORE 360</b> en tu teléfono?
+          <div class="mt-2 flex gap-8">
+            <button id="pwa-yes" class="chip px-3 py-1.5 rounded-xl">Instalar</button>
+            <button id="pwa-no" class="chip px-3 py-1.5 rounded-xl">Luego</button>
+          </div>`;
+        toastWrap.appendChild(ask);
+        ask.querySelector('#pwa-yes')?.addEventListener('click', async ()=>{
+          if(!deferredPrompt) return;
+          deferredPrompt.prompt();
+          await deferredPrompt.userChoice; deferredPrompt=null; ask.remove();
+        });
+        ask.querySelector('#pwa-no')?.addEventListener('click', ()=> ask.remove());
+      }, 2500);
+    }, { once:true });
+
+    /** 7) Meta theme-color dinámico **/
+    const setThemeMeta = (hex)=> {
+      let m = document.querySelector('meta[name="theme-color"]');
+      if(!m){ m = document.createElement('meta'); m.setAttribute('name','theme-color'); document.head.appendChild(m) }
+      m.setAttribute('content', hex);
+    };
+    setThemeMeta('#0b0f1a');
   })();
   </script>
 </body>
