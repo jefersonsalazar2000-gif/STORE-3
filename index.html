@@ -1,51 +1,1474 @@
-// sw.js — caché pro con Stale-While-Revalidate
-const CACHE_STATIC = 'ms360-static-v3';
-const CACHE_RUNTIME = 'ms360-rt-v3';
-const STATIC_ASSETS = [
-  '/', '/index.html',
-  '/icon-180x180-v6.png', '/icon-192x192-v6.png',
-  'https://cdn.tailwindcss.com'
-];
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-[#0b0f1a]">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>J_A MEGA STORE 360</title>
+  <meta name="theme-color" content="#0b0f1a"/>
 
-self.addEventListener('install', e=>{
-  e.waitUntil(caches.open(CACHE_STATIC).then(c=>c.addAll(STATIC_ASSETS)));
-  self.skipWaiting();
-});
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json?v=6" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192-v6.png?v=6">
+  <!-- iOS Home Screen -->
+  <link rel="apple-touch-icon" href="icon-180x180-v6.png?v=6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-self.addEventListener('activate', e=>{
-  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>{
-    if(![CACHE_STATIC,CACHE_RUNTIME].includes(k)) return caches.delete(k);
-  }))));
-  self.clients.claim();
-});
+  <!-- Perf: preconnect/dns-prefetch -->
+  <link rel="preconnect" href="https://m.media-amazon.com">
+  <link rel="dns-prefetch" href="//m.media-amazon.com">
+  <link rel="preconnect" href="https://raw.githubusercontent.com">
+  <link rel="dns-prefetch" href="//raw.githubusercontent.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-const SWR = async (req) => {
-  const cache = await caches.open(CACHE_RUNTIME);
-  const cached = await cache.match(req);
-  const fetchPromise = fetch(req).then(res=>{
-    if(res && res.status===200 && res.type!=='opaque') cache.put(req, res.clone());
-    return res;
-  }).catch(()=> cached);
-  return cached || fetchPromise;
-};
+  <!-- SEO / Social -->
+  <meta name="description" content="J_A MEGA STORE 360 — Tecnología, hogar y accesorios con experiencia rápida y elegante.">
+  <meta property="og:title" content="J_A MEGA STORE 360">
+  <meta property="og:description" content="Productos seleccionados + experiencia pro y ultra rápida.">
+  <meta property="og:image" content="/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
 
-self.addEventListener('fetch', e=>{
-  const url = new URL(e.request.url);
-  if (/products\.json$/i.test(url.pathname) ||
-      /\.(?:png|jpg|jpeg|gif|webp|avif)$/i.test(url.pathname) ||
-      url.hostname.includes('fonts.googleapis.com') ||
-      url.hostname.includes('fonts.gstatic.com') ||
-      url.hostname.includes('raw.githubusercontent.com')) {
-    e.respondWith(SWR(e.request));
-    return;
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { outfit: ['Outfit','ui-sans-serif','system-ui']},
+          colors: { base:'#0b0f1a', card:'#12172a', soft:'#1a2140' }
+        }
+      }
+    }
+  </script>
+
+  <!-- Fuente -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --grad-1: linear-gradient(135deg,#00E5FF 0%, #7C3AED 50%, #FF0099 100%);
+      --btn-grad: linear-gradient(135deg, #00E5FF 0%, #7C3AED 50%, #FF0099 100%);
+      --ring: 0 0 0 1.5px rgba(124,58,237,.45), 0 0 18px rgba(124,58,237,.35), inset 0 0 12px rgba(0,229,255,.25);
+    }
+    body{ font-family:'Outfit',sans-serif }
+    .neon-title{ background:var(--grad-1); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 0 18px rgba(124,58,237,.25) }
+    .btn-neon{ background:var(--btn-grad); color:#0b0f1a; font-weight:800; box-shadow:0 0 24px rgba(124,58,237,.35); transition:transform .12s, box-shadow .12s, opacity .12s }
+    .btn-neon:hover{ transform:translateY(-1px) scale(1.005); box-shadow:0 0 32px rgba(124,58,237,.55) }
+    .chip{ background:rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.35) }
+    .card{ background:radial-gradient(1200px 500px at -10% -10%, rgba(124,58,237,.12), transparent 50%), radial-gradient(1000px 400px at 120% 120%, rgba(0,229,255,.10), transparent 45%), #12172a; border:1px solid rgba(124,58,237,.25) }
+    .toolbar{ background:linear-gradient(180deg, rgba(18,23,42,.85), rgba(18,23,42,.6) 60%, rgba(18,23,42,.1)); border-bottom:1px solid rgba(124,58,237,.25); backdrop-filter:blur(8px) }
+    .gradient-border{ position:relative; border-radius:16px; overflow:hidden }
+    .gradient-border::before{ content:''; position:absolute; inset:0; padding:1px; border-radius:16px; background:var(--grad-1);
+      -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none }
+    .input{ background:#0e1430; border:1px solid rgba(124,58,237,.35); outline:none; color:white; border-radius:12px; padding:.7rem .9rem }
+    .input:focus{ box-shadow:var(--ring) }
+    .tag{ background:rgba(10,239,255,.12); border:1px solid rgba(10,239,255,.35) }
+
+    /* === FIX wobble lateral / scroll profesional === */
+    html, body { max-width:100%; overflow-x:hidden; }
+    body { touch-action: pan-y; overscroll-behavior-x: none; }
+    #grid { overflow-x:hidden; }
+    *, *::before, *::after { box-sizing:border-box; }
+
+    /* === Mejora rendimiento visual (sin romper tu render) === */
+    #grid > article { content-visibility:auto; contain-intrinsic-size: 320px 420px; }
+
+    /* LQIP/Blur-up para imágenes (se desactiva cuando cargan) */
+    .ms360-imgwrap{position:relative; overflow:hidden}
+    .ms360-imgwrap img{filter:blur(14px); transform:scale(1.02); transition:filter .25s ease, transform .25s ease}
+    .ms360-imgwrap img[data-loaded="1"]{filter:blur(0); transform:none}
+
+    /* Toolbar PRO (orden/favoritos/comparar) */
+    #probar { position:sticky; top:56px; z-index:25; backdrop-filter:blur(10px) }
+    #probar .prochip{ background:rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.35) }
+
+    /* Barra de comparar (flotante) */
+    #comparebar{position:fixed; left:50%; transform:translateX(-50%); bottom:80px; z-index:60; display:none}
+    #comparebar.show{display:block}
+  </style>
+
+  <!-- Respeta reducción de movimiento -->
+  <style>
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important}
   }
-  if (e.request.mode === 'navigate') {
-    e.respondWith(
-      caches.match('/index.html').then(r=> r || fetch(e.request))
-    );
-    return;
+  </style>
+
+  <!-- ===== MS360 Add-on Styles (no sustituye los tuyos) ===== -->
+  <style>
+    :root { --ms360-ring: 0 0 0 1.5px rgba(124,58,237,.45), 0 0 18px rgba(124,58,237,.35), inset 0 0 12px rgba(0,229,255,.25) }
+    :focus-visible { outline:2px solid #7C3AED; outline-offset:2px }
+    .ms360-focus:focus-visible { box-shadow: var(--ms360-ring) }
+    .ms360-skeleton{position:relative;overflow:hidden;background:#0f1430}
+    .ms360-skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);transform:translateX(-100%);animation:ms360-shimmer 1.1s infinite}
+    @keyframes ms360-shimmer{100%{transform:translateX(100%)}}
+    #ms360-top{position:fixed;right:14px;bottom:14px;z-index:9998;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s, transform .2s}
+    #ms360-top.ms360-show{opacity:1;pointer-events:auto;transform:translateY(0)}
+    #ms360-toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:10000;display:grid;gap:8px}
+    .ms360-toast{background:rgba(18,23,42,.96);border:1px solid rgba(124,58,237,.35);color:#fff;padding:10px 14px;border-radius:12px}
+    .ms360-actions{position:absolute;top:10px;right:10px;display:flex;gap:6px}
+    .ms360-ibtn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:rgba(14,20,48,.75);border:1px solid rgba(255,255,255,.12);color:#fff;backdrop-filter:blur(6px);transition:transform .12s ease,border-color .12s ease}
+    .ms360-ibtn:hover{transform:translateY(-1px) scale(1.03);border-color:rgba(255,255,255,.25)}
+  </style>
+  <!-- ===== /MS360 Add-on Styles ===== -->
+
+</head>
+
+<body class="min-h-full text-white bg-[radial-gradient(1200px_600px_at_20%_-10%,rgba(124,58,237,.15),transparent_55%),radial-gradient(900px_500px_at_120%_10%,rgba(0,229,255,.12),transparent_50%),#0b0f1a]">
+
+  <!-- Header -->
+  <header class="toolbar sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl gradient-border flex items-center justify-center shrink-0">
+        <div class="w-full h-full rounded-[14px] bg-[#0e1430] flex items-center justify-center">
+          <span class="text-xl font-extrabold">J_A</span>
+        </div>
+      </div>
+      <div class="flex-1">
+        <h1 class="text-xl sm:text-2xl font-extrabold neon-title leading-none">MEGA STORE 360</h1>
+        <p class="text-xs text-white/70 -mt-0.5">De todo • Tecnología • Hogar • Accesorios</p>
+      </div>
+      <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
+
+      <div class="flex items-center gap-2">
+        <button id="btnSettings" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Ajustes</button>
+        <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Admin</button>
+        <!-- === NUEVOS BOTONES ADMIN (ocultos si Admin OFF) === -->
+        <button id="btnVerify" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 hidden">Verificar Tag</button>
+        <button id="btnFix" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 hidden">Auto-Fix Tag</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Toolbar PRO (inyectada también por JS por si no existiera) -->
+  <div id="probar" class="mx-auto max-w-7xl px-4 mt-2">
+    <div class="card rounded-2xl px-3 py-2 flex items-center gap-2 justify-between">
+      <div class="flex items-center gap-2">
+        <button id="pro-favs" class="prochip px-3 py-1.5 rounded-lg text-sm">❤️ Favoritos</button>
+        <button id="pro-cmp"  class="prochip px-3 py-1.5 rounded-lg text-sm">⇄ Comparar</button>
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="text-sm text-white/70">Orden:</label>
+        <select id="pro-sort" class="input text-sm">
+          <option value="featured">Destacados</option>
+          <option value="priceAsc">Precio ↑</option>
+          <option value="priceDesc">Precio ↓</option>
+          <option value="az">A–Z</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controles -->
+  <section class="max-w-7xl mx-auto px-4 mt-4 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
+    <div class="gradient-border">
+      <input id="search" class="input w-full" placeholder="Buscar productos… (ej. iPhone, smartwatch)" />
+    </div>
+    <select id="categoryFilter" class="input">
+      <option value="all">Todas las categorías</option>
+    </select>
+    <button id="btnAdd" class="btn-neon px-4 py-2 rounded-xl text-sm disabled:opacity-40" disabled>+ Agregar</button>
+  </section>
+
+  <!-- Grid -->
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <!-- 2 columnas por defecto en móvil -->
+    <div id="grid" class="grid gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+    <p id="empty" class="hidden text-center text-white/60 mt-10">No hay productos que coincidan.</p>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 py-8">
+    <div class="max-w-7xl mx-auto px-4 text-sm text-white/60">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="font-semibold">Aviso Amazon Afiliados:</span>
+        <span>Como afiliado de Amazon, puedo ganar comisiones por compras calificadas.</span>
+      </div>
+      <div class="mt-2">© <span id="year"></span> J_A MEGA STORE 360 — Todos los derechos reservados.</div>
+    </div>
+  </footer>
+
+  <!-- Modal CRUD -->
+  <dialog id="modal" class="backdrop:bg-black/70 rounded-2xl w-[min(720px,92vw)]">
+    <form id="form" method="dialog" class="card rounded-2xl p-4 sm:p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="modalTitle" class="text-lg font-extrabold neon-title">Nuevo producto</h3>
+        <button type="button" class="chip px-3 py-1.5 rounded-xl" onclick="modal.close()">Cerrar</button>
+      </div>
+
+      <div class="grid gap-3 sm:grid-cols-2">
+        <div class="gradient-border"><input required id="pTitle" class="input w-full" placeholder="Título / Nombre" /></div>
+        <div class="gradient-border"><input id="pBrand" class="input w-full" placeholder="Marca (opcional)" /></div>
+
+        <!-- Imagen: URL o Archivo -->
+        <div class="sm:col-span-2 grid gap-2">
+          <div class="gradient-border"><input id="pImageUrl" class="input w-full" placeholder="URL de imagen (https://… Amazon u otro)" /></div>
+          <div class="text-xs text-white/60">o sube un archivo (se guarda en Nube si está conectada, o local en este dispositivo)</div>
+          <input id="pImageFile" type="file" accept="image/*" class="block text-sm" />
+        </div>
+
+        <div class="gradient-border sm:col-span-2"><input required id="pAmazon" class="input w-full" placeholder="URL de Amazon (con o sin ?tag=)" /></div>
+
+        <div class="gradient-border"><input id="pPrice" class="input w-full" placeholder="Precio (opcional, ej. 799.00)" inputmode="decimal" /></div>
+        <div class="gradient-border">
+          <select id="pCategory" class="input w-full">
+            <option>Tecnología</option>
+            <option>Teléfonos</option>
+            <option>Accesorios</option>
+            <option>Hogar</option>
+            <option>Gaming</option>
+            <option>Gym</option>
+            <option>Salud</option>
+            <option>Animales</option>
+            <option>Los más buscados</option>
+            <option>Otros</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-4 flex items-center justify-between">
+        <label class="flex items-center gap-2 text-sm text-white/80">
+          <input id="pFeatured" type="checkbox" class="accent-fuchsia-500 scale-110" />
+          Destacado
+        </label>
+        <div class="flex items-center gap-2">
+          <button type="button" id="btnDelete" class="px-3 py-2 rounded-xl chip text-sm hidden">Eliminar</button>
+          <button type="submit" class="btn-neon px-4 py-2 rounded-xl">Guardar</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Modal Ajustes / Conectar Nube -->
+  <dialog id="settings" class="backdrop:bg-black/70 rounded-2xl w-[min(720px,92vw)]">
+    <form method="dialog" class="card rounded-2xl p-4 sm:p-6">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-lg font-extrabold neon-title">Ajustes</h3>
+        <button type="submit" class="chip px-3 py-1.5 rounded-xl text-sm">Cerrar</button>
+      </div>
+
+      <div class="grid gap-3">
+        <div class="gradient-border p-3 rounded-xl">
+          <label class="text-sm text-white/80 font-semibold">Clave Admin</label>
+          <input id="adminKeyInput" class="input w-full mt-2" placeholder="Escribe tu clave para activar Admin" />
+          <p class="text-xs text-white/60 mt-1">Actual: <span id="adminKeyLabel">mega360</span></p>
+          <button id="saveAdminKey" type="button" class="mt-2 chip px-3 py-1.5 rounded-xl text-sm">Guardar clave</button>
+        </div>
+
+        <div class="gradient-border p-3 rounded-xl">
+          <label class="text-sm text-white/80 font-semibold">Config Nube (pega tu firebaseConfig JSON aquí)</label>
+          <textarea id="firebaseConfigInput" class="input w-full h-40 mt-2" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'></textarea>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <button id="btnConnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Conectar nube</button>
+            <button id="btnDisconnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Desconectar</button>
+            <button id="btnHardReset" type="button" class="chip px-3 py-1.5 rounded-xl text-sm" onclick="resetStore(true)">Resetear caché y recargar</button>
+          </div>
+          <p class="text-xs text-white/60 mt-2" id="cloudStatus">Estado: Local</p>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- App -->
+  <script type="module">
+    // ======== CONFIG ========
+    let ADMIN_KEY = localStorage.getItem('ja_admin_key') || "mega360";
+    const AFFILIATE_TAG_DEFAULT = "kaninosabioan-20";
+
+    // ======== Estado/UI Refs ========
+    let isAdmin = false;
+    let editingId = null;
+    let products = [];
+    let db = null, unsub = null, storage = null;
+    let cloudConfig = null;
+
+    const grid = document.getElementById('grid');
+    const empty = document.getElementById('empty');
+    const search = document.getElementById('search');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const btnAdd = document.getElementById('btnAdd');
+    const btnAdmin = document.getElementById('btnAdmin');
+    const btnSettings = document.getElementById('btnSettings');
+    const year = document.getElementById('year');
+
+    const modal = document.getElementById('modal');
+    const form = document.getElementById('form');
+    const modalTitle = document.getElementById('modalTitle');
+    const pTitle = document.getElementById('pTitle');
+    const pBrand = document.getElementById('pBrand');
+    const pImageUrl = document.getElementById('pImageUrl');
+    const pImageFile = document.getElementById('pImageFile');
+    const pAmazon = document.getElementById('pAmazon');
+    const pPrice = document.getElementById('pPrice');
+    const pCategory = document.getElementById('pCategory');
+    const pFeatured = document.getElementById('pFeatured');
+    const btnDelete = document.getElementById('btnDelete');
+
+    const settings = document.getElementById('settings');
+    const adminKeyInput = document.getElementById('adminKeyInput');
+    const adminKeyLabel = document.getElementById('adminKeyLabel');
+    const saveAdminKey = document.getElementById('saveAdminKey');
+    const firebaseConfigInput = document.getElementById('firebaseConfigInput');
+    const cloudStatus = document.getElementById('cloudStatus');
+    const btnConnectCloud = document.getElementById('btnConnectCloud');
+    const btnDisconnectCloud = document.getElementById('btnDisconnectCloud');
+
+    /* === NUEVOS BOTONES ADMIN === */
+    const btnVerify = document.getElementById('btnVerify');
+    const btnFix = document.getElementById('btnFix');
+
+    year.textContent = new Date().getFullYear();
+    const uid = () => crypto.randomUUID();
+
+    // ======== Helpers UI ========
+    function ensureTag(url){
+      if(!url) return "#";
+      if(/[?&]tag=/.test(url)) return url;
+      const sep = url.includes('?') ? '&' : '?';
+      return `${url}${sep}tag=${AFFILIATE_TAG_DEFAULT}`;
+    }
+
+    function productCard(p){
+      const price = p.price?`$${Number(p.price).toLocaleString()}`:'';
+      const tag = p.featured?`<span class="tag text-xs px-2 py-1 rounded-lg font-semibold">Destacado</span>`:'';
+      const brand = p.brand?`<span class="text-xs text-white/60">${p.brand}</span>`:'';
+      const adminBtns = isAdmin ? `
+        <div class="flex gap-2 mt-3">
+          <button class="chip px-3 py-1.5 rounded-xl text-sm" onclick="editProduct('${p.id}')">Editar</button>
+          <button class="chip px-3 py-1.5 rounded-xl text-sm" onclick="removeProduct('${p.id}')">Eliminar</button>
+        </div>` : '';
+      return `
+        <article class="card rounded-2xl p-3 sm:p-4 flex flex-col gradient-border">
+          <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3] ms360-imgwrap">
+            <img src="${p.image}${p.image.includes('?')?'&':'?'}v=10"
+                 alt="${p.title}"
+                 class="w-full h-full object-cover"
+                 loading="lazy"
+                 onload="this.setAttribute('data-loaded','1')"
+                 onerror="this.onerror=null;this.src='https://via.placeholder.com/800x600?text=Imagen';this.setAttribute('data-loaded','1');" />
+          </div>
+          <div class="mt-3 flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <h3 class="font-extrabold leading-tight line-clamp-2">${p.title}</h3>
+              <div class="flex items-center gap-2 mt-1">${brand}${brand?'<span class="text-white/20">•</span>':''}<span class="text-xs text-white/60">${p.category}</span>${p.featured?'<span class="text-white/20">•</span>'+tag:''}</div>
+              ${price?`<div class="mt-1 text-white/90 font-semibold">${price}</div>`:''}
+            </div>
+          </div>
+          <div class="mt-3">
+            <a href="${ensureTag(p.amazon)}" target="_blank" rel="nofollow sponsored noopener" class="btn-neon w-full justify-center px-4 py-2 rounded-xl inline-flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a 1 1 0 1 1 1.414-1.414L11 19.586V14a1 1 0 0 1 1-1z"/></svg>
+              Ver en Amazon
+            </a>
+            ${adminBtns}
+          </div>
+        </article>`;
+    }
+
+    function renderCategories(list){
+      const cats = ['all', ...new Set(list.map(p=>p.category))];
+      categoryFilter.innerHTML = cats.map(c => `<option value="${c}">${c==='all'?'Todas las categorías':c}</option>`).join('');
+    }
+
+    function applyFilters(){
+      const term = (search.value||'').toLowerCase().trim();
+      const cat = categoryFilter.value||'all';
+      const filtered = products
+        .slice()
+        .sort((a,b)=> (b.featured - a.featured) || a.title.localeCompare(b.title))
+        .filter(p=>{
+          const t = !term || p.title.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term);
+          const c = cat==='all' || p.category===cat;
+          return t && c;
+        });
+      grid.innerHTML = filtered.map(productCard).join('');
+      empty.classList.toggle('hidden', filtered.length>0);
+      // re-enhance (favoritos/compartir/compare) cuando se vuelve a pintar
+      queueMicrotask(()=>window.dispatchEvent(new Event('ja_products_updated')));
+    }
+
+    // ===== Verificador y Auto-Fix del tag de Amazon (Admin) =====
+    const TAG = "kaninosabioan-20";
+    const LS_VERIFY_KEY = "ja_store_products_v2";
+
+    function verifyDOM() {
+      const as = Array.from(document.querySelectorAll('a[href*="amazon."]'));
+      const rows = as.map((a,i) => {
+        let tag = null;
+        try { tag = new URL(a.href, location.href).searchParams.get("tag"); } catch {}
+        return { idx: i+1, text: (a.textContent||'').trim(), tag, href: a.href, ok: tag === TAG };
+      });
+      console.log("[DOM] Verificación enlaces Amazon");
+      console.table(rows);
+      const bad = rows.filter(r => !r.ok);
+      return { total: rows.length, ok: rows.length - bad.length, fail: bad.length, bad };
+    }
+
+    function verifyLS() {
+      let list = [];
+      try { list = JSON.parse(localStorage.getItem(LS_VERIFY_KEY)) || []; } catch {}
+      const rows = list.map((p,i) => {
+        let tag = null;
+        try { tag = new URL(p.amazon, location.href).searchParams.get("tag"); }
+        catch { const m = /\btag=([^&#]+)/.exec(p.amazon||""); tag = m && m[1] || null; }
+        return { idx: i+1, id:p.id, title:p.title, tag, ok: tag === TAG, amazon:p.amazon };
+      });
+      console.log("[LS] Verificación productos LocalStorage");
+      console.table(rows);
+      const bad = rows.filter(r => !r.ok);
+      return { total: rows.length, ok: rows.length - bad.length, fail: bad.length, bad };
+    }
+
+    function fixDOM() {
+      document.querySelectorAll('a[href*="amazon."]').forEach(a => {
+        try {
+          const u = new URL(a.getAttribute("href"), location.href);
+          u.searchParams.set("tag", TAG);
+          a.href = u.toString();
+          a.setAttribute("rel","nofollow noopener sponsored");
+          a.setAttribute("target","_blank");
+        } catch(e) {
+          const href = a.getAttribute("href")||"";
+          const sep = href.includes("?") ? "&" : "?";
+          a.href = href + sep + "tag=" + TAG;
+        }
+      });
+    }
+
+    function fixLS() {
+      let list = [];
+      try { list = JSON.parse(localStorage.getItem(LS_VERIFY_KEY)) || []; } catch {}
+      const fix = (url) => {
+        if (!url) return url;
+        try { const u = new URL(url, location.href); u.searchParams.set("tag", TAG); return u.toString(); }
+        catch { const sep = url.includes("?") ? "&" : "?"; return url + sep + "tag=" + TAG; }
+      };
+      list = list.map(p => ({ ...p, amazon: fix(p.amazon) }));
+      localStorage.setItem(LS_VERIFY_KEY, JSON.stringify(list));
+    }
+
+    // ======== Local Mode (sin nube) ========
+    const LS_KEY = 'ja_store_products_v2';
+    function local_load(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||[] }catch{ return [] } }
+    function local_save(list){ localStorage.setItem(LS_KEY, JSON.stringify(list)) }
+
+    async function fileToDataURL(file){
+      if(!file) return null;
+      return new Promise((res,rej)=>{
+        const r=new FileReader();
+        r.onload=()=>res(r.result);
+        r.onerror=rej;
+        r.readAsDataURL(file);
+      });
+    }
+
+    // ======== Cloud (Firebase) ========
+    async function cloud_init(config){
+      const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
+      const { getFirestore, collection, onSnapshot, query, orderBy, doc, setDoc, deleteDoc, serverTimestamp } =
+        await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+      const { getStorage, ref, uploadBytes, getDownloadURL } =
+        await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js');
+
+      const app = initializeApp(config);
+      db = getFirestore(app);
+      storage = getStorage(app);
+
+      const q = query(collection(db,'products'), orderBy('createdAt','desc'));
+      if(unsub) unsub();
+      unsub = onSnapshot(q, snap=>{
+        products = [];
+        snap.forEach(d=> products.push(d.data()));
+        renderCategories(products); applyFilters();
+      });
+
+      window.cloud_delete = async (id)=>{
+        const { deleteDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+        await deleteDoc(doc(db,'products',id));
+      };
+      window.cloud_save = async (id, data)=>{
+        const { doc: _doc, setDoc: _setDoc, serverTimestamp: _ts } =
+          await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+        await _setDoc(_doc(db,'products',id), { id, createdAt:_ts(), ...data });
+      };
+      window.cloud_upload = async (file)=>{
+        const fileName = `${Date.now()}_${file.name.replace(/\s+/g,'_')}`;
+        const fileRef = ref(storage, `products/${fileName}`);
+        await uploadBytes(fileRef,file);
+        return await getDownloadURL(fileRef);
+      };
+    }
+
+    // ======== CRUD Handlers ========
+    window.editProduct = (id)=>{
+      const p = products.find(x=>x.id===id); if(!p) return;
+      editingId = id;
+      modalTitle.textContent = "Editar producto";
+      pTitle.value = p.title||'';
+      pBrand.value = p.brand||'';
+      pImageUrl.value = p.image||'';
+      pImageFile.value = "";
+      pAmazon.value = p.amazon||'';
+      pPrice.value = p.price||'';
+      pCategory.value = p.category||'Tecnología';
+      pFeatured.checked = !!p.featured;
+      btnDelete.classList.remove('hidden');
+      modal.showModal();
+    };
+
+    window.removeProduct = async (id)=>{
+      if(!confirm("¿Eliminar este producto?")) return;
+      if(db){
+        await window.cloud_delete(id);
+      } else {
+        products = products.filter(p=>p.id!==id);
+        local_save(products);
+        renderCategories(products); applyFilters();
+      }
+    };
+
+    btnAdd.addEventListener('click', ()=>{
+      editingId = null;
+      modalTitle.textContent = "Nuevo producto";
+      form.reset();
+      pFeatured.checked = false;
+      btnDelete.classList.add('hidden');
+      modal.showModal();
+    });
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+
+      const data = {
+        title: pTitle.value.trim(),
+        brand: pBrand.value.trim(),
+        amazon: pAmazon.value.trim(),
+        price: pPrice.value.trim(),
+        category: pCategory.value,
+        featured: !!pFeatured.checked
+      };
+      if(!data.title || !data.amazon){
+        alert("Título y URL de Amazon son obligatorios."); return;
+      }
+      data.amazon = /[?&]tag=/.test(data.amazon) ? data.amazon : `${data.amazon}${data.amazon.includes('?')?'&':'?'}tag=${"kaninosabioan-20"}`;
+
+      let finalImage = (pImageUrl.value||'').trim();
+      if(pImageFile.files[0]){
+        if(db){
+          finalImage = await window.cloud_upload(pImageFile.files[0]);
+        } else {
+          finalImage = await fileToDataURL(pImageFile.files[0]);
+        }
+      }
+      if(!finalImage){ alert("Debes subir una imagen o pegar una URL."); return; }
+      data.image = finalImage;
+
+      const id = editingId || uid();
+
+      if(db){
+        await window.cloud_save(id, data);
+      } else {
+        if(editingId){
+          products = products.map(p=> p.id===id ? ({...p, ...data}) : p);
+        } else {
+          products = [{ id, ...data, createdAt: Date.now() }, ...products];
+        }
+        local_save(products);
+        renderCategories(products); applyFilters();
+      }
+
+      editingId = null; form.reset(); pFeatured.checked = false; btnDelete.classList.add('hidden'); modal.close();
+    });
+
+    btnDelete.addEventListener('click', async ()=>{
+      if(editingId){ await window.removeProduct(editingId); }
+      editingId = null; modal.close();
+    });
+
+    // ======== Admin / Settings ========
+    function updateAdminUI(){
+      btnAdd.disabled = !isAdmin;
+      btnVerify.classList.toggle('hidden', !isAdmin);
+      btnFix.classList.toggle('hidden', !isAdmin);
+      applyFilters();
+    }
+
+    btnAdmin.addEventListener('click', ()=>{
+      if(isAdmin){
+        isAdmin = false;
+        localStorage.removeItem('ja_admin');
+        btnAdmin.textContent = 'Admin';
+        updateAdminUI();
+        return;
+      }
+      const key = prompt("Clave Admin:");
+      if(key === ADMIN_KEY){
+        isAdmin = true;
+        localStorage.setItem('ja_admin','1');
+        btnAdmin.textContent = 'Admin (ON)';
+        updateAdminUI();
+      } else {
+        alert("Clave incorrecta.");
+      }
+    });
+
+    btnSettings.addEventListener('click', ()=>{
+      adminKeyLabel.textContent = ADMIN_KEY;
+      adminKeyInput.value = '';
+      firebaseConfigInput.value = localStorage.getItem('ja_cloud_cfg') || '';
+      cloudStatus.textContent = db ? 'Estado: Nube conectada' : 'Estado: Local';
+      settings.showModal();
+    });
+
+    saveAdminKey.addEventListener('click', ()=>{
+      const k = (adminKeyInput.value||'').trim();
+      if(!k){ alert('Escribe una clave'); return; }
+      ADMIN_KEY = k;
+      localStorage.setItem('ja_admin_key', k);
+      adminKeyLabel.textContent = k;
+      alert('Clave guardada');
+    });
+
+    btnConnectCloud.addEventListener('click', async ()=>{
+      const raw = (firebaseConfigInput.value||'').trim();
+      if(!raw){ alert('Pega aquí tu firebaseConfig JSON'); return; }
+      try{
+        const cfg = JSON.parse(raw);
+        cloudConfig = cfg;
+        localStorage.setItem('ja_cloud_cfg', JSON.stringify(cfg));
+        await cloud_init(cfg);
+        cloudStatus.textContent = 'Estado: Nube conectada';
+        alert('¡Nube conectada! Ahora todo se sincroniza entre web y teléfono.');
+      }catch(e){ console.error(e); alert('Config inválida. Asegúrate de pegar JSON válido.'); }
+    });
+
+    btnDisconnectCloud.addEventListener('click', ()=>{
+      localStorage.removeItem('ja_cloud_cfg');
+      cloudConfig = null;
+      if(unsub) unsub();
+      db = null; storage=null; products = local_load();
+      renderCategories(products); applyFilters();
+      cloudStatus.textContent = 'Estado: Local';
+      alert('Se desconectó la nube. Ahora estás en modo local.');
+    });
+
+    // ======== Filtros ========
+    search.addEventListener('input', applyFilters);
+    categoryFilter.addEventListener('change', applyFilters);
+
+    // ======== Eventos NUEVOS: Verificar y Auto-Fix ========
+    btnVerify.addEventListener('click', () => {
+      const dom = verifyDOM();
+      const ls = verifyLS();
+      const msg =
+        `DOM → Total: ${dom.total} | OK: ${dom.ok} | FAIL: ${dom.fail}\n` +
+        `LS  → Total: ${ls.total} | OK: ${ls.ok} | FAIL: ${ls.fail}\n\n` +
+        `Detalles en la consola (F12 → Console).`;
+      alert(msg);
+      console.log("[Resumen] DOM:", dom, "| LS:", ls);
+    });
+
+    btnFix.addEventListener('click', () => {
+      if(!confirm("¿Aplicar Auto-Fix? (DOM + LocalStorage)\nLuego recarga la página para ver los cambios en las tarjetas)")) return;
+      fixDOM();
+      fixLS();
+      alert("✅ Auto-Fix aplicado.\n• DOM corregido\n• LocalStorage normalizado\n\nRecarga la página para reflejarlo en las tarjetas.");
+    });
+
+    // ======== Escuchar bootstrap del JSON (para refrescar sin recargar) ========
+    window.addEventListener('ja_products_updated', ()=>{
+      if(!db){
+        products = local_load();
+        renderCategories(products);
+        applyFilters();
+      }
+    });
+
+    // ======== Init ========
+    window.addEventListener('DOMContentLoaded', async ()=>{
+      isAdmin = !!localStorage.getItem('ja_admin');
+      btnAdmin.textContent = isAdmin ? 'Admin (ON)' : 'Admin';
+
+      const savedCfg = localStorage.getItem('ja_cloud_cfg');
+      if(savedCfg){
+        try{
+          await cloud_init(JSON.parse(savedCfg));
+        }catch(e){
+          console.warn('No se pudo reconectar a la nube. Usando local.', e);
+          products = local_load();
+          renderCategories(products); applyFilters();
+        }
+      } else {
+        products = local_load();
+        renderCategories(products); applyFilters();
+      }
+    });
+  </script>
+
+  <!-- ===== Auto-SYNC con GitHub: trae products.json y actualiza cada 30s (dedupe) ===== -->
+  <script>
+  (function(){
+    const RAW_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
+    const LS_KEY  = "ja_store_products_v2";
+    const TAG     = "kaninosabioan-20";
+    const REFRESH_MS = 30000;
+
+    function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || [] }catch{ return [] } }
+    function lsSave(v){ localStorage.setItem(LS_KEY, JSON.stringify(v)) }
+
+    function asinFrom(url){
+      try{
+        const u = new URL(url);
+        const m1 = u.pathname.match(/\/dp\/([A-Z0-9]{10})/i);
+        const m2 = u.pathname.match(/\/gp\/product\/([A-Z0-9]{10})/i);
+        const m3 = u.pathname.match(/\/([A-Z0-9]{10})(?:[/?]|$)/i);
+        const asin = (m1?.[1] || m2?.[1] || m3?.[1] || "").toUpperCase();
+        return /^[A-Z0-9]{10}$/.test(asin) ? asin : null;
+      }catch{ return null; }
+    }
+
+    function canonicalAmazon(url){
+      if(!url) return "#";
+      try{
+        const u = new URL(url);
+        if(!/amazon\./i.test(u.hostname)) return url;
+        const asin = asinFrom(url);
+        if(asin){
+          const tag = u.searchParams.get('tag');
+          u.pathname = `/dp/${asin}`;
+          u.search = "";
+          if(tag) u.searchParams.set('tag', tag);
+          return u.toString();
+        }
+        return url;
+      }catch{ return url; }
+    }
+
+    function stableKey(obj){
+      const amazon = obj.amazon || obj.AMAZON || "";
+      const asin = asinFrom(amazon);
+      if (asin) return `asin:${asin}`;
+      const t = (obj.title || obj.TITLE || "").toLowerCase().replace(/\s+/g,' ').trim();
+      return `t:${t}`;
+    }
+
+    function tagify(url){
+      if(!url) return "#";
+      try{
+        const u = new URL(url);
+        if(!/amazon\./i.test(u.hostname)) return url;
+        u.searchParams.set("tag", TAG);
+        return u.toString();
+      }catch{
+        const sep = url.includes('?') ? '&' : '?';
+        return `${url}${sep}tag=${TAG}`;
+      }
+    }
+
+    function normalize(entry){
+      const p = entry || {};
+      const canon = canonicalAmazon(p.AMAZON || p.amazon || "");
+      const obj = {
+        id: null,
+        title: p.TITLE || p.title || "",
+        brand: p.BRAND || p.brand || "",
+        image: (p.IMAGE && p.IMAGE.trim()) || "https://via.placeholder.com/800x600?text=Imagen",
+        amazon: tagify(canon || p.AMAZON || p.amazon || "#"),
+        price: p.PRICE || p.price || "",
+        category: p.CATEGORY || p.category || "Otros",
+        featured: !!(p.FEATURE || p.featured),
+        createdAt: Date.now()
+      };
+      obj.id = stableKey(obj);
+      return obj;
+    }
+
+    function mergeDedup(existingList, incomingList){
+      const map = new Map();
+      for (const inc of incomingList) {
+        const k = stableKey(inc);
+        map.set(k, { ...inc, id: k });
+      }
+      for (const ex of existingList) {
+        const k = stableKey(ex);
+        if (!map.has(k)) {
+          map.set(k, { ...ex });
+        }
+      }
+      return Array.from(map.values())
+        .sort((a,b)=> (b.featured - a.featured) || String(a.title).localeCompare(String(b.title)));
+    }
+
+    let lastText = null;
+
+    async function pull(){
+      try{
+        const res = await fetch(RAW_URL + "?" + Date.now(), { cache:"no-store" });
+        if(!res.ok) throw new Error("HTTP "+res.status);
+        const text = await res.text();
+        if(text === lastText) return;
+        lastText = text;
+
+        const data = JSON.parse(text);
+        const incoming = Object.values(data.PRODUCTOS || {}).map(normalize);
+
+        const current = lsLoad();
+        const merged  = mergeDedup(current, incoming);
+
+        lsSave(merged);
+        window.dispatchEvent(new Event('ja_products_updated'));
+        console.log("✅ Auto-sync: productos actualizados (dedupe por ASIN/título)");
+      }catch(e){
+        console.warn("[auto-sync] No se pudo leer products.json:", e);
+      }
+    }
+
+    pull();
+    setInterval(pull, REFRESH_MS);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
+  })();
+  </script>
+
+  <!-- RESET DE CACHÉ / SW / LOCALSTORAGE -->
+  <script>
+  async function resetStore(force=false) {
+    try {
+      localStorage.clear();
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+      }
+      if (force) location.replace(location.pathname + '?nocache=' + Date.now());
+      else location.reload();
+    } catch (e) {
+      console.warn('Reset error:', e);
+      location.reload();
+    }
   }
-  e.respondWith(
-    fetch(e.request).catch(()=> caches.match(e.request))
-  );
-});
+  </script>
+
+  <!-- Afiliado Amazon: forzar tag también en enlaces del DOM -->
+  <script>
+  (function(){
+    const TAG = "kaninosabioan-20";
+    function fixHref(h){
+      try{ const u=new URL(h, location.href); if(!/amazon\./i.test(u.hostname)) return h; u.searchParams.set("tag", TAG); return u.toString(); }
+      catch{ const sep = h.includes('?') ? '&' : '?'; return `${h}${sep}tag=${TAG}`; }
+    }
+    function patchLinks(){
+      document.querySelectorAll('a[href*="amazon."]').forEach(a=>{
+        a.href = fixHref(a.getAttribute('href'));
+        a.setAttribute('rel','nofollow noopener sponsored');
+        a.setAttribute('target','_blank');
+      });
+    }
+    window.addEventListener('load', patchLinks);
+    new MutationObserver(patchLinks).observe(document.body, { childList:true, subtree:true });
+  })();
+  </script>
+
+  <!-- PWA: registrar Service Worker (único) -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(()=>{});
+      });
+    }
+  </script>
+
+  <!-- === MS360 Pro Viewer (solo añadido; no modifica tu app) === -->
+  <div id="ms360-pro" class="fixed inset-0 z-[9999] hidden">
+    <div class="absolute inset-0 bg-black/70" data-close="1"></div>
+
+    <div class="relative mx-auto my-6 w-[96%] max-w-[1120px]">
+      <div class="grid grid-cols-1 md:grid-cols-[112px_minmax(0,1fr)_360px] gap-4 rounded-2xl bg-[#0b0f1a] shadow-2xl ring-1 ring-white/10 overflow-hidden">
+        <div class="md:col-span-3 flex items-center justify-between px-4 py-3 border-b border-white/10">
+          <h3 id="ms360-title" class="text-white text-base sm:text-lg font-semibold truncate"></h3>
+          <button id="ms360-close" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white">Cerrar</button>
+        </div>
+
+        <div class="order-2 md:order-1 md:h-[520px] overflow-y-auto px-3 py-3 hidden md:block">
+          <div id="ms360-thumbs-v" class="flex md:flex-col gap-2"></div>
+        </div>
+
+        <div class="order-1 md:order-2">
+          <div class="relative bg-black/40 md:h-[520px] flex items-center justify-center">
+            <div id="ms360-zoom"
+                 class="relative w-full h-[60vh] md:w-full md:h-full max-h-[520px] bg-center bg-no-repeat bg-contain cursor-zoom-in select-none"
+                 role="img" aria-label="Vista principal del producto">
+              <img id="ms360-main"
+                   class="opacity-0 absolute inset-0 w-full h-full object-contain pointer-events-none"
+                   alt="" />
+            </div>
+            <button id="ms360-prev" class="absolute left-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white">‹</button>
+            <button id="ms360-next" class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white">›</button>
+            <div id="ms360-dots" class="absolute bottom-2 left-0 right-0 mx-auto flex items-center justify-center gap-1"></div>
+            <button id="ms360-full" class="absolute top-2 right-2 px-3 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm">Pantalla completa</button>
+          </div>
+          <div class="md:hidden px-3 py-3 bg-[#0e1424]">
+            <div id="ms360-thumbs-h" class="flex gap-2 overflow-x-auto"></div>
+          </div>
+        </div>
+
+        <aside class="order-3 md:order-3 p-4 md:p-5 border-t md:border-t-0 md:border-l border-white/10">
+          <div class="space-y-3">
+            <div class="text-white/90 text-sm" id="ms360-price"></div>
+            <a id="ms360-amz" href="#" target="_blank" rel="nofollow noopener sponsored"
+               class="inline-flex items-center justify-center w-full px-4 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 to-blue-500 text-white font-medium">
+              Ver en Amazon
+            </a>
+            <div class="text-white/60 text-xs leading-5">Enlace de afiliado • Disponible según inventario.</div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- === Script activador MS360 Pro (sin forzar clases del grid) === -->
+  <script>
+  (() => {
+    const modal   = document.getElementById('ms360-pro');
+    const mainImg = document.getElementById('ms360-main');
+    const zoomBox = document.getElementById('ms360-zoom');
+    const titleEl = document.getElementById('ms360-title');
+    const priceEl = document.getElementById('ms360-price');
+    const amzBtn  = document.getElementById('ms360-amz');
+    const prevBtn = document.getElementById('ms360-prev');
+    const nextBtn = document.getElementById('ms360-next');
+    const dots    = document.getElementById('ms360-dots');
+    const fullBtn = document.getElementById('ms360-full');
+    const thumbsV = document.getElementById('ms360-thumbs-v');
+    const thumbsH = document.getElementById('ms360-thumbs-h');
+
+    let gallery = [];
+    let at = 0;
+
+    const $  = (s, r=document) => r.querySelector(s);
+
+    function getProductsSafe() {
+      try {
+        const raw = localStorage.getItem('ja_store_products_v2');
+        if (raw) return JSON.parse(raw);
+      } catch {}
+      return (window.products && Array.isArray(window.products)) ? window.products : [];
+    }
+
+    function findProductFromCard(cardEl) {
+      try {
+        const title = cardEl.querySelector('h3')?.textContent?.trim() || '';
+        const imgSrc = cardEl.querySelector('img')?.getAttribute('src') || '';
+        const list = getProductsSafe();
+        let p = list.find(x => (x.title||'').trim() === title);
+        if (p) return p;
+        const clean = (imgSrc||'').split('?')[0];
+        p = list.find(x => (x.image||'').split('?')[0] === clean);
+        if (p) return p;
+        p = list.find(x => (x.title||'').startsWith(title.slice(0, 12)));
+        return p || null;
+      } catch { return null; }
+    }
+
+    function productImages(p) {
+      if (Array.isArray(p.IMAGES) && p.IMAGES.length) return p.IMAGES;
+      if (Array.isArray(p.images) && p.images.length) return p.images;
+      return p.image ? [p.image] : [];
+    }
+
+    function renderAll() { renderMain(); renderThumbs(); renderDots(); }
+    function renderMain() {
+      const src = gallery[at] || '';
+      mainImg.src = src;
+      mainImg.alt = `Imagen ${at+1} de ${gallery.length}`;
+      zoomBox.style.backgroundImage = src ? `url("${src}")` : 'none';
+      const pre = new Image();
+      pre.src = gallery[(at+1) % gallery.length] || '';
+      markActive();
+    }
+    function renderThumbs() {
+      const build = (src, i) => {
+        const b = document.createElement('button');
+        b.className = 'relative overflow-hidden rounded-xl border border-white/15 hover:border-white/30 focus:outline-none';
+        b.innerHTML = `<img src="${src}" alt="miniatura ${i+1}" class="h-16 w-16 md:h-20 md:w-20 object-cover">`;
+        b.addEventListener('click', () => { at = i; renderMain(); });
+        return b;
+      };
+      thumbsV.innerHTML = ''; thumbsH.innerHTML = '';
+      gallery.forEach((s,i)=>{ thumbsV.appendChild(build(s,i)); thumbsH.appendChild(build(s,i)); });
+    }
+    function renderDots() {
+      dots.innerHTML = '';
+      gallery.forEach((_,i)=>{
+        const d = document.createElement('button');
+        d.className = 'h-2 w-2 rounded-full bg-white transition-opacity ' + (i===at ? 'opacity-100' : 'opacity-40');
+        d.addEventListener('click', ()=>{ at=i; renderMain(); });
+        dots.appendChild(d);
+      });
+    }
+    function markActive() {
+      [...thumbsV.children, ...thumbsH.children].forEach((el,i)=>{
+        el.classList.toggle('ring-2', i===at);
+        el.classList.toggle('ring-fuchsia-500', i===at);
+      });
+      [...dots.children].forEach((el,i)=>{
+        el.classList.toggle('opacity-100', i===at);
+        el.classList.toggle('opacity-40', i!==at);
+      });
+    }
+    function next(){ if(!gallery.length) return; at=(at+1)%gallery.length; renderMain(); }
+    function prev(){ if(!gallery.length) return; at=(at-1+gallery.length)%gallery.length; renderMain(); }
+
+    function openViewer(p) {
+      gallery = productImages(p);
+      at = 0;
+      titleEl.textContent = p.title || '';
+      priceEl.textContent = p.price ? `US$ ${p.price}` : '';
+      if (p.amazon) {
+        try {
+          const u = new URL(p.amazon, location.href);
+          u.searchParams.set('tag', 'kaninosabioan-20');
+          amzBtn.href = u.toString();
+        } catch {
+          const sep = p.amazon.includes('?') ? '&' : '?';
+          amzBtn.href = p.amazon + sep + 'tag=kaninosabioan-20';
+        }
+      }
+      renderAll();
+      modal.classList.remove('hidden');
+      document.documentElement.classList.add('overflow-hidden');
+    }
+    function closeViewer() {
+      modal.classList.add('hidden');
+      document.documentElement.classList.remove('overflow-hidden');
+      exitFullscreen();
+    }
+
+    document.getElementById('ms360-close')?.addEventListener('click', closeViewer);
+    modal?.addEventListener('click', (e)=>{ if (e.target.dataset.close) closeViewer(); });
+    nextBtn?.addEventListener('click', next);
+    prevBtn?.addEventListener('click', prev);
+
+    const ZOOM_SCALE = 2.2;
+    zoomBox.addEventListener('mousemove', (e) => {
+      if (window.matchMedia('(pointer: coarse)').matches) return;
+      const r = zoomBox.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 100;
+      const y = ((e.clientY - r.top) / r.height) * 100;
+      zoomBox.style.backgroundSize = `${ZOOM_SCALE*100}% auto`;
+      zoomBox.style.backgroundPosition = `${x}% ${y}%`;
+    }, { passive:true });
+    zoomBox.addEventListener('mouseleave', () => {
+      zoomBox.style.backgroundSize = 'contain';
+      zoomBox.style.backgroundPosition = 'center';
+    }, { passive:true });
+
+    function enterFullscreen() {
+      const src = gallery[at] || ''; if (!src) return;
+      const fs = document.createElement('div');
+      fs.id = 'ms360-fs';
+      fs.className = 'fixed inset-0 z-[10000] bg-black flex items-center justify-center';
+      fs.innerHTML = `
+        <img src="${src}" alt="" class="max-w-full max-h-full object-contain select-none" />
+        <button id="ms360-fs-close" class="absolute top-3 right-3 px-3 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white">Cerrar</button>
+        <button id="ms360-fs-prev"  class="absolute left-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white">‹</button>
+        <button id="ms360-fs-next"  class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white">›</button>`;
+      document.body.appendChild(fs);
+      document.getElementById('ms360-fs-close').addEventListener('click', exitFullscreen);
+      document.getElementById('ms360-fs-next').addEventListener('click', ()=>{ next(); document.querySelector('#ms360-fs img').src = gallery[at]||''; });
+      document.getElementById('ms360-fs-prev').addEventListener('click', ()=>{ prev(); document.querySelector('#ms360-fs img').src = gallery[at]||''; });
+
+      let tx=null;
+      fs.addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; }, {passive:true});
+      fs.addEventListener('touchend', e=>{
+        if (tx==null) return;
+        const dx=e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx)>40) (dx<0 ? document.getElementById('ms360-fs-next').click()
+                                   : document.getElementById('ms360-fs-prev').click());
+        tx=null;
+      }, {passive:true});
+    }
+    function exitFullscreen(){ const fs=document.getElementById('ms360-fs'); if(fs) fs.remove(); }
+    fullBtn?.addEventListener('click', enterFullscreen);
+    zoomBox.addEventListener('click', enterFullscreen, { passive:true });
+
+    document.addEventListener('keydown', (e)=>{
+      if (modal.classList.contains('hidden')) return;
+      if (e.key === 'Escape') closeViewer();
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft')  prev();
+    });
+
+    let touchX=null;
+    zoomBox.addEventListener('touchstart', e=>{ touchX = e.touches[0].clientX; }, {passive:true});
+    zoomBox.addEventListener('touchend', e=>{
+      if (touchX==null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx)>40) (dx<0 ? next() : prev());
+      touchX=null;
+    }, {passive:true});
+
+    document.addEventListener('click', (e)=>{
+      const card = e.target.closest('article.card');
+      if (!card) return;
+      if (e.target.closest('a,button')) {
+        const isAmazon = e.target.closest('a[href*="amazon."]');
+        const isAdmin  = e.target.closest('button');
+        if (isAmazon || isAdmin) return;
+      }
+      const p = findProductFromCard(card);
+      if (p) openViewer(p);
+    }, {passive:true});
+  })();
+  </script>
+
+  <!-- ===== Toolbar PRO + Favoritos + Comparador + Orden (Aditivo) ===== -->
+  <script>
+  (()=>{'use strict';
+    const $=(s,r=document)=>r.querySelector(s);
+    const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+    const LS_FAV='ja_favs_v1', LS_CMP='ja_cmp_v1';
+
+    const store = {
+      get favs(){ try{ return new Set(JSON.parse(localStorage.getItem(LS_FAV)||'[]')) }catch{ return new Set() } },
+      set favs(v){ localStorage.setItem(LS_FAV, JSON.stringify([...v])) },
+      get cmp(){ try{ return new Set(JSON.parse(localStorage.getItem(LS_CMP)||'[]')) }catch{ return new Set() } },
+      set cmp(v){ localStorage.setItem(LS_CMP, JSON.stringify([...v])) },
+    };
+
+    function enhanceCards(){
+      $$('.card').forEach(card=>{
+        if(card.dataset.favcmpEnhanced) return;
+        card.dataset.favcmpEnhanced='1';
+
+        const imgWrap = card.querySelector('.aspect-[4\\/3]') || card;
+        imgWrap.classList.add('ms360-imgwrap');
+        const img=imgWrap.querySelector('img');
+        if(img){
+          const done=()=> img.setAttribute('data-loaded','1');
+          if(img.complete) done(); else img.addEventListener('load', done, {once:true});
+          img.setAttribute('decoding','async'); img.setAttribute('fetchpriority','low');
+        }
+
+        const title=(card.querySelector('h3')?.textContent||'').trim();
+        const id='t:'+title.toLowerCase().replace(/\s+/g,' ').trim();
+
+        // Reutiliza caja de acciones si ya existe (share/copy)
+        let box = card.querySelector('.ms360-actions');
+        if(!box){
+          box = document.createElement('div');
+          box.className='ms360-actions';
+          imgWrap.appendChild(box);
+        }
+
+        // Botón Favorito
+        const bFav=document.createElement('button');
+        bFav.className='ms360-ibtn'; bFav.title='Guardar en Favoritos'; bFav.textContent='❤️';
+        const f=store.favs; if(f.has(id)) bFav.style.borderColor='rgba(255,255,255,.4)';
+        bFav.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          const favs=store.favs; favs.has(id)?favs.delete(id):favs.add(id); store.favs=favs;
+          bFav.style.borderColor=favs.has(id)?'rgba(255,255,255,.4)':'rgba(255,255,255,.12)';
+        });
+
+        // Botón Comparar
+        const bCmp=document.createElement('button');
+        bCmp.className='ms360-ibtn'; bCmp.title='Añadir a comparar'; bCmp.textContent='⇄';
+        const c=store.cmp; if(c.has(id)) bCmp.style.borderColor='rgba(255,255,255,.4)';
+        bCmp.addEventListener('click',(e)=>{
+          e.stopPropagation();
+          const cmps=store.cmp; cmps.has(id)?cmps.delete(id):cmps.add(id);
+          if(cmps.size>4){ cmps.delete([...cmps][0]); } // máximo 4
+          store.cmp=cmps;
+          bCmp.style.borderColor=cmps.has(id)?'rgba(255,255,255,.4)':'rgba(255,255,255,.12)';
+          updateCompareBar();
+        });
+
+        // Inserta primero nuestros botones, luego quedan los de share/copy
+        box.prepend(bCmp); box.prepend(bFav);
+      });
+    }
+
+    // Ordenamiento DOM-only
+    function applySort(mode){
+      const grid=$('#grid'); if(!grid) return;
+      const cards=$$('.card', grid);
+      const read=(card)=>({
+        el: card,
+        title: card.querySelector('h3')?.textContent?.trim()||'',
+        price: (()=>{
+          const t=card.querySelector('.text-white\\/90.font-semibold')?.textContent||'';
+          const m=t.replace(/[^0-9.,]/g,'').replace(/\./g,'').replace(',','.');
+          return m? Number(m): NaN;
+        })(),
+        featured: !!card.querySelector('.tag')
+      });
+      const arr=cards.map(read);
+      if(mode==='priceAsc') arr.sort((a,b)=>(a.price||9e15)-(b.price||9e15));
+      else if(mode==='priceDesc') arr.sort((a,b)=>(b.price||-1)-(a.price||-1));
+      else if(mode==='az') arr.sort((a,b)=>a.title.localeCompare(b.title));
+      else arr.sort((a,b)=>(Number(b.featured)-Number(a.featured))||a.title.localeCompare(b.title));
+      grid.innerHTML=''; arr.forEach(x=> grid.appendChild(x.el));
+    }
+
+    // Filtro de favoritos
+    let favFilterOn=false;
+    function toggleFavFilter(){
+      favFilterOn=!favFilterOn;
+      const favs=store.favs;
+      $$('.card').forEach(card=>{
+        const title=(card.querySelector('h3')?.textContent||'').trim();
+        const id='t:'+title.toLowerCase().replace(/\s+/g,' ').trim();
+        card.style.display = (!favFilterOn || favs.has(id)) ? '' : 'none';
+      });
+      const btn=$('#pro-favs'); if(btn) btn.textContent = favFilterOn ? '❤️ Favoritos (ON)' : '❤️ Favoritos';
+    }
+
+    // Barra y modal de comparar
+    function mountCompareBar(){
+      if($('#comparebar')) return;
+      const bar=document.createElement('div');
+      bar.id='comparebar'; bar.className='card rounded-xl px-3 py-2';
+      bar.innerHTML=`
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-white/80">Comparar (<b id="cmp-count">0</b>/4)</span>
+          <button id="cmp-open" class="chip px-3 py-1.5 rounded-lg text-sm">Ver tabla</button>
+          <button id="cmp-clear" class="chip px-3 py-1.5 rounded-lg text-sm">Limpiar</button>
+        </div>`;
+      document.body.appendChild(bar);
+      $('#cmp-clear').addEventListener('click', ()=>{ store.cmp=new Set(); updateCompareBar(); });
+      $('#cmp-open').addEventListener('click', openCompareModal);
+      updateCompareBar();
+    }
+    function updateCompareBar(){
+      const n=store.cmp.size;
+      const c=$('#cmp-count'); if(c) c.textContent=n;
+      $('#comparebar')?.classList.toggle('show', n>0);
+    }
+    function openCompareModal(){
+      let list=[];
+      try{ list=JSON.parse(localStorage.getItem('ja_store_products_v2')||'[]') }catch{}
+      const ids=[...store.cmp];
+      const pick=list.filter(p=>{
+        const pid = p.id || ('t:'+String(p.title||'').toLowerCase().replace(/\s+/g,' ').trim());
+        return ids.includes(pid);
+      });
+
+      const dlg=document.createElement('dialog');
+      dlg.className='backdrop:bg-black/70 rounded-2xl w-[min(920px,96vw)]';
+      dlg.innerHTML=`
+        <form method="dialog" class="card rounded-2xl p-4 sm:p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-lg font-extrabold neon-title">Comparador</h3>
+            <button class="chip px-3 py-1.5 rounded-lg text-sm">Cerrar</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="text-white/70">
+                <tr>
+                  <th class="text-left py-2">Producto</th>
+                  <th class="text-left py-2">Marca</th>
+                  <th class="text-left py-2">Categoría</th>
+                  <th class="text-left py-2">Precio</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${pick.map(p=>`
+                  <tr class="border-t border-white/10">
+                    <td class="py-2">${p.title||''}</td>
+                    <td class="py-2">${p.brand||''}</td>
+                    <td class="py-2">${p.category||''}</td>
+                    <td class="py-2">${p.price?('$'+Number(p.price).toLocaleString()):''}</td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </form>`;
+      document.body.appendChild(dlg); dlg.showModal();
+      dlg.addEventListener('close', ()=> dlg.remove());
+    }
+
+    // Métricas suaves en console
+    function setupMetrics(){
+      const io=new IntersectionObserver(entries=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){
+            const title=e.target.querySelector('h3')?.textContent?.trim();
+            if(title) console.log('[view]', title);
+            io.unobserve(e.target);
+          }
+        });
+      }, {threshold:0.25, rootMargin:'0px 0px -20% 0px'});
+      $$('.card').forEach(c=> io.observe(c));
+      document.addEventListener('click', (ev)=>{
+        const a=ev.target.closest('a[href*="amazon."]'); if(!a) return;
+        const card=ev.target.closest('.card');
+        const title=card?.querySelector('h3')?.textContent?.trim();
+        console.log('[click_out_amazon]', {title, href:a.href});
+      }, {passive:true});
+    }
+
+    // Eventos
+    window.addEventListener('DOMContentLoaded', ()=>{
+      mountCompareBar();
+      enhanceCards();
+      setupMetrics();
+      // Toolbar
+      $('#pro-sort')?.addEventListener('change', (e)=> applySort(e.target.value));
+      $('#pro-favs')?.addEventListener('click', toggleFavFilter);
+      $('#pro-cmp')?.addEventListener('click', openCompareModal);
+    });
+
+    // Re-enhance cuando cambia el grid
+    window.addEventListener('ja_products_updated', ()=>{ enhanceCards(); setupMetrics(); });
+
+    // También tras búsqueda/categoría
+    document.addEventListener('input', e=>{ if(e.target?.id==='search') setTimeout(()=>{ enhanceCards(); setupMetrics(); }, 0); }, {passive:true});
+    document.addEventListener('change', e=>{ if(e.target?.id==='categoryFilter' || e.target?.id==='pro-sort') setTimeout(()=>{ enhanceCards(); setupMetrics(); }, 0); }, {passive:true});
+  })();
+  </script>
+
+  <!-- ===== MS360 Add-on Script (encapsulado) ===== -->
+  <script>
+  (() => { 'use strict';
+    const $ = (s, r=document)=> r.querySelector(s);
+    const $$ = (s, r=document)=> Array.from(r.querySelectorAll(s));
+    const safe = (fn)=>{ try{ fn() }catch(e){ console.warn('[MS360 add-on]', e) } };
+
+    const toastHost = document.createElement('div'); toastHost.id='ms360-toasts';
+    document.addEventListener('DOMContentLoaded',()=>document.body.appendChild(toastHost), {once:true});
+    const toast = (t)=>{ const el=document.createElement('div'); el.className='ms360-toast'; el.textContent=t; toastHost.appendChild(el);
+      setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(6px)'; setTimeout(()=>el.remove(),180)}, 2000); };
+
+    safe(()=> {
+      const grid = $('#grid'); if(!grid) return;
+      const noCards = ()=> !grid.querySelector('article.card');
+      if(noCards()){
+        const skeleton = (n=8)=> {
+          const card = () => `
+            <article class="card rounded-2xl p-3 sm:p-4 gradient-border">
+              <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3] ms360-skeleton"></div>
+              <div class="mt-3 space-y-2">
+                <div class="h-4 rounded-md ms360-skeleton"></div>
+                <div class="h-3 w-1/2 rounded-md ms360-skeleton"></div>
+                <div class="h-9 rounded-lg ms360-skeleton"></div>
+              </div>
+            </article>`;
+          grid.innerHTML = Array.from({length:n}).map(card).join('');
+          const empty = $('#empty'); if(empty) empty.classList.add('hidden');
+        };
+        skeleton(8);
+        window.addEventListener('ja_products_updated', ()=>{}, {once:true});
+      }
+    });
+
+    /* Botón “Arriba” — lo mantenemos */
+    safe(()=> {
+      const btn = document.createElement('button');
+      btn.id='ms360-top'; btn.className='btn-neon rounded-full px-4 py-3 font-extrabold'; btn.textContent='↑ Arriba';
+      btn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+      document.addEventListener('DOMContentLoaded', ()=> document.body.appendChild(btn), {once:true});
+      window.addEventListener('scroll', ()=> { const y = window.scrollY || document.documentElement.scrollTop; btn.classList.toggle('ms360-show', y>380); }, {passive:true});
+    });
+
+    // Share/Copy (ya lo tenías)
+    safe(()=> {
+      const enhance = () => {
+        $$('.card').forEach(card => {
+          if(card.dataset.ms360Addon) return;
+          card.dataset.ms360Addon = '1';
+          const imgWrap = card.querySelector('.aspect-[4/3]') || card;
+          imgWrap.style.position='relative';
+
+          const box = document.createElement('div'); box.className='ms360-actions';
+          const bShare = document.createElement('button'); bShare.className='ms360-ibtn ms360-focus'; bShare.type='button'; bShare.title='Compartir'; bShare.textContent='⤴︎';
+          const bCopy  = document.createElement('button');  bCopy.className='ms360-ibtn ms360-focus';  bCopy.type='button';  bCopy.title='Copiar enlace'; bCopy.textContent='⧉';
+
+          const title = (card.querySelector('h3')?.textContent || 'Producto').trim();
+          const amz   = card.querySelector('a[href*="amazon."]')?.href || '';
+
+          bShare.addEventListener('click', async (e)=> {
+            e.stopPropagation();
+            if (navigator.share && amz) {
+              try { await navigator.share({ title, text:'Mira este producto', url: amz }); toast('Compartido ✅'); }
+              catch(_e){}
+            } else {
+              try { await navigator.clipboard.writeText(amz); toast('Copiado ✅'); } catch { toast('No se pudo copiar'); }
+            }
+          });
+          bCopy.addEventListener('click', async (e)=> {
+            e.stopPropagation();
+            if(!amz){ toast('Sin enlace disponible'); return; }
+            try { await navigator.clipboard.writeText(amz); toast('Copiado ✅'); } catch { toast('No se pudo copiar'); }
+          });
+
+          box.appendChild(bShare); box.appendChild(bCopy); imgWrap.appendChild(box);
+        });
+      };
+      document.addEventListener('DOMContentLoaded', enhance);
+      window.addEventListener('ja_products_updated', enhance);
+      document.addEventListener('input', e=>{ if(e.target && e.target.id==='search') setTimeout(enhance, 0) }, {passive:true});
+      document.addEventListener('change', e=>{ if(e.target && e.target.id==='categoryFilter') setTimeout(enhance, 0) }, {passive:true});
+    });
+
+    // Aviso red
+    safe(()=> {
+      const bar = document.createElement('div');
+      bar.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999;display:none";
+      bar.innerHTML = `
+        <div class="mx-auto max-w-7xl px-4 py-2">
+          <div class="rounded-xl px-3 py-2 text-sm font-semibold text-white"
+               style="background:linear-gradient(90deg,#ff3b3b,#ff784e)">
+            Estás sin conexión. Navegación limitada (modo offline).
+          </div>
+        </div>`;
+      document.addEventListener('DOMContentLoaded', ()=> document.body.appendChild(bar), {once:true});
+      const on = ()=>{ bar.style.display='none'; toast('Vuelta a online 🌐') };
+      const off= ()=>{ bar.style.display='block'; toast('Sin conexión 🔌') };
+      window.addEventListener('online', on); window.addEventListener('offline', off);
+      if(!navigator.onLine) off();
+    });
+
+    // PWA install nudge
+    safe(()=> {
+      let deferred=null;
+      window.addEventListener('beforeinstallprompt', (e)=>{
+        e.preventDefault(); deferred = e;
+        setTimeout(()=> {
+          const box = document.createElement('div');
+          box.className='ms360-toast';
+          box.innerHTML = `📲 ¿Instalar <b>MEGA STORE 360</b>?
+            <div class="mt-2 flex gap-8">
+              <button id="ms360-pwa-ok"  class="chip px-3 py-1.5 rounded-xl">Instalar</button>
+              <button id="ms360-pwa-no"  class="chip px-3 py-1.5 rounded-xl">Luego</button>
+            </div>`;
+          toastHost.appendChild(box);
+          box.querySelector('#ms360-pwa-ok')?.addEventListener('click', async ()=>{ if(!deferred) return; deferred.prompt(); await deferred.userChoice; deferred=null; box.remove(); });
+          box.querySelector('#ms360-pwa-no')?.addEventListener('click', ()=> box.remove());
+        }, 2200);
+      }, {once:true});
+    });
+  })();
+  </script>
+  <!-- ===== /MS360 Add-on Script ===== -->
+
+  <!-- Accesibilidad ARIA mínima -->
+  <script>
+  (()=>{'use strict';
+    const set=(el, attrs)=> el && Object.entries(attrs).forEach(([k,v])=> el.setAttribute(k,v));
+    window.addEventListener('DOMContentLoaded', ()=>{
+      set(document.getElementById('modal'), {'aria-modal':'true','aria-labelledby':'modalTitle'});
+      set(document.getElementById('settings'), {'aria-modal':'true'});
+      set(document.getElementById('ms360-prev'), {'aria-label':'Imagen anterior'});
+      set(document.getElementById('ms360-next'), {'aria-label':'Imagen siguiente'});
+      set(document.getElementById('ms360-full'), {'aria-label':'Ver a pantalla completa'});
+      set(document.getElementById('ms360-close'), {'aria-label':'Cerrar visor'});
+    });
+  })();
+  </script>
+
+</body>
+</html>
