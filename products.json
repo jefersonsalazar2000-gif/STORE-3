@@ -1,108 +1,53 @@
-
 {
   "PRODUCTOS": {
-    "gevi-espresso-b0f3hh834m": {
-      "TITLE": "Gevi Cafetera Espresso 20 Bar con vaporizador (acero inoxidable)",
+    "quay-nightfall-shield-b0bw5llkxy": {
+      "TITLE": "QUAY Nightfall Shield – Gafas de sol (negro)",
       "PRICE": 0,
-      "CATEGORY": "Cocina",
-      "IMAGE": "https://m.media-amazon.com/images/I/71sZoZpDubL._AC_SL1370_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0F3HH834M?tag=kaninosabioan-20",
-      "FEATURE": true
-    },
-    "auriculares-inalambricos-b09ld2d1tv": {
-      "TITLE": "Auriculares inalámbricos intrauditivos impermeables",
-      "PRICE": 0,
-      "CATEGORY": "Electrónica",
-      "IMAGE": "https://m.media-amazon.com/images/I/7112aOlyUhL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B09LD2D1TV?tag=kaninosabioan-20",
+      "CATEGORY": "Accesorios",
+      "IMAGE": "https://m.media-amazon.com/images/I/61oN5YmTGoL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0BW5LLKXY?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "dispositivo-streaming-4k-b0cqmrkrv5": {
-      "TITLE": "Dispositivo de streaming 4K con control por voz Alexa",
+    "carrera-5041s-gafas-b01n4q8ko2": {
+      "TITLE": "Carrera 5041/S – Gafas de sol rectangulares (Black/Dark Gray Gradient)",
       "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/61weCavnG7L._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0CQMRKRV5?tag=kaninosabioan-20",
+      "CATEGORY": "Accesorios",
+      "IMAGE": "https://m.media-amazon.com/images/I/611dLx7nDJL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B01N4Q8KO2?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "echo-show-5-b09b2sbhqk": {
-      "TITLE": "Echo Show 5 (pantalla inteligente)",
+    "grace-folly-trucker-b07jgddlcn": {
+      "TITLE": "Grace Folly – Gorra trucker unisex (flamingo)",
       "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/71j-zo5SuhL._AC_SL1000_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B09B2SBHQK?tag=kaninosabioan-20",
+      "CATEGORY": "Accesorios",
+      "IMAGE": "https://m.media-amazon.com/images/I/51AjpH9DoAL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B07JGDDLCN?tag=kaninosabioan-20",
       "FEATURE": false
     },
+    "grace-folly-trucker-b07gb1bkbc": {
+      "TITLE": "Grace Folly – Gorra trucker unisex (variante)",
+      "PRICE": 0,
+      "CATEGORY": "Accesorios",
+      "IMAGE": "https://m.media-amazon.com/images/I/61Osm9iWEVL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B07GB1BKBC?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+
+    "carfidant-removedor-raspones-b0f6768lqb": {
+      "TITLE": "Carfidant – Removedor de rayones para autos (3.4 fl oz)",
+      "PRICE": 0,
+      "CATEGORY": "Automotriz",
+      "IMAGE": "https://m.media-amazon.com/images/I/61eS8DAvt6L._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0F6768LQB?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+
     "mascarilla-moldeadora-mandibula-b0cndckxdx": {
       "TITLE": "Mascarilla moldeadora de mandíbula con ácido hialurónico",
       "PRICE": 0,
       "CATEGORY": "Belleza",
       "IMAGE": "https://m.media-amazon.com/images/I/81h8V%2BeyxgL._SL1500_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0CNDCKXDX?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "breville-barista-touch-impress-b0c1t4w797": {
-      "TITLE": "Breville Barista Touch Impress (acero inoxidable)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/51OhcC8%2B9WL._AC_SL1120_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0C1T4W797?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "keurig-k-supreme-b0892tw82k": {
-      "TITLE": "Keurig K-Supreme con tecnología MultiStream",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/71zSOVj2G9L._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0892TW82K?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "fire-hd-10-kids-pro-b0bl6dcngr": {
-      "TITLE": "Fire HD 10 Kids Pro (tableta)",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/71xfcT-AUBL._AC_SL1000_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0BL6DCNGR?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "pantalones-microforro-pack-b0ddkm4g6h": {
-      "TITLE": "Paquete de pantalones con microforro (descanso, bolsillos)",
-      "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "https://m.media-amazon.com/images/I/81DqznzG-qL._AC_SY879_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DDKM4G6H?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "vela-calabaza-otono-b0f66zx4fn": {
-      "TITLE": "Vela perfumada leche de calabaza (otoño)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/71OdnfmwCqL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0F66ZX4FN?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "pantuflas-gdazzio-b0fdqp89zs": {
-      "TITLE": "Gdazzio – Pantuflas acogedoras esponjosas",
-      "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "https://m.media-amazon.com/images/I/716JyG3iNkL._AC_SY695_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FDQP89ZS?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "echo-dot-5a-gen-b09b93zdg4": {
-      "TITLE": "Echo Dot (modelo reciente, 5ª gen)",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/61E80QtGeCL._AC_SL1000_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B09B93ZDG4?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "beats-solo-inalambricos-b0fhlps8zf": {
-      "TITLE": "Beats Solo – Auriculares inalámbricos",
-      "PRICE": 0,
-      "CATEGORY": "Electrónica",
-      "IMAGE": "https://m.media-amazon.com/images/I/51kJvfwJSWL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FHLPS8ZF?tag=kaninosabioan-20",
       "FEATURE": false
     },
     "olaplex-no7-b07vr1ndsq": {
@@ -129,30 +74,6 @@
       "AMAZON": "https://www.amazon.com/dp/B07DY2QRF6?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "stanley-quencher-protour-b0fb7pr5pv": {
-      "TITLE": "Stanley Quencher ProTour (vaso térmico)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/61PVfly17gL._SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FB7PR5PV?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "espresso-electrica-b086r7bd6q": {
-      "TITLE": "Máquina eléctrica de espresso/capuccino",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/815VjjYcnXL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B086R7BD6Q?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "insignia-fire-tv-65-b0f1c882rx": {
-      "TITLE": "INSIGNIA Fire TV 65\" 4K UHD",
-      "PRICE": 0,
-      "CATEGORY": "Electrónica",
-      "IMAGE": "https://m.media-amazon.com/images/I/8107AeAPxhL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0F1C882RX?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
     "tratamiento-capilar-proteina-b0dsq61fw4": {
       "TITLE": "Tratamiento capilar con proteína, efecto volumen (mujeres)",
       "PRICE": 0,
@@ -161,68 +82,12 @@
       "AMAZON": "https://www.amazon.com/dp/B0DSQ61FW4?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "quay-nightfall-shield-b0bw5llkxy": {
-      "TITLE": "QUAY Nightfall Shield – Gafas de sol (negro)",
-      "PRICE": 0,
-      "CATEGORY": "Accesorios",
-      "IMAGE": "https://m.media-amazon.com/images/I/61oN5YmTGoL._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0BW5LLKXY?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "difusor-aceites-esenciales-b0fcffgpbv": {
-      "TITLE": "Difusor de aceites esenciales (PMsusoow)",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=B0FCFFGPBV&Format=_SL1000_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=kaninosabioan-20",
-      "AMAZON": "https://www.amazon.com/dp/B0FCFFGPBV?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "mongdio-taza-autoagitable-b0dqxzk5cc": {
-      "TITLE": "Mongdio Taza de café autoagitable con pantalla de temperatura",
-      "PRICE": 0,
-      "CATEGORY": "Tecnología",
-      "IMAGE": "https://m.media-amazon.com/images/I/61zkCY9ogPL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DQXZKSCC?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
     "rare-beauty-blush-b0d8jcc51f": {
       "TITLE": "Rare Beauty Soft Pinch Liquid Blush (Mini, Grateful)",
       "PRICE": 0,
       "CATEGORY": "Belleza",
       "IMAGE": "https://m.media-amazon.com/images/I/61bm%2Bnd06kL._AC_UL640_QL65_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0D8JCC51F?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "mascara-frio-ojos-b07hd61pyn": {
-      "TITLE": "Máscara de gel frío para ojos - alivio de hinchazón y migrañas",
-      "PRICE": 0,
-      "CATEGORY": "Salud",
-      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71J157-uKML._AC_UL200_SR200,200_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B07HD61PYN?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "taza-autoagitacion-b0drgfyqbq": {
-      "TITLE": "Taza de café autoagitada de acero inoxidable (recargable)",
-      "PRICE": 0,
-      "CATEGORY": "Tecnología",
-      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71Oxr26MmUL._AC_UL200_SR200,200_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DRGFYQBQ?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "nortiv-zapatillas-b0dfgqhx22": {
-      "TITLE": "Zapatillas deportivas NORTIV antideslizantes acolchadas",
-      "PRICE": 0,
-      "CATEGORY": "Deportes",
-      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71xK9byUarL._AC_UL200_SR200,200_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DFGQHX22?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "mascarilla-labios-b0c9qqg8r6": {
-      "TITLE": "Mascarilla hidratante de labios para dormir",
-      "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/710tW-jQW5L._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0C9QQG8R6?tag=kaninosabioan-20",
       "FEATURE": false
     },
     "cerave-clay-foam-b0dw5yyb4p": {
@@ -257,94 +122,56 @@
       "AMAZON": "https://www.amazon.com/dp/B0D5M975JL?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "firstgym-pants-ajustados-b08kw3yy5d": {
-      "TITLE": "FIRSTGYM Pantalones deportivos ajustados (entrenamiento)",
+    "cortapelos-pro-kit-8p-b0dqg5rrdb": {
+      "TITLE": "Cortapelos profesional inalámbrico + recortadora (kit 8 pzs, LED)",
       "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "https://m.media-amazon.com/images/I/715b1KVxYDL._AC_SY879_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B08KW3YY5D?tag=kaninosabioan-20",
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/61IvewicF9L._AC_SL1000_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DQG5RRDB?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "firstgym-pants-cremallera-b093pmfdlc": {
-      "TITLE": "FIRSTGYM Pantalones deportivos con cremallera",
+    "cortapelos-pro-led-b0fg7k9zhn": {
+      "TITLE": "Cortapelos profesional inalámbrico recargable (pantalla LED)",
       "PRICE": 0,
-      "CATEGORY": "Ropa",
-      "IMAGE": "https://m.media-amazon.com/images/I/71kD4Pe411L._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B093PMFDLC?tag=kaninosabioan-20",
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/61m671SrF5L._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FG7K9ZHN?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "grace-folly-trucker-b07jgddlcn": {
-      "TITLE": "Grace Folly – Gorra trucker unisex (flamingo)",
+    "cortapelos-pro-inalambrica-b0f83mxts6": {
+      "TITLE": "Cortapelos y recortadora profesional inalámbrica (barbero)",
       "PRICE": 0,
-      "CATEGORY": "Accesorios",
-      "IMAGE": "https://m.media-amazon.com/images/I/51AjpH9DoAL._AC_SX679_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B07JGDDLCN?tag=kaninosabioan-20",
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/71cvUaZ-w3L._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0F83MXTS6?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "grace-folly-trucker-b07gb1bkbc": {
-      "TITLE": "Grace Folly – Gorra trucker unisex (variante)",
+    "cortapelos-pro-b0dsw249mg": {
+      "TITLE": "Cortapelos profesional inalámbrico (kit completo)",
       "PRICE": 0,
-      "CATEGORY": "Accesorios",
-      "IMAGE": "https://m.media-amazon.com/images/I/61Osm9iWEVL._AC_SX679_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B07GB1BKBC?tag=kaninosabioan-20",
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/51cTGBEymQL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DSW249MG?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "teeter-ep560-mesa-inversion-b0bbxxhw78": {
-      "TITLE": "Teeter EP-560 Ltd. – Mesa de inversión (certificada UL)",
+
+    "gevi-espresso-b0f3hh834m": {
+      "TITLE": "Gevi Cafetera Espresso 20 Bar con vaporizador (acero inoxidable)",
       "PRICE": 0,
-      "CATEGORY": "Deportes",
-      "IMAGE": "https://m.media-amazon.com/images/I/718g6S-3iTL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0BBXXHW78?tag=kaninosabioan-20",
+      "CATEGORY": "Cocina",
+      "IMAGE": "https://m.media-amazon.com/images/I/71sZoZpDubL._AC_SL1370_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0F3HH834M?tag=kaninosabioan-20",
+      "FEATURE": true
+    },
+    "caja-rodante-huevos-b0fj699dqn": {
+      "TITLE": "Caja rodante para huevos – almacenamiento para refrigerador (crema)",
+      "PRICE": 0,
+      "CATEGORY": "Cocina",
+      "IMAGE": "https://m.media-amazon.com/images/I/51cTGBEymQL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FJ699DQN?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "echo-dot-ironman-b0dkpfn5pw": {
-      "TITLE": "Echo Bundle: Echo Dot (5ª gen) + Soporte Iron Man (edición limitada)",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/61Jxyc8DlWL._AC_UY436_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DKPFN5PW?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "echo-dot-jack-b0dfhq5nxv": {
-      "TITLE": "Echo Bundle: Echo Dot (5ª gen) + Jack Skellington (edición limitada)",
-      "PRICE": 0,
-      "CATEGORY": "Dispositivos Amazon",
-      "IMAGE": "https://m.media-amazon.com/images/I/61sFu-oDQAL._AC_UY436_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DFHQ5NXV?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "logitech-mx-master-3s-b09hm94vds": {
-      "TITLE": "Logitech MX Master 3S – Mouse inalámbrico Bluetooth (8K DPI, clics silenciosos)",
-      "PRICE": 0,
-      "CATEGORY": "Electrónica",
-      "IMAGE": "https://m.media-amazon.com/images/I/71YFOZ2k0XL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B09HM94VDS?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "chomchom-roller-b00bagtnaq": {
-      "TITLE": "ChomChom Roller – Removedor de pelo de mascotas",
-      "PRICE": 0,
-      "CATEGORY": "Mascotas",
-      "IMAGE": "https://m.media-amazon.com/images/I/71YFOZ2k0XL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B00BAGTNAQ?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "bissell-powerclean-furfinder-b0dqllpygm": {
-      "TITLE": "BISSELL PowerClean FurFinder – Aspiradora inalámbrica 200W",
-      "PRICE": 0,
-      "CATEGORY": "Hogar",
-      "IMAGE": "https://m.media-amazon.com/images/I/61F6VNlUc7L._AC_UY436_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DQLLPYGM?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
-    "carrera-5041s-gafas-b01n4q8ko2": {
-      "TITLE": "Carrera 5041/S – Gafas de sol rectangulares (Black/Dark Gray Gradient)",
-      "PRICE": 0,
-      "CATEGORY": "Accesorios",
-      "IMAGE": "https://m.media-amazon.com/images/I/611dLx7nDJL._AC_UL640_FMwebp_QL65_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B01N4Q8KO2?tag=kaninosabioan-20",
-      "FEATURE": false
-    },
+
     "hotwheels-gr-supra-speed-graphics-b09z9x31r8": {
       "TITLE": "Hot Wheels '20 Toyota GR Supra, Speed Graphics 5/10 (Negro)",
       "PRICE": 0,
@@ -386,46 +213,151 @@
       "FEATURE": false
     },
 
-    /* ===== NUEVOS (sin duplicados) ===== */
+    "teeter-ep560-mesa-inversion-b0bbxxhw78": {
+      "TITLE": "Teeter EP-560 Ltd. – Mesa de inversión (certificada UL)",
+      "PRICE": 0,
+      "CATEGORY": "Deportes",
+      "IMAGE": "https://m.media-amazon.com/images/I/718g6S-3iTL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0BBXXHW78?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "nortiv-zapatillas-b0dfgqhx22": {
+      "TITLE": "Zapatillas deportivas NORTIV antideslizantes acolchadas",
+      "PRICE": 0,
+      "CATEGORY": "Deportes",
+      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71xK9byUarL._AC_UL200_SR200,200_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DFGQHX22?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
 
-    "cortapelos-pro-kit-8p-b0dqg5rrdb": {
-      "TITLE": "Cortapelos profesional inalámbrico + recortadora (kit 8 pzs, LED)",
+    "dispositivo-streaming-4k-b0cqmrkrv5": {
+      "TITLE": "Dispositivo de streaming 4K con control por voz Alexa",
       "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/61IvewicF9L._AC_SL1000_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DQG5RRDB?tag=kaninosabioan-20",
+      "CATEGORY": "Dispositivos Amazon",
+      "IMAGE": "https://m.media-amazon.com/images/I/61weCavnG7L._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0CQMRKRV5?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "cortapelos-pro-led-b0fg7k9zhn": {
-      "TITLE": "Cortapelos profesional inalámbrico recargable (pantalla LED)",
+    "echo-show-5-b09b2sbhqk": {
+      "TITLE": "Echo Show 5 (pantalla inteligente)",
       "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/61m671SrF5L._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FG7K9ZHN?tag=kaninosabioan-20",
+      "CATEGORY": "Dispositivos Amazon",
+      "IMAGE": "https://m.media-amazon.com/images/I/71j-zo5SuhL._AC_SL1000_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B09B2SBHQK?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "cortapelos-pro-inalambrica-b0f83mxts6": {
-      "TITLE": "Cortapelos y recortadora profesional inalámbrica (barbero)",
+    "fire-hd-10-kids-pro-b0bl6dcngr": {
+      "TITLE": "Fire HD 10 Kids Pro (tableta)",
       "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/71cvUaZ-w3L._AC_SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0F83MXTS6?tag=kaninosabioan-20",
+      "CATEGORY": "Dispositivos Amazon",
+      "IMAGE": "https://m.media-amazon.com/images/I/71xfcT-AUBL._AC_SL1000_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0BL6DCNGR?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "cortapelos-pro-b0dsw249mg": {
-      "TITLE": "Cortapelos profesional inalámbrico (kit completo)",
+    "echo-dot-5a-gen-b09b93zdg4": {
+      "TITLE": "Echo Dot (modelo reciente, 5ª gen)",
       "PRICE": 0,
-      "CATEGORY": "Belleza",
-      "IMAGE": "https://m.media-amazon.com/images/I/51cTGBEymQL._AC_SX679_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0DSW249MG?tag=kaninosabioan-20",
+      "CATEGORY": "Dispositivos Amazon",
+      "IMAGE": "https://m.media-amazon.com/images/I/61E80QtGeCL._AC_SL1000_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B09B93ZDG4?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "caja-rodante-huevos-b0fj699dqn": {
-      "TITLE": "Caja rodante para huevos – almacenamiento para refrigerador (crema)",
+    "echo-dot-ironman-b0dkpfn5pw": {
+      "TITLE": "Echo Bundle: Echo Dot (5ª gen) + Soporte Iron Man (edición limitada)",
       "PRICE": 0,
-      "CATEGORY": "Cocina",
-      "IMAGE": "https://m.media-amazon.com/images/I/51cTGBEymQL._AC_SX679_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0FJ699DQN?tag=kaninosabioan-20",
+      "CATEGORY": "Dispositivos Amazon",
+      "IMAGE": "https://m.media-amazon.com/images/I/61Jxyc8DlWL._AC_UY436_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DKPFN5PW?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "echo-dot-jack-b0dfhq5nxv": {
+      "TITLE": "Echo Bundle: Echo Dot (5ª gen) + Jack Skellington (edición limitada)",
+      "PRICE": 0,
+      "CATEGORY": "Dispositivos Amazon",
+      "IMAGE": "https://m.media-amazon.com/images/I/61sFu-oDQAL._AC_UY436_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DFHQ5NXV?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+
+    "auriculares-inalambricos-b09ld2d1tv": {
+      "TITLE": "Auriculares inalámbricos intrauditivos impermeables",
+      "PRICE": 0,
+      "CATEGORY": "Electrónica",
+      "IMAGE": "https://m.media-amazon.com/images/I/7112aOlyUhL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B09LD2D1TV?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "beats-solo-inalambricos-b0fhlps8zf": {
+      "TITLE": "Beats Solo – Auriculares inalámbricos",
+      "PRICE": 0,
+      "CATEGORY": "Electrónica",
+      "IMAGE": "https://m.media-amazon.com/images/I/51kJvfwJSWL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FHLPS8ZF?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "insignia-fire-tv-65-b0f1c882rx": {
+      "TITLE": "INSIGNIA Fire TV 65\" 4K UHD",
+      "PRICE": 0,
+      "CATEGORY": "Electrónica",
+      "IMAGE": "https://m.media-amazon.com/images/I/8107AeAPxhL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0F1C882RX?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "logitech-mx-master-3s-b09hm94vds": {
+      "TITLE": "Logitech MX Master 3S – Mouse inalámbrico Bluetooth (8K DPI, clics silenciosos)",
+      "PRICE": 0,
+      "CATEGORY": "Electrónica",
+      "IMAGE": "https://m.media-amazon.com/images/I/71YFOZ2k0XL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B09HM94VDS?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+
+    "breville-barista-touch-impress-b0c1t4w797": {
+      "TITLE": "Breville Barista Touch Impress (acero inoxidable)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/51OhcC8%2B9WL._AC_SL1120_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0C1T4W797?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "keurig-k-supreme-b0892tw82k": {
+      "TITLE": "Keurig K-Supreme con tecnología MultiStream",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/71zSOVj2G9L._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0892TW82K?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "vela-calabaza-otono-b0f66zx4fn": {
+      "TITLE": "Vela perfumada leche de calabaza (otoño)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/71OdnfmwCqL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0F66ZX4FN?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "stanley-quencher-protour-b0fb7pr5pv": {
+      "TITLE": "Stanley Quencher ProTour (vaso térmico)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/61PVfly17gL._SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FB7PR5PV?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "espresso-electrica-b086r7bd6q": {
+      "TITLE": "Máquina eléctrica de espresso/capuccino",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/815VjjYcnXL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B086R7BD6Q?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "bissell-powerclean-furfinder-b0dqllpygm": {
+      "TITLE": "BISSELL PowerClean FurFinder – Aspiradora inalámbrica 200W",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/61F6VNlUc7L._AC_UY436_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DQLLPYGM?tag=kaninosabioan-20",
       "FEATURE": false
     },
     "calentador-alimentos-portatil-b08mlhz86g": {
@@ -436,12 +368,54 @@
       "AMAZON": "https://www.amazon.com/dp/B08MLHZ86G?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "estabilizador-3-ejes-b0c89t698j": {
-      "TITLE": "Estabilizador de teléfono 3 ejes plegable con rueda de enfoque",
+    "difusor-aceites-esenciales-b0fcffgpbv": {
+      "TITLE": "Difusor de aceites esenciales (PMsusoow)",
       "PRICE": 0,
-      "CATEGORY": "Tecnología",
-      "IMAGE": "https://m.media-amazon.com/images/I/712in-kP0kL._AC_SY300_SX300_QL70_FMwebp_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0C89T698J?tag=kaninosabioan-20",
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=B0FCFFGPBV&Format=_SL1000_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=kaninosabioan-20",
+      "AMAZON": "https://www.amazon.com/dp/B0FCFFGPBV?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+
+    "chomchom-roller-b00bagtnaq": {
+      "TITLE": "ChomChom Roller – Removedor de pelo de mascotas",
+      "PRICE": 0,
+      "CATEGORY": "Mascotas",
+      "IMAGE": "https://m.media-amazon.com/images/I/71YFOZ2k0XL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B00BAGTNAQ?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+
+    "pantalones-microforro-pack-b0ddkm4g6h": {
+      "TITLE": "Paquete de pantalones con microforro (descanso, bolsillos)",
+      "PRICE": 0,
+      "CATEGORY": "Ropa",
+      "IMAGE": "https://m.media-amazon.com/images/I/81DqznzG-qL._AC_SY879_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DDKM4G6H?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "pantuflas-gdazzio-b0fdqp89zs": {
+      "TITLE": "Gdazzio – Pantuflas acogedoras esponjosas",
+      "PRICE": 0,
+      "CATEGORY": "Ropa",
+      "IMAGE": "https://m.media-amazon.com/images/I/716JyG3iNkL._AC_SY695_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FDQP89ZS?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "firstgym-pants-ajustados-b08kw3yy5d": {
+      "TITLE": "FIRSTGYM Pantalones deportivos ajustados (entrenamiento)",
+      "PRICE": 0,
+      "CATEGORY": "Ropa",
+      "IMAGE": "https://m.media-amazon.com/images/I/715b1KVxYDL._AC_SY879_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B08KW3YY5D?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "firstgym-pants-cremallera-b093pmfdlc": {
+      "TITLE": "FIRSTGYM Pantalones deportivos con cremallera",
+      "PRICE": 0,
+      "CATEGORY": "Ropa",
+      "IMAGE": "https://m.media-amazon.com/images/I/71kD4Pe411L._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B093PMFDLC?tag=kaninosabioan-20",
       "FEATURE": false
     },
     "camison-yijiu-b0fg84zpkq": {
@@ -452,13 +426,40 @@
       "AMAZON": "https://www.amazon.com/dp/B0FG84ZPKQ?tag=kaninosabioan-20",
       "FEATURE": false
     },
-    "carfidant-removedor-raspones-b0f6768lqb": {
-      "TITLE": "Carfidant – Removedor de rayones para autos (3.4 fl oz)",
+
+    "mascara-frio-ojos-b07hd61pyn": {
+      "TITLE": "Máscara de gel frío para ojos - alivio de hinchazón y migrañas",
       "PRICE": 0,
-      "CATEGORY": "Automotriz",
-      "IMAGE": "https://m.media-amazon.com/images/I/61eS8DAvt6L._AC_SY300_SX300_QL70_FMwebp_.jpg",
-      "AMAZON": "https://www.amazon.com/dp/B0F6768LQB?tag=kaninosabioan-20",
+      "CATEGORY": "Salud",
+      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71J157-uKML._AC_UL200_SR200,200_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B07HD61PYN?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+
+    "mongdio-taza-autoagitable-b0dqxzk5cc": {
+      "TITLE": "Mongdio Taza de café autoagitable con pantalla de temperatura",
+      "PRICE": 0,
+      "CATEGORY": "Tecnología",
+      "IMAGE": "https://m.media-amazon.com/images/I/61zkCY9ogPL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DQXZKSCC?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "taza-autoagitacion-b0drgfyqbq": {
+      "TITLE": "Taza de café autoagitada de acero inoxidable (recargable)",
+      "PRICE": 0,
+      "CATEGORY": "Tecnología",
+      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71Oxr26MmUL._AC_UL200_SR200,200_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DRGFYQBQ?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "estabilizador-3-ejes-b0c89t698j": {
+      "TITLE": "Estabilizador de teléfono 3 ejes plegable con rueda de enfoque",
+      "PRICE": 0,
+      "CATEGORY": "Tecnología",
+      "IMAGE": "https://m.media-amazon.com/images/I/712in-kP0kL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0C89T698J?tag=kaninosabioan-20",
       "FEATURE": false
     }
   }
 }
+
