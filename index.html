@@ -1335,7 +1335,179 @@
     }, 15000);
 
   })();
-  </script>
+  </script><!-- ================= FAB + MODAL DESTACADOS (no modifica tu JSON) ================= -->
+<!-- FAB Destacados -->
+<button id="fabDestacados" aria-label="Ver destacados" title="Ver destacados"
+  style="position:fixed;bottom:20px;right:20px;z-index:9999;border:none;border-radius:9999px;padding:14px 16px;font-weight:700;cursor:pointer;box-shadow:0 10px 25px rgba(0,0,0,.25);background:linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4);color:#fff">
+  ★ Destacados
+</button>
+
+<!-- Modal Destacados -->
+<div id="modalDestacados" aria-hidden="true"
+  style="position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55)">
+  <div role="dialog" aria-modal="true" aria-labelledby="destacadosTitle"
+       style="width:min(1100px,92vw);max-height:86vh;overflow:auto;border-radius:16px;background:#0f1426;border:1px solid rgba(255,255,255,.06);box-shadow:0 20px 60px rgba(0,0,0,.35)">
+    <!-- Header -->
+    <div style="position:sticky;top:0;background:#0f1426;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;gap:12px;align-items:center;justify-content:space-between">
+      <div>
+        <h3 id="destacadosTitle" style="margin:0;color:#fff;font-size:18px;font-weight:800">Productos destacados</h3>
+        <small style="color:#aab3d1">Mostrando items con <code>FEATURE: true</code></small>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <label for="ordenDestacados" style="color:#aab3d1;font-size:12px">Orden</label>
+        <select id="ordenDestacados" style="background:#12182a;color:#fff;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 10px">
+          <option value="default">Predeterminado</option>
+          <option value="titleAsc">Título (A–Z)</option>
+          <option value="titleDesc">Título (Z–A)</option>
+        </select>
+        <button id="cerrarDestacados" aria-label="Cerrar"
+          style="background:#ffffff14;color:#fff;border:1px solid #ffffff1f;border-radius:10px;padding:8px 12px;cursor:pointer">
+          Cerrar
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div id="gridDestacados" style="padding:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px"></div>
+
+    <!-- Footer -->
+    <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:flex-end">
+      <small style="color:#7f8ab2">Tip: comparte tus favoritos con el botón “Compartir”.</small>
+    </div>
+  </div>
+</div>
+
+<!-- Estilos tarjetas -->
+<style>
+  .cardP {
+    background:#0b0f1a;border:1px solid rgba(255,255,255,.06);
+    border-radius:16px;overflow:hidden;display:flex;flex-direction:column;
+    box-shadow:0 10px 24px rgba(0,0,0,.25);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .cardP:hover{ transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.32); }
+  .imgWrap{ aspect-ratio:4/3; background:#0a0e1a; display:flex; align-items:center; justify-content:center; }
+  .imgWrap img{ max-width:92%; max-height:92%; object-fit:contain; }
+  .bodyP{ padding:12px 14px; display:flex; flex-direction:column; gap:8px; }
+  .titleP{ color:#fff; font-weight:700; line-height:1.2; font-size:14px; min-height:34px; }
+  .catP{ color:#9fb0d1; font-size:12px; }
+  .rowBtns{ display:flex; gap:8px; margin-top:6px; }
+  .btnAmazon{
+    flex:1; border:none; border-radius:10px; padding:10px 12px; color:#fff; font-weight:700; cursor:pointer;
+    background:linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4);
+  }
+  .btnSec{
+    border:none; border-radius:10px; padding:10px 12px; color:#fff; background:#ffffff17; cursor:pointer;
+  }
+  .ribbon{
+    position:absolute; top:10px; left:0; padding:6px 10px; font-size:10px; font-weight:800; letter-spacing:.5px;
+    color:#fff; background:linear-gradient(90deg,#ec4899,#06b6d4); border-top-right-radius:10px; border-bottom-right-radius:10px;
+  }
+  .cardWrap{ position:relative; }
+</style>
+
+<!-- Lógica Destacados -->
+<script>
+(function(){
+  // === 0) Localiza tu catálogo SIN modificarlo ===
+  // Debes tener cargado EXACTAMENTE tu objeto global como lo pegaste: { PRODUCTOS: { ... } }
+  const CATALOGO =
+    (window.PRODUCTOS && window.PRODUCTOS.PRODUCTOS) ||
+    (typeof PRODUCTOS !== 'undefined' && PRODUCTOS.PRODUCTOS) ||
+    null;
+
+  if (!CATALOGO) {
+    console.warn('No se encontró el objeto global con la clave PRODUCTOS.PRODUCTOS. El modal de Destacados no se podrá poblar.');
+  }
+
+  // === 1) Helpers ===
+  const toArray = obj => Object.entries(obj||{}).map(([id,p]) => ({id, ...p}));
+  const featured = () => toArray(CATALOGO || {}).filter(p => !!p.FEATURE);
+
+  function ensureAffiliate(url){
+    if (!url) return '#';
+    return (/(\?|&)tag=/.test(url)) ? url : url + (url.includes('?')?'&':'?') + 'tag=kaninosabioan-20';
+  }
+
+  async function share(p){
+    const url = p?.AMAZON ? ensureAffiliate(p.AMAZON) : location.href;
+    const text = `${p?.TITLE||'Producto'} – Ver en Amazon`;
+    try{
+      if (navigator.share) await navigator.share({title: p?.TITLE||'Producto', text, url});
+      else {
+        await navigator.clipboard.writeText(url);
+        alert('Enlace copiado ✅');
+      }
+    }catch(e){}
+  }
+
+  function card(p){
+    const img = p.IMAGE||'';
+    const t = p.TITLE||'Producto';
+    const c = p.CATEGORY||'';
+    const a = ensureAffiliate(p.AMAZON);
+
+    return `
+    <div class="cardWrap">
+      <span class="ribbon">DESTACADO</span>
+      <div class="cardP">
+        <div class="imgWrap"><img loading="lazy" alt="${t.replace(/"/g,'&quot;')}" src="${img}"></div>
+        <div class="bodyP">
+          <div class="titleP">${t}</div>
+          <div class="catP">${c}</div>
+          <div class="rowBtns">
+            <button class="btnAmazon" onclick="window.open('${a}','_blank','noopener,noreferrer')">Ver en Amazon</button>
+            <button class="btnSec" onclick='(${share.toString()})(${JSON.stringify({TITLE:t, AMAZON:p.AMAZON})})'>Compartir</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // === 2) Render del modal ===
+  let orden = 'default';
+  function ordenar(list){
+    const arr = [...list];
+    if (orden==='titleAsc') arr.sort((a,b)=>(a.TITLE||'').localeCompare(b.TITLE||''));
+    if (orden==='titleDesc') arr.sort((a,b)=>(b.TITLE||'').localeCompare(a.TITLE||''));
+    return arr;
+  }
+
+  function renderModal(){
+    const wrap = document.getElementById('gridDestacados');
+    if (!wrap) return;
+    const feats = ordenar(featured());
+    if (!feats.length){
+      wrap.innerHTML = `<div style="grid-column:1/-1;color:#aab3d1;text-align:center;padding:28px">No hay productos destacados (FEATURE: true).</div>`;
+      return;
+    }
+    wrap.innerHTML = feats.map(card).join('');
+  }
+
+  // === 3) Abrir/Cerrar modal ===
+  const modal = document.getElementById('modalDestacados');
+  const fab   = document.getElementById('fabDestacados');
+  const btnX  = document.getElementById('cerrarDestacados');
+  const sel   = document.getElementById('ordenDestacados');
+
+  fab?.addEventListener('click', ()=>{ 
+    if (!CATALOGO){ alert('No se encontró el catálogo en window.PRODUCTOS.PRODUCTOS'); return; }
+    renderModal(); 
+    modal.style.display='flex'; 
+    modal.setAttribute('aria-hidden','false');
+  });
+  btnX?.addEventListener('click', ()=>{ 
+    modal.style.display='none'; 
+    modal.setAttribute('aria-hidden','true');
+  });
+  modal?.addEventListener('click',(e)=>{ if (e.target===modal){ btnX.click(); }});
+  sel?.addEventListener('change', (e)=>{ orden = e.target.value; renderModal(); });
+
+  // === 4) Accesibilidad: cerrar con Esc ===
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.style.display==='flex'){ btnX.click(); }});
+})();
+</script>
+<!-- ================= /FAB + MODAL DESTACADOS ================= -->
   <!-- ====== /LOGIN ADMIN SEGURO ====== -->
 
 </body>
