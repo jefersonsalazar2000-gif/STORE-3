@@ -41,7 +41,7 @@
     body{ font-family:'Outfit',sans-serif }
     .neon-title{ background:var(--grad-1); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 0 18px rgba(124,58,237,.25) }
     .btn-neon{ background:var(--btn-grad); color:#0b0f1a; font-weight:800; box-shadow:0 0 24px rgba(124,58,237,.35); transition:transform .12s, box-shadow .12s, opacity .12s }
-    .btn-neon:hover{ transform:translateY(-1px) scale(1.01); box-shadow:0 0 32px rgba(124,58,237,.55) }
+    .btn-neon:hover{ transform:translateY(-1px) scale(1.005); box-shadow:0 0 32px rgba(124,58,237,.55) } /* suavizado */
     .chip{ background:rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.35) }
     .card{ background:radial-gradient(1200px 500px at -10% -10%, rgba(124,58,237,.12), transparent 50%), radial-gradient(1000px 400px at 120% 120%, rgba(0,229,255,.10), transparent 45%), #12172a; border:1px solid rgba(124,58,237,.25) }
     .toolbar{ background:linear-gradient(180deg, rgba(18,23,42,.85), rgba(18,23,42,.6) 60%, rgba(18,23,42,.1)); border-bottom:1px solid rgba(124,58,237,.25); backdrop-filter:blur(8px) }
@@ -51,6 +51,12 @@
     .input{ background:#0e1430; border:1px solid rgba(124,58,237,.35); outline:none; color:white; border-radius:12px; padding:.7rem .9rem }
     .input:focus{ box-shadow:var(--ring) }
     .tag{ background:rgba(10,239,255,.12); border:1px solid rgba(10,239,255,.35) }
+
+    /* === FIX wobble lateral / scroll profesional === */
+    html, body { max-width:100%; overflow-x:hidden; }
+    body { touch-action: pan-y; overscroll-behavior-x: none; }
+    #grid { overflow-x:hidden; }
+    *, *::before, *::after { box-sizing:border-box; }
   </style>
 
   <!-- ===== MS360 Add-on Styles (no sustituye los tuyos) ===== -->
@@ -112,7 +118,8 @@
 
   <!-- Grid -->
   <main class="max-w-7xl mx-auto px-4 py-6">
-    <div id="grid" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+    <!-- 2 columnas por defecto en móvil -->
+    <div id="grid" class="grid gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
     <p id="empty" class="hidden text-center text-white/60 mt-10">No hay productos que coincidan.</p>
   </main>
 
@@ -279,7 +286,6 @@
       return `
         <article class="card rounded-2xl p-3 sm:p-4 flex flex-col gradient-border">
           <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3]">
-            <!-- FIX: cache-buster + fallback si la imagen falla -->
             <img src="${p.image}${p.image.includes('?')?'&':'?'}v=10"
                  alt="${p.title}"
                  class="w-full h-full object-cover"
@@ -313,7 +319,7 @@
       const cat = categoryFilter.value||'all';
       const filtered = products
         .slice()
-        .sort((a,b)=> (b.featured - a.featured) || a.title.localeCompare(b.title)) // FIX: orden estable
+        .sort((a,b)=> (b.featured - a.featured) || a.title.localeCompare(b.title))
         .filter(p=>{
           const t = !term || p.title.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term);
           const c = cat==='all' || p.category===cat;
@@ -652,7 +658,6 @@
     function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || [] }catch{ return [] } }
     function lsSave(v){ localStorage.setItem(LS_KEY, JSON.stringify(v)) }
 
-    // ASIN extractor robusto
     function asinFrom(url){
       try{
         const u = new URL(url);
@@ -664,7 +669,6 @@
       }catch{ return null; }
     }
 
-    // Canonicaliza Amazon y conserva ?tag=
     function canonicalAmazon(url){
       if(!url) return "#";
       try{
@@ -682,7 +686,6 @@
       }catch{ return url; }
     }
 
-    // Clave estable (primero ASIN; si no hay, por título)
     function stableKey(obj){
       const amazon = obj.amazon || obj.AMAZON || "";
       const asin = asinFrom(amazon);
@@ -708,7 +711,7 @@
       const p = entry || {};
       const canon = canonicalAmazon(p.AMAZON || p.amazon || "");
       const obj = {
-        id: null, // se fija más abajo
+        id: null,
         title: p.TITLE || p.title || "",
         brand: p.BRAND || p.brand || "",
         image: (p.IMAGE && p.IMAGE.trim()) || "https://via.placeholder.com/800x600?text=Imagen",
@@ -718,30 +721,22 @@
         featured: !!(p.FEATURE || p.featured),
         createdAt: Date.now()
       };
-      obj.id = stableKey(obj); // id determinista en incoming
+      obj.id = stableKey(obj);
       return obj;
     }
 
-    // DEDUPE: incoming (GitHub) es la “verdad”; el local queda solo si no choca por clave estable
     function mergeDedup(existingList, incomingList){
       const map = new Map();
-
-      // 1) Primero, incoming (GitHub) — GANA sobre cualquier duplicado
       for (const inc of incomingList) {
         const k = stableKey(inc);
         map.set(k, { ...inc, id: k });
       }
-
-      // 2) Luego, existentes que no choquen por la misma clave estable
       for (const ex of existingList) {
         const k = stableKey(ex);
         if (!map.has(k)) {
-          // Respetamos su id local
           map.set(k, { ...ex });
         }
       }
-
-      // 3) Lista final ordenada (destacados primero, luego alfabético)
       return Array.from(map.values())
         .sort((a,b)=> (b.featured - a.featured) || String(a.title).localeCompare(String(b.title)));
     }
@@ -753,7 +748,7 @@
         const res = await fetch(RAW_URL + "?" + Date.now(), { cache:"no-store" });
         if(!res.ok) throw new Error("HTTP "+res.status);
         const text = await res.text();
-        if(text === lastText) return; // sin cambios en remoto
+        if(text === lastText) return;
         lastText = text;
 
         const data = JSON.parse(text);
@@ -770,7 +765,6 @@
       }
     }
 
-    // primera carga + intervalos + al volver al tab
     pull();
     setInterval(pull, REFRESH_MS);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
@@ -834,18 +828,15 @@
 
     <div class="relative mx-auto my-6 w-[96%] max-w-[1120px]">
       <div class="grid grid-cols-1 md:grid-cols-[112px_minmax(0,1fr)_360px] gap-4 rounded-2xl bg-[#0b0f1a] shadow-2xl ring-1 ring-white/10 overflow-hidden">
-        <!-- Header -->
         <div class="md:col-span-3 flex items-center justify-between px-4 py-3 border-b border-white/10">
           <h3 id="ms360-title" class="text-white text-base sm:text-lg font-semibold truncate"></h3>
           <button id="ms360-close" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white">Cerrar</button>
         </div>
 
-        <!-- Thumbs (vertical desktop) -->
         <div class="order-2 md:order-1 md:h-[520px] overflow-y-auto px-3 py-3 hidden md:block">
           <div id="ms360-thumbs-v" class="flex md:flex-col gap-2"></div>
         </div>
 
-        <!-- Imagen principal con zoom -->
         <div class="order-1 md:order-2">
           <div class="relative bg-black/40 md:h-[520px] flex items-center justify-center">
             <div id="ms360-zoom"
@@ -860,13 +851,11 @@
             <div id="ms360-dots" class="absolute bottom-2 left-0 right-0 mx-auto flex items-center justify-center gap-1"></div>
             <button id="ms360-full" class="absolute top-2 right-2 px-3 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm">Pantalla completa</button>
           </div>
-          <!-- Thumbs horizontales móvil -->
           <div class="md:hidden px-3 py-3 bg-[#0e1424]">
             <div id="ms360-thumbs-h" class="flex gap-2 overflow-x-auto"></div>
           </div>
         </div>
 
-        <!-- Panel de compra / info -->
         <aside class="order-3 md:order-3 p-4 md:p-5 border-t md:border-t-0 md:border-l border-white/10">
           <div class="space-y-3">
             <div class="text-white/90 text-sm" id="ms360-price"></div>
@@ -881,18 +870,11 @@
     </div>
   </div>
 
-  <!-- === Script activador MS360 Pro (añadido; no toca tu lógica existente) === -->
+  <!-- === Script activador MS360 Pro (sin forzar clases del grid) === -->
   <script>
   (() => {
-    // ====== Mostrar 2 artículos en la pantalla al abrir (sin tocar tu HTML) ======
-    function forceTwoColsOnMobile() {
-      const g = document.getElementById('grid');
-      if (!g) return;
-      g.classList.remove('grid-cols-1');
-      g.classList.add('grid','gap-4','grid-cols-2');
-    }
+    // (ELIMINADO el forceTwoColsOnMobile: ya arrancamos con 2 columnas por CSS)
 
-    // ====== REFERENCIAS DEL MODAL PRO ======
     const modal   = document.getElementById('ms360-pro');
     const mainImg = document.getElementById('ms360-main');
     const zoomBox = document.getElementById('ms360-zoom');
@@ -911,7 +893,6 @@
 
     const $  = (s, r=document) => r.querySelector(s);
 
-    // === Utilidad: obtiene tu lista actual sin modificar tu app ===
     function getProductsSafe() {
       try {
         const raw = localStorage.getItem('ja_store_products_v2');
@@ -920,36 +901,27 @@
       return (window.products && Array.isArray(window.products)) ? window.products : [];
     }
 
-    // === Localiza el producto a partir de la tarjeta clicada (sin cambiar tus cards)
     function findProductFromCard(cardEl) {
       try {
         const title = cardEl.querySelector('h3')?.textContent?.trim() || '';
         const imgSrc = cardEl.querySelector('img')?.getAttribute('src') || '';
         const list = getProductsSafe();
-
-        // 1) Emparejar por título exacto
         let p = list.find(x => (x.title||'').trim() === title);
         if (p) return p;
-
-        // 2) Emparejar por imagen (ignora query)
-        const clean = imgSrc.split('?')[0];
+        const clean = (imgSrc||'').split('?')[0];
         p = list.find(x => (x.image||'').split('?')[0] === clean);
         if (p) return p;
-
-        // 3) Mejor esfuerzo por prefix de título
         p = list.find(x => (x.title||'').startsWith(title.slice(0, 12)));
         return p || null;
       } catch { return null; }
     }
 
-    // === Devuelve array de imágenes (IMAGES o image única)
     function productImages(p) {
       if (Array.isArray(p.IMAGES) && p.IMAGES.length) return p.IMAGES;
       if (Array.isArray(p.images) && p.images.length) return p.images;
       return p.image ? [p.image] : [];
     }
 
-    // === Render del visor ===
     function renderAll() { renderMain(); renderThumbs(); renderDots(); }
     function renderMain() {
       const src = gallery[at] || '';
@@ -993,7 +965,6 @@
     function next(){ if(!gallery.length) return; at=(at+1)%gallery.length; renderMain(); }
     function prev(){ if(!gallery.length) return; at=(at-1+gallery.length)%gallery.length; renderMain(); }
 
-    // === Abrir / Cerrar ===
     function openViewer(p) {
       gallery = productImages(p);
       at = 0;
@@ -1019,13 +990,11 @@
       exitFullscreen();
     }
 
-    // === Eventos visor ===
     document.getElementById('ms360-close')?.addEventListener('click', closeViewer);
     modal?.addEventListener('click', (e)=>{ if (e.target.dataset.close) closeViewer(); });
     nextBtn?.addEventListener('click', next);
     prevBtn?.addEventListener('click', prev);
 
-    // === Zoom estilo Amazon (desktop) + fullscreen en tap (móvil) ===
     const ZOOM_SCALE = 2.2;
     zoomBox.addEventListener('mousemove', (e) => {
       if (window.matchMedia('(pointer: coarse)').matches) return;
@@ -1040,7 +1009,6 @@
       zoomBox.style.backgroundPosition = 'center';
     }, { passive:true });
 
-    // Fullscreen simple
     function enterFullscreen() {
       const src = gallery[at] || ''; if (!src) return;
       const fs = document.createElement('div');
@@ -1070,7 +1038,6 @@
     fullBtn?.addEventListener('click', enterFullscreen);
     zoomBox.addEventListener('click', enterFullscreen, { passive:true });
 
-    // Teclas izquierda/derecha/Escape dentro del modal
     document.addEventListener('keydown', (e)=>{
       if (modal.classList.contains('hidden')) return;
       if (e.key === 'Escape') closeViewer();
@@ -1078,7 +1045,6 @@
       if (e.key === 'ArrowLeft')  prev();
     });
 
-    // Swipe en imagen principal
     let touchX=null;
     zoomBox.addEventListener('touchstart', e=>{ touchX = e.touches[0].clientX; }, {passive:true});
     zoomBox.addEventListener('touchend', e=>{
@@ -1088,24 +1054,17 @@
       touchX=null;
     }, {passive:true});
 
-    // ====== Delegación: abre el visor al clickear una tarjeta (sin editar tus cards) ======
     document.addEventListener('click', (e)=>{
       const card = e.target.closest('article.card');
       if (!card) return;
-
-      // Ignora clicks en botones/links existentes (Editar/Eliminar/Ver en Amazon)
       if (e.target.closest('a,button')) {
         const isAmazon = e.target.closest('a[href*="amazon."]');
         const isAdmin  = e.target.closest('button');
         if (isAmazon || isAdmin) return;
       }
-
       const p = findProductFromCard(card);
       if (p) openViewer(p);
     }, {passive:true});
-
-    // ====== Arranque ======
-    window.addEventListener('DOMContentLoaded', forceTwoColsOnMobile);
   })();
   </script>
 
@@ -1116,13 +1075,11 @@
     const $$ = (s, r=document)=> Array.from(r.querySelectorAll(s));
     const safe = (fn)=>{ try{ fn() }catch(e){ console.warn('[MS360 add-on]', e) } };
 
-    // Host de toasts
     const toastHost = document.createElement('div'); toastHost.id='ms360-toasts';
     document.addEventListener('DOMContentLoaded',()=>document.body.appendChild(toastHost), {once:true});
     const toast = (t)=>{ const el=document.createElement('div'); el.className='ms360-toast'; el.textContent=t; toastHost.appendChild(el);
       setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(6px)'; setTimeout(()=>el.remove(),180)}, 2000); };
 
-    // 1) Skeleton en primera carga
     safe(()=> {
       const grid = $('#grid'); if(!grid) return;
       const noCards = ()=> !grid.querySelector('article.card');
@@ -1145,7 +1102,7 @@
       }
     });
 
-    // 2) Botón “Arriba”
+    /* Botón “Arriba” — lo mantenemos */
     safe(()=> {
       const btn = document.createElement('button');
       btn.id='ms360-top'; btn.className='btn-neon rounded-full px-4 py-3 font-extrabold'; btn.textContent='↑ Arriba';
@@ -1154,7 +1111,6 @@
       window.addEventListener('scroll', ()=> { const y = window.scrollY || document.documentElement.scrollTop; btn.classList.toggle('ms360-show', y>380); }, {passive:true});
     });
 
-    // 3) Share / Copy en cards
     safe(()=> {
       const enhance = () => {
         $$('.card').forEach(card => {
@@ -1194,7 +1150,6 @@
       document.addEventListener('change', e=>{ if(e.target && e.target.id==='categoryFilter') setTimeout(enhance, 0) }, {passive:true});
     });
 
-    // 4) Aviso de estado de red
     safe(()=> {
       const bar = document.createElement('div');
       bar.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999;display:none";
@@ -1212,7 +1167,6 @@
       if(!navigator.onLine) off();
     });
 
-    // 5) Nudge instalación PWA
     safe(()=> {
       let deferred=null;
       window.addEventListener('beforeinstallprompt', (e)=>{
@@ -1220,7 +1174,7 @@
         setTimeout(()=> {
           const box = document.createElement('div');
           box.className='ms360-toast';
-          box.innerHTML = `📲 ¿Instalar <b>MEGA STORE 360</b>? 
+          box.innerHTML = `📲 ¿Instalar <b>MEGA STORE 360</b>?
             <div class="mt-2 flex gap-8">
               <button id="ms360-pwa-ok"  class="chip px-3 py-1.5 rounded-xl">Instalar</button>
               <button id="ms360-pwa-no"  class="chip px-3 py-1.5 rounded-xl">Luego</button>
