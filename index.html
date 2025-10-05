@@ -52,6 +52,25 @@
     .input:focus{ box-shadow:var(--ring) }
     .tag{ background:rgba(10,239,255,.12); border:1px solid rgba(10,239,255,.35) }
   </style>
+
+  <!-- ===== MS360 Add-on Styles (no sustituye los tuyos) ===== -->
+  <style>
+    :root { --ms360-ring: 0 0 0 1.5px rgba(124,58,237,.45), 0 0 18px rgba(124,58,237,.35), inset 0 0 12px rgba(0,229,255,.25) }
+    :focus-visible { outline:2px solid #7C3AED; outline-offset:2px }
+    .ms360-focus:focus-visible { box-shadow: var(--ms360-ring) }
+    .ms360-skeleton{position:relative;overflow:hidden;background:#0f1430}
+    .ms360-skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);transform:translateX(-100%);animation:ms360-shimmer 1.1s infinite}
+    @keyframes ms360-shimmer{100%{transform:translateX(100%)}}
+    #ms360-top{position:fixed;right:14px;bottom:14px;z-index:9998;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s, transform .2s}
+    #ms360-top.ms360-show{opacity:1;pointer-events:auto;transform:translateY(0)}
+    #ms360-toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:10000;display:grid;gap:8px}
+    .ms360-toast{background:rgba(18,23,42,.96);border:1px solid rgba(124,58,237,.35);color:#fff;padding:10px 14px;border-radius:12px}
+    .ms360-actions{position:absolute;top:10px;right:10px;display:flex;gap:6px}
+    .ms360-ibtn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:rgba(14,20,48,.75);border:1px solid rgba(255,255,255,.12);color:#fff;backdrop-filter:blur(6px);transition:transform .12s ease,border-color .12s ease}
+    .ms360-ibtn:hover{transform:translateY(-1px) scale(1.03);border-color:rgba(255,255,255,.25)}
+  </style>
+  <!-- ===== /MS360 Add-on Styles ===== -->
+
 </head>
 
 <body class="min-h-full text-white bg-[radial-gradient(1200px_600px_at_20%_-10%,rgba(124,58,237,.15),transparent_55%),radial-gradient(900px_500px_at_120%_10%,rgba(0,229,255,.12),transparent_50%),#0b0f1a]">
@@ -1034,8 +1053,8 @@
         <button id="ms360-fs-next"  class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white">›</button>`;
       document.body.appendChild(fs);
       document.getElementById('ms360-fs-close').addEventListener('click', exitFullscreen);
-      document.getElementById('ms360-fs-next').addEventListener('click', ()=>{ next(); $('#ms360-fs img').src = gallery[at]||''; });
-      document.getElementById('ms360-fs-prev').addEventListener('click', ()=>{ prev(); $('#ms360-fs img').src = gallery[at]||''; });
+      document.getElementById('ms360-fs-next').addEventListener('click', ()=>{ next(); document.querySelector('#ms360-fs img').src = gallery[at]||''; });
+      document.getElementById('ms360-fs-prev').addEventListener('click', ()=>{ prev(); document.querySelector('#ms360-fs img').src = gallery[at]||''; });
 
       let tx=null;
       fs.addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; }, {passive:true});
@@ -1089,5 +1108,133 @@
     window.addEventListener('DOMContentLoaded', forceTwoColsOnMobile);
   })();
   </script>
+
+  <!-- ===== MS360 Add-on Script (encapsulado) ===== -->
+  <script>
+  (() => { 'use strict';
+    const $ = (s, r=document)=> r.querySelector(s);
+    const $$ = (s, r=document)=> Array.from(r.querySelectorAll(s));
+    const safe = (fn)=>{ try{ fn() }catch(e){ console.warn('[MS360 add-on]', e) } };
+
+    // Host de toasts
+    const toastHost = document.createElement('div'); toastHost.id='ms360-toasts';
+    document.addEventListener('DOMContentLoaded',()=>document.body.appendChild(toastHost), {once:true});
+    const toast = (t)=>{ const el=document.createElement('div'); el.className='ms360-toast'; el.textContent=t; toastHost.appendChild(el);
+      setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(6px)'; setTimeout(()=>el.remove(),180)}, 2000); };
+
+    // 1) Skeleton en primera carga
+    safe(()=> {
+      const grid = $('#grid'); if(!grid) return;
+      const noCards = ()=> !grid.querySelector('article.card');
+      if(noCards()){
+        const skeleton = (n=8)=> {
+          const card = () => `
+            <article class="card rounded-2xl p-3 sm:p-4 gradient-border">
+              <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3] ms360-skeleton"></div>
+              <div class="mt-3 space-y-2">
+                <div class="h-4 rounded-md ms360-skeleton"></div>
+                <div class="h-3 w-1/2 rounded-md ms360-skeleton"></div>
+                <div class="h-9 rounded-lg ms360-skeleton"></div>
+              </div>
+            </article>`;
+          grid.innerHTML = Array.from({length:n}).map(card).join('');
+          const empty = $('#empty'); if(empty) empty.classList.add('hidden');
+        };
+        skeleton(8);
+        window.addEventListener('ja_products_updated', ()=>{}, {once:true});
+      }
+    });
+
+    // 2) Botón “Arriba”
+    safe(()=> {
+      const btn = document.createElement('button');
+      btn.id='ms360-top'; btn.className='btn-neon rounded-full px-4 py-3 font-extrabold'; btn.textContent='↑ Arriba';
+      btn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+      document.addEventListener('DOMContentLoaded', ()=> document.body.appendChild(btn), {once:true});
+      window.addEventListener('scroll', ()=> { const y = window.scrollY || document.documentElement.scrollTop; btn.classList.toggle('ms360-show', y>380); }, {passive:true});
+    });
+
+    // 3) Share / Copy en cards
+    safe(()=> {
+      const enhance = () => {
+        $$('.card').forEach(card => {
+          if(card.dataset.ms360Addon) return;
+          card.dataset.ms360Addon = '1';
+          const imgWrap = card.querySelector('.aspect-[4/3]') || card;
+          imgWrap.style.position='relative';
+
+          const box = document.createElement('div'); box.className='ms360-actions';
+          const bShare = document.createElement('button'); bShare.className='ms360-ibtn ms360-focus'; bShare.type='button'; bShare.title='Compartir'; bShare.textContent='⤴︎';
+          const bCopy  = document.createElement('button');  bCopy.className='ms360-ibtn ms360-focus';  bCopy.type='button';  bCopy.title='Copiar enlace'; bCopy.textContent='⧉';
+
+          const title = (card.querySelector('h3')?.textContent || 'Producto').trim();
+          const amz   = card.querySelector('a[href*="amazon."]')?.href || '';
+
+          bShare.addEventListener('click', async (e)=> {
+            e.stopPropagation();
+            if (navigator.share && amz) {
+              try { await navigator.share({ title, text:'Mira este producto', url: amz }); toast('Compartido ✅'); }
+              catch(_e){}
+            } else {
+              try { await navigator.clipboard.writeText(amz); toast('Copiado ✅'); } catch { toast('No se pudo copiar'); }
+            }
+          });
+          bCopy.addEventListener('click', async (e)=> {
+            e.stopPropagation();
+            if(!amz){ toast('Sin enlace disponible'); return; }
+            try { await navigator.clipboard.writeText(amz); toast('Copiado ✅'); } catch { toast('No se pudo copiar'); }
+          });
+
+          box.appendChild(bShare); box.appendChild(bCopy); imgWrap.appendChild(box);
+        });
+      };
+      document.addEventListener('DOMContentLoaded', enhance);
+      window.addEventListener('ja_products_updated', enhance);
+      document.addEventListener('input', e=>{ if(e.target && e.target.id==='search') setTimeout(enhance, 0) }, {passive:true});
+      document.addEventListener('change', e=>{ if(e.target && e.target.id==='categoryFilter') setTimeout(enhance, 0) }, {passive:true});
+    });
+
+    // 4) Aviso de estado de red
+    safe(()=> {
+      const bar = document.createElement('div');
+      bar.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999;display:none";
+      bar.innerHTML = `
+        <div class="mx-auto max-w-7xl px-4 py-2">
+          <div class="rounded-xl px-3 py-2 text-sm font-semibold text-white"
+               style="background:linear-gradient(90deg,#ff3b3b,#ff784e)">
+            Estás sin conexión. Navegación limitada (modo offline).
+          </div>
+        </div>`;
+      document.addEventListener('DOMContentLoaded', ()=> document.body.appendChild(bar), {once:true});
+      const on = ()=>{ bar.style.display='none'; toast('Vuelta a online 🌐') };
+      const off= ()=>{ bar.style.display='block'; toast('Sin conexión 🔌') };
+      window.addEventListener('online', on); window.addEventListener('offline', off);
+      if(!navigator.onLine) off();
+    });
+
+    // 5) Nudge instalación PWA
+    safe(()=> {
+      let deferred=null;
+      window.addEventListener('beforeinstallprompt', (e)=>{
+        e.preventDefault(); deferred = e;
+        setTimeout(()=> {
+          const box = document.createElement('div');
+          box.className='ms360-toast';
+          box.innerHTML = `📲 ¿Instalar <b>MEGA STORE 360</b>? 
+            <div class="mt-2 flex gap-8">
+              <button id="ms360-pwa-ok"  class="chip px-3 py-1.5 rounded-xl">Instalar</button>
+              <button id="ms360-pwa-no"  class="chip px-3 py-1.5 rounded-xl">Luego</button>
+            </div>`;
+          toastHost.appendChild(box);
+          box.querySelector('#ms360-pwa-ok')?.addEventListener('click', async ()=>{ if(!deferred) return; deferred.prompt(); await deferred.userChoice; deferred=null; box.remove(); });
+          box.querySelector('#ms360-pwa-no')?.addEventListener('click', ()=> box.remove());
+        }, 2200);
+      }, {once:true});
+    });
+
+  })();
+  </script>
+  <!-- ===== /MS360 Add-on Script ===== -->
+
 </body>
 </html>
