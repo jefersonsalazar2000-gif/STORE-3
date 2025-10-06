@@ -32,6 +32,22 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
 
+  <!-- ================= AUTO CLOUD CONFIG =================
+       1) O pega aquí tu firebaseConfig (público) y funcionará en Web/App/Incógnito.
+       2) O sube un archivo firebaseConfig.json en la raíz del sitio con el JSON.
+  -->
+  <script>
+    window.AUTO_FIREBASE_CONFIG = {
+      // Rellena estos campos para conexión automática en todas las sesiones
+      // apiKey: "",
+      // authDomain: "",
+      // projectId: "",
+      // storageBucket: "",
+      // messagingSenderId: "",
+      // appId: ""
+    };
+  </script>
+
   <style>
     :root{
       --grad-1: linear-gradient(135deg,#00E5FF 0%, #7C3AED 50%, #FF0099 100%);
@@ -235,6 +251,7 @@
     let products = [];
     let db = null, unsub = null, storage = null;
     let cloudConfig = null;
+    let cloudIds = new Set(); // << ids presentes en la nube
 
     const grid = document.getElementById('grid');
     const empty = document.getElementById('empty');
@@ -283,13 +300,15 @@
       toggle(id){ feat.has(id)?feat.del(id):feat.add(id) }
     };
 
-    /* ===== Hidratación de destacados: ahora SIEMPRE refleja el estado real de products[] ===== */
-    function hydrateFeaturedFromProducts(){
+    function syncFeaturedLSFromProducts(){
       try{
-        const ids = (products||[]).filter(p => !!p.featured && p.id).map(p => p.id);
-        feat.set(ids);  // Reemplaza la lista completa para mantener sincronía con nube/local
+        const ids = (products||[]).filter(p=>!!p.featured && !!p.id).map(p=>p.id);
+        feat.set(ids);
       }catch{}
     }
+
+    /* ===== Hidratación automática de destacados desde productos.featured ===== */
+    function hydrateFeaturedFromProducts(){ syncFeaturedLSFromProducts(); }
 
     function ensureTag(url){
       if(!url) return "#";
@@ -297,46 +316,6 @@
       const sep = url.includes('?') ? '&' : '?';
       return `${url}${sep}tag=${AFFILIATE_TAG_DEFAULT}`;
     }
-
-    /* ====== FUNCIÓN CENTRAL: Cambiar estado Destacado y sincronizar ====== */
-    window.ms360SetFeatured = async function(id, flag){
-      try{
-        // 1) Actualiza products[] en memoria
-        const idx = products.findIndex(p=>p.id===id);
-        if (idx !== -1){
-          products[idx] = { ...products[idx], featured: !!flag };
-        }
-
-        // 2) Persiste según modo
-        if (db){
-          const { updateDoc, doc } =
-            await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
-          try{
-            await updateDoc(doc(db,'products',id), { featured: !!flag });
-          }catch(e){
-            // Si no existe el doc, intenta guardarlo completo (fallback)
-            if (idx !== -1 && window.cloud_save){
-              await window.cloud_save(id, products[idx]);
-            }
-          }
-        } else {
-          // Local: guarda listado completo
-          localStorage.setItem('ja_store_products_v2', JSON.stringify(products));
-        }
-
-        // 3) Normaliza lista LS_FEATURED según products[]
-        const currentIds = (products||[]).filter(p=>!!p.featured && p.id).map(p=>p.id);
-        feat.set(currentIds);
-
-        // 4) Refresca UI
-        applyFilters();
-        if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
-        window.dispatchEvent(new Event('ja_products_updated'));
-      }catch(e){
-        console.warn('[ms360SetFeatured] error:', e);
-        alert('No se pudo actualizar Destacados.');
-      }
-    };
 
     function productCard(p){
       const price = p.price?`$${Number(p.price).toLocaleString()}`:'';
@@ -371,7 +350,7 @@
           </div>
           <div class="mt-3">
             <a href="${ensureTag(p.amazon)}" target="_blank" rel="nofollow sponsored noopener" class="btn-neon w-full justify-center px-4 py-2 rounded-xl inline-flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a 1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a 1 1 0 1 1 1.414-1.414L11 19.586V14a1 1 0 0 1 1-1z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a 1 1 0 1 1 1.414-1.414L11 19.586V14a 1 1 0 0 1 1-1z"/></svg>
               Ver en Amazon
             </a>
             ${adminBtns}
@@ -402,10 +381,8 @@
           e.stopPropagation();
           if(!isAdmin){ alert('Solo Admin'); return; }
           const id = btn.getAttribute('data-star');
-          const pressed = btn.getAttribute('aria-pressed')==='true';
-          await window.ms360SetFeatured(id, !pressed);
-          btn.setAttribute('aria-pressed', String(!pressed));
-          btn.textContent = !pressed ? '★' : '☆';
+          const newVal = !(btn.getAttribute('aria-pressed')==='true');
+          await window.setFeatured(id, newVal);
         }, {passive:false});
       });
     }
@@ -420,8 +397,6 @@
         try { tag = new URL(a.href, location.href).searchParams.get("tag"); } catch {}
         return { idx: i+1, text: (a.textContent||'').trim(), tag, href: a.href, ok: tag === TAG };
       });
-      console.log("[DOM] Verificación enlaces Amazon");
-      console.table(rows);
       const bad = rows.filter(r => !r.ok);
       return { total: rows.length, ok: rows.length - bad.length, fail: bad.length, bad };
     }
@@ -435,8 +410,6 @@
         catch { const m = /\btag=([^&#]+)/.exec(p.amazon||""); tag = m && m[1] || null; }
         return { idx: i+1, id:p.id, title:p.title, tag, ok: tag === TAG, amazon:p.amazon };
       });
-      console.log("[LS] Verificación productos LocalStorage");
-      console.table(rows);
       const bad = rows.filter(r => !r.ok);
       return { total: rows.length, ok: rows.length - bad.length, fail: bad.length, bad };
     }
@@ -485,7 +458,7 @@
 
     async function cloud_init(config){
       const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
-      const { getFirestore, collection, onSnapshot, query, orderBy } =
+      const { getFirestore, collection, onSnapshot, query, orderBy, doc, setDoc, serverTimestamp } =
         await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
       const { getStorage, ref, uploadBytes, getDownloadURL } =
         await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js');
@@ -498,20 +471,19 @@
       if(unsub) unsub();
       unsub = onSnapshot(q, snap=>{
         products = [];
-        snap.forEach(d=> products.push(d.data()));
-        hydrateFeaturedFromProducts();      /* <<< hidratar destacados al cargar nube */
+        cloudIds = new Set();
+        snap.forEach(d=> { const obj=d.data(); products.push(obj); if(obj?.id) cloudIds.add(obj.id); });
+        hydrateFeaturedFromProducts();
         renderCategories(products); applyFilters();
+        window.dispatchEvent(new Event('ja_products_updated'));
       });
 
       window.cloud_delete = async (id)=>{
         const { deleteDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
         await deleteDoc(doc(db,'products',id));
-        feat.del(id); applyFilters();
       };
       window.cloud_save = async (id, data)=>{
-        const { doc: _doc, setDoc: _setDoc, serverTimestamp: _ts } =
-          await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
-        await _setDoc(_doc(db,'products',id), { id, createdAt:_ts(), ...data });
+        await setDoc(doc(db,'products',id), { id, createdAt: serverTimestamp(), ...data }, { merge:true });
       };
       window.cloud_upload = async (file)=>{
         const fileName = `${Date.now()}_${file.name.replace(/\s+/g,'_')}`;
@@ -519,8 +491,26 @@
         await uploadBytes(fileRef,file);
         return await getDownloadURL(fileRef);
       };
+      window.cloud_updateFeatured = async (id, value)=>{
+        await setDoc(doc(db,'products',id), { id, featured: !!value, updatedAt: serverTimestamp() }, { merge:true });
+      };
     }
 
+    // === Toggle Destacado global (local + nube) ===
+    window.setFeatured = async function(id, value){
+      // Actualiza en la nube si está conectada
+      if(db){
+        await window.cloud_updateFeatured(id, value);
+      }
+      // Refleja local/LS inmediatamente para que se vea sin esperar snapshot
+      products = (products||[]).map(p => p.id===id ? ({...p, featured: !!value}) : p);
+      local_save(products);
+      syncFeaturedLSFromProducts();
+      applyFilters();
+      if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
+    }
+
+    // === Crear/editar productos (local o nube) ===
     window.editProduct = (id)=>{
       const p = products.find(x=>x.id===id); if(!p) return;
       editingId = id;
@@ -544,7 +534,7 @@
       } else {
         products = products.filter(p=>p.id!==id);
         local_save(products);
-        feat.del(id);
+        syncFeaturedLSFromProducts();
         renderCategories(products); applyFilters();
       }
     };
@@ -596,12 +586,16 @@
           products = [{ id, ...data, createdAt: Date.now() }, ...products];
         }
         local_save(products);
+        syncFeaturedLSFromProducts();
+        renderCategories(products); applyFilters();
       }
 
-      // <<< Sincroniza destacados de este producto en todos lados
-      await window.ms360SetFeatured(id, !!data.featured);
-
       editingId = null; form.reset(); pFeatured.checked = false; btnDelete.classList.add('hidden'); modal.close();
+    });
+
+    btnDelete.addEventListener('click', async ()=>{
+      if(editingId){ await window.removeProduct(editingId); }
+      editingId = null; modal.close();
     });
 
     function updateAdminUI(){
@@ -666,7 +660,7 @@
       cloudConfig = null;
       if(unsub) unsub();
       db = null; storage=null; products = local_load();
-      hydrateFeaturedFromProducts();           /* <<< hidratar al pasar a local */
+      hydrateFeaturedFromProducts();
       renderCategories(products); applyFilters();
       cloudStatus.textContent = 'Estado: Local';
       alert('Se desconectó la nube. Ahora estás en modo local.');
@@ -696,29 +690,41 @@
     window.addEventListener('ja_products_updated', ()=>{
       if(!db){
         products = local_load();
-        hydrateFeaturedFromProducts();         /* <<< hidratar en auto-sync/local */
+        hydrateFeaturedFromProducts();
         renderCategories(products);
         applyFilters();
       }
     });
 
+    async function getAutoConfig(){
+      const savedCfg = localStorage.getItem('ja_cloud_cfg');
+      if(savedCfg){ try{ return JSON.parse(savedCfg) }catch{}}
+      if (window.AUTO_FIREBASE_CONFIG && window.AUTO_FIREBASE_CONFIG.apiKey) return window.AUTO_FIREBASE_CONFIG;
+      try{
+        const res = await fetch('firebaseConfig.json?'+Date.now(), {cache:'no-store'});
+        if(res.ok){ return await res.json(); }
+      }catch{}
+      return null;
+    }
+
     window.addEventListener('DOMContentLoaded', async ()=>{
       isAdmin = !!localStorage.getItem('ja_admin');
       btnAdmin.textContent = isAdmin ? 'Admin (ON)' : 'Admin';
 
-      const savedCfg = localStorage.getItem('ja_cloud_cfg');
-      if(savedCfg){
+      const autoCfg = await getAutoConfig();
+      if(autoCfg){
         try{
-          await cloud_init(JSON.parse(savedCfg));
+          await cloud_init(autoCfg);
+          cloudStatus.textContent = 'Estado: Nube conectada';
         }catch(e){
-          console.warn('No se pudo reconectar a la nube. Usando local.', e);
+          console.warn('No se pudo conectar a la nube. Usando local.', e);
           products = local_load();
-          hydrateFeaturedFromProducts();       /* <<< hidratar al cargar local */
+          hydrateFeaturedFromProducts();
           renderCategories(products); applyFilters();
         }
       } else {
         products = local_load();
-        hydrateFeaturedFromProducts();         /* <<< hidratar primera vez */
+        hydrateFeaturedFromProducts();
         renderCategories(products); applyFilters();
       }
     });
@@ -740,7 +746,7 @@
         const u = new URL(url);
         const m1 = u.pathname.match(/\/dp\/([A-Z0-9]{10})/i);
         const m2 = u.pathname.match(/\/gp\/product\/([A-Z0-9]{10})/i);
-        const m3 = u.pathname.match(/\/([A-Z0-9]{10})(?:[/?]|$)/i);
+        const m3 = u.pathname.match(/\/([A-Z0-9]{10})(?:[\/?]|$)/i);
         const asin = (m1?.[1] || m2?.[1] || m3?.[1] || "").toUpperCase();
         return /^[A-Z0-9]{10}$/.test(asin) ? asin : null;
       }catch{ return null; }
@@ -1241,6 +1247,13 @@
     });
 
     safe(()=> {
+      const enhance = () => {
+        // nothing extra here; placeholder for future
+      };
+      document.addEventListener('DOMContentLoaded', enhance);
+    });
+
+    safe(()=> {
       let deferred=null;
       window.addEventListener('beforeinstallprompt', (e)=>{
         e.preventDefault(); deferred = e;
@@ -1426,10 +1439,12 @@
     .titleP{ color:#fff; font-weight:700; line-height:1.2; font-size:14px; min-height:34px; }
     .catP{ color:#9fb0d1; font-size:12px; }
     .rowBtns{ display:flex; gap:8px; margin-top:6px; }
-    .btnAmazon{ flex:1; border:none; border-radius:10px; padding:10px 12px; color:#fff; font-weight:700; cursor:pointer; background:linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4); }
-    .btnSec{ border:none; border-radius:10px; padding:10px 12px; color:#fff; background:#ffffff17; cursor:pointer; }
-    .ribbon{ position:absolute; top:10px; left:0; padding:6px 10px; font-size:10px; font-weight:800; letter-spacing:.5px; color:#fff; background:linear-gradient(90deg,#ec4899,#06b6d4); border-top-right-radius:10px; border-bottom-right-radius:10px; }
+    /* BOTÓN AMAZON MÁS PEQUEÑO */
+    .btnAmazon{ flex:1; border:none; border-radius:10px; padding:8px 10px; font-size:12px; color:#fff; font-weight:700; cursor:pointer; background:linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4); }
+    .btnSec{ border:none; border-radius:10px; padding:8px 10px; font-size:12px; color:#fff; background:#ffffff17; cursor:pointer; }
     .cardWrap{ position:relative; }
+    /* *** IMPORTANTE: Oculto etiqueta visual dentro de destacados (pedido del cliente) *** */
+    .ribbon{ display:none !important; }
   </style>
 
   <!-- Lógica Destacados (FIX) -->
@@ -1522,7 +1537,7 @@
         : '';
       return `
       <div class="cardWrap">
-        <span class="ribbon">DESTACADO</span>
+        <!-- ribbon removida/oculta -->
         <div class="cardP">
           <div class="imgWrap"><img loading="lazy" alt="${t}" src="${i}"></div>
           <div class="bodyP">
@@ -1554,8 +1569,14 @@
         grid.querySelectorAll('[data-star]').forEach(btn=>{
           btn.addEventListener('click', async ()=>{
             const id = btn.getAttribute('data-star');
-            await window.ms360SetFeatured(id, false);  // <<< QUITAR DE DESTACADOS (sincroniza nube/local)
+            if (window.setFeatured) {
+              await window.setFeatured(id, false);
+            } else {
+              const arr = getFeaturedIds().filter(x=>x!==id);
+              setFeaturedIds(arr);
+            }
             renderModal();
+            if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
           }, {passive:false});
         });
       }
@@ -1587,23 +1608,6 @@
   })();
   </script>
   <!-- ================= /FAB + MODAL DESTACADOS ================= -->
-
-  <!-- ======= OVERRIDES SOLICITADOS ======= -->
-  <style>
-    /* 1) Ocultar la etiqueta/ribbon "DESTACADO" dentro del modal de destacados */
-    #modalDestacados .ribbon {
-      display: none !important;
-    }
-
-    /* 2) Hacer más pequeño el botón "Ver en Amazon" SOLO en el modal de destacados */
-    #modalDestacados .btnAmazon {
-      padding: 8px 10px !important;
-      font-size: 12px !important;
-      line-height: 1.1 !important;
-      border-radius: 8px !important;
-    }
-  </style>
-  <!-- ======= /OVERRIDES SOLICITADOS ======= -->
 
 </body>
 </html>
