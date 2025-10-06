@@ -283,16 +283,11 @@
       toggle(id){ feat.has(id)?feat.del(id):feat.add(id) }
     };
 
-    /* ===== Hidratación automática de destacados desde productos.featured ===== */
+    /* ===== Hidratación de destacados: ahora SIEMPRE refleja el estado real de products[] ===== */
     function hydrateFeaturedFromProducts(){
       try{
-        const idsFromProducts = (products||[])
-          .filter(p => !!p.featured && p.id)
-          .map(p => p.id);
-        if(!idsFromProducts.length) return;
-        const cur = new Set(feat.get());
-        idsFromProducts.forEach(id => cur.add(id));
-        feat.set([...cur]);
+        const ids = (products||[]).filter(p => !!p.featured && p.id).map(p => p.id);
+        feat.set(ids);  // Reemplaza la lista completa para mantener sincronía con nube/local
       }catch{}
     }
 
@@ -302,6 +297,46 @@
       const sep = url.includes('?') ? '&' : '?';
       return `${url}${sep}tag=${AFFILIATE_TAG_DEFAULT}`;
     }
+
+    /* ====== FUNCIÓN CENTRAL: Cambiar estado Destacado y sincronizar ====== */
+    window.ms360SetFeatured = async function(id, flag){
+      try{
+        // 1) Actualiza products[] en memoria
+        const idx = products.findIndex(p=>p.id===id);
+        if (idx !== -1){
+          products[idx] = { ...products[idx], featured: !!flag };
+        }
+
+        // 2) Persiste según modo
+        if (db){
+          const { updateDoc, doc } =
+            await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+          try{
+            await updateDoc(doc(db,'products',id), { featured: !!flag });
+          }catch(e){
+            // Si no existe el doc, intenta guardarlo completo (fallback)
+            if (idx !== -1 && window.cloud_save){
+              await window.cloud_save(id, products[idx]);
+            }
+          }
+        } else {
+          // Local: guarda listado completo
+          localStorage.setItem('ja_store_products_v2', JSON.stringify(products));
+        }
+
+        // 3) Normaliza lista LS_FEATURED según products[]
+        const currentIds = (products||[]).filter(p=>!!p.featured && p.id).map(p=>p.id);
+        feat.set(currentIds);
+
+        // 4) Refresca UI
+        applyFilters();
+        if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
+        window.dispatchEvent(new Event('ja_products_updated'));
+      }catch(e){
+        console.warn('[ms360SetFeatured] error:', e);
+        alert('No se pudo actualizar Destacados.');
+      }
+    };
 
     function productCard(p){
       const price = p.price?`$${Number(p.price).toLocaleString()}`:'';
@@ -336,7 +371,7 @@
           </div>
           <div class="mt-3">
             <a href="${ensureTag(p.amazon)}" target="_blank" rel="nofollow sponsored noopener" class="btn-neon w-full justify-center px-4 py-2 rounded-xl inline-flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a 1 1 0 1 1 1.414-1.414L11 19.586V14a1 1 0 0 1 1-1z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a 1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a 1 1 0 1 1 1.414-1.414L11 19.586V14a1 1 0 0 1 1-1z"/></svg>
               Ver en Amazon
             </a>
             ${adminBtns}
@@ -363,16 +398,14 @@
 
       // listeners del botón ★
       grid.querySelectorAll('[data-star]').forEach(btn=>{
-        btn.addEventListener('click', (e)=>{
+        btn.addEventListener('click', async (e)=>{
           e.stopPropagation();
           if(!isAdmin){ alert('Solo Admin'); return; }
           const id = btn.getAttribute('data-star');
           const pressed = btn.getAttribute('aria-pressed')==='true';
-          feat.toggle(id);
+          await window.ms360SetFeatured(id, !pressed);
           btn.setAttribute('aria-pressed', String(!pressed));
           btn.textContent = !pressed ? '★' : '☆';
-          applyFilters();
-          if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
         }, {passive:false});
       });
     }
@@ -473,6 +506,7 @@
       window.cloud_delete = async (id)=>{
         const { deleteDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
         await deleteDoc(doc(db,'products',id));
+        feat.del(id); applyFilters();
       };
       window.cloud_save = async (id, data)=>{
         const { doc: _doc, setDoc: _setDoc, serverTimestamp: _ts } =
@@ -510,8 +544,8 @@
       } else {
         products = products.filter(p=>p.id!==id);
         local_save(products);
+        feat.del(id);
         renderCategories(products); applyFilters();
-        if (feat.has(id)) feat.del(id);
       }
     };
 
@@ -562,16 +596,12 @@
           products = [{ id, ...data, createdAt: Date.now() }, ...products];
         }
         local_save(products);
-        if (data.featured) feat.add(id); else if (feat.has(id)) feat.del(id);
-        renderCategories(products); applyFilters();
       }
 
-      editingId = null; form.reset(); pFeatured.checked = false; btnDelete.classList.add('hidden'); modal.close();
-    });
+      // <<< Sincroniza destacados de este producto en todos lados
+      await window.ms360SetFeatured(id, !!data.featured);
 
-    btnDelete.addEventListener('click', async ()=>{
-      if(editingId){ await window.removeProduct(editingId); }
-      editingId = null; modal.close();
+      editingId = null; form.reset(); pFeatured.checked = false; btnDelete.classList.add('hidden'); modal.close();
     });
 
     function updateAdminUI(){
@@ -688,7 +718,7 @@
         }
       } else {
         products = local_load();
-        hydrateFeaturedFromProducts();         /* <<< hidratar incóg./local primera vez */
+        hydrateFeaturedFromProducts();         /* <<< hidratar primera vez */
         renderCategories(products); applyFilters();
       }
     });
@@ -1522,13 +1552,10 @@
 
       if (document.documentElement.classList.contains('is-admin')){
         grid.querySelectorAll('[data-star]').forEach(btn=>{
-          btn.addEventListener('click', ()=>{
+          btn.addEventListener('click', async ()=>{
             const id = btn.getAttribute('data-star');
-            const arr = getFeaturedIds().filter(x=>x!==id);
-            setFeaturedIds(arr);
+            await window.ms360SetFeatured(id, false);  // <<< QUITAR DE DESTACADOS (sincroniza nube/local)
             renderModal();
-            window.dispatchEvent(new Event('ja_products_updated'));
-            if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
           }, {passive:false});
         });
       }
