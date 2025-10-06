@@ -612,6 +612,22 @@
       "IMAGE": "https://m.media-amazon.com/images/I/81TEoesfZ4L._AC_SL1500_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0FH4WXJNJ?tag=kaninosabioan-20",
       "FEATURE": true
+    },
+
+    "leggings-powersasia-b0d7sdqnzg": {
+      "TITLE": "POWERASIA – Leggings de impacto oculto para mujer (control de abdomen, cintura media y baja, yoga/gimnasio)",
+      "PRICE": 18.99,
+      "CATEGORY": "Ropa",
+      "IMAGE": "https://m.media-amazon.com/images/I/51JCuGhoeVL._AC_SX679_.jpg",
+      "GALLERY": [
+        "https://m.media-amazon.com/images/I/51JCuGhoeVL._AC_SX679_.jpg",
+        "https://m.media-amazon.com/images/I/51Kn4jFrcWL._AC_SX679_.jpg",
+        "https://m.media-amazon.com/images/I/51ZL7cCYC5L._AC_SX679_.jpg",
+        "https://m.media-amazon.com/images/I/51OEHR8ZXDL._AC_SX679_.jpg",
+        "https://m.media-amazon.com/images/I/51FPe-FDlcL._AC_SX679_.jpg"
+      ],
+      "AMAZON": "https://www.amazon.com/dp/B0D7SDQNZG?tag=kaninosabioan-20",
+      "FEATURE": true
     }
   }
 }
