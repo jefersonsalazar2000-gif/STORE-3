@@ -205,14 +205,14 @@
       <div class="grid gap-3">
         <div class="gradient-border p-3 rounded-xl">
           <label class="text-sm text-white/80 font-semibold">Clave Admin</label>
-          <input id="adminKeyInput" class="input w-full mt-2" placeholder="Escribe tu clave para activar Admin" />
+          <input id="adminKeyInput" class="input w/full mt-2" placeholder="Escribe tu clave para activar Admin" />
           <p class="text-xs text-white/60 mt-1">Actual: <span id="adminKeyLabel">mega360</span></p>
           <button id="saveAdminKey" type="button" class="mt-2 chip px-3 py-1.5 rounded-xl text-sm">Guardar clave</button>
         </div>
 
         <div class="gradient-border p-3 rounded-xl">
           <label class="text-sm text-white/80 font-semibold">Config Nube (pega tu firebaseConfig JSON aquí)</label>
-          <textarea id="firebaseConfigInput" class="input w-full h-40 mt-2" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'></textarea>
+          <textarea id="firebaseConfigInput" class="input w/full h-40 mt-2" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'></textarea>
           <div class="flex flex-wrap gap-2 mt-2">
             <button id="btnConnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Conectar nube</button>
             <button id="btnDisconnectCloud" type="button" class="chip px-3 py-1.5 rounded-xl text-sm">Desconectar</button>
@@ -228,7 +228,7 @@
   <script type="module">
     let ADMIN_KEY = localStorage.getItem('ja_admin_key') || "mega360";
     const AFFILIATE_TAG_DEFAULT = "kaninosabioan-20";
-    const LS_FEATURED = 'ja_featured_ids_v1'; /* <<<<<< NUEVO: lista fija de destacados */
+    const LS_FEATURED = 'ja_featured_ids_v1';
 
     let isAdmin = false;
     let editingId = null;
@@ -283,6 +283,19 @@
       toggle(id){ feat.has(id)?feat.del(id):feat.add(id) }
     };
 
+    /* ===== Hidratación automática de destacados desde productos.featured ===== */
+    function hydrateFeaturedFromProducts(){
+      try{
+        const idsFromProducts = (products||[])
+          .filter(p => !!p.featured && p.id)
+          .map(p => p.id);
+        if(!idsFromProducts.length) return;
+        const cur = new Set(feat.get());
+        idsFromProducts.forEach(id => cur.add(id));
+        feat.set([...cur]);
+      }catch{}
+    }
+
     function ensureTag(url){
       if(!url) return "#";
       if(/[?&]tag=/.test(url)) return url;
@@ -308,7 +321,7 @@
         <article class="card rounded-2xl p-3 sm:p-4 flex flex-col gradient-border relative">
           ${starBtn}
           <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3]">
-            <img src="${p.image}${p.image.includes('?')?'&':'?'}v=10"
+            <img src="${p.image}${p.image?.includes('?')?'&':'?'}v=10"
                  alt="${p.title}"
                  class="w-full h-full object-cover"
                  loading="lazy"
@@ -340,7 +353,6 @@
       const term = (search.value||'').toLowerCase().trim();
       const cat = categoryFilter.value||'all';
       const filtered = products
-        /* SIN reordenar por Destacado, respeta orden original */
         .filter(p=>{
           const t = !term || p.title.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term);
           const c = cat==='all' || p.category===cat;
@@ -359,9 +371,7 @@
           feat.toggle(id);
           btn.setAttribute('aria-pressed', String(!pressed));
           btn.textContent = !pressed ? '★' : '☆';
-          // refrescar etiqueta “Destacado” visual
           applyFilters();
-          // si el modal está abierto, refrescarlo también
           if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
         }, {passive:false});
       });
@@ -456,6 +466,7 @@
       unsub = onSnapshot(q, snap=>{
         products = [];
         snap.forEach(d=> products.push(d.data()));
+        hydrateFeaturedFromProducts();      /* <<< hidratar destacados al cargar nube */
         renderCategories(products); applyFilters();
       });
 
@@ -500,7 +511,6 @@
         products = products.filter(p=>p.id!==id);
         local_save(products);
         renderCategories(products); applyFilters();
-        // si se elimina y estaba destacado, quitarlo
         if (feat.has(id)) feat.del(id);
       }
     };
@@ -552,7 +562,6 @@
           products = [{ id, ...data, createdAt: Date.now() }, ...products];
         }
         local_save(products);
-        // si lo marcaste “Destacado” en el formulario, también setear en la lista fija
         if (data.featured) feat.add(id); else if (feat.has(id)) feat.del(id);
         renderCategories(products); applyFilters();
       }
@@ -627,6 +636,7 @@
       cloudConfig = null;
       if(unsub) unsub();
       db = null; storage=null; products = local_load();
+      hydrateFeaturedFromProducts();           /* <<< hidratar al pasar a local */
       renderCategories(products); applyFilters();
       cloudStatus.textContent = 'Estado: Local';
       alert('Se desconectó la nube. Ahora estás en modo local.');
@@ -656,6 +666,7 @@
     window.addEventListener('ja_products_updated', ()=>{
       if(!db){
         products = local_load();
+        hydrateFeaturedFromProducts();         /* <<< hidratar en auto-sync/local */
         renderCategories(products);
         applyFilters();
       }
@@ -672,10 +683,12 @@
         }catch(e){
           console.warn('No se pudo reconectar a la nube. Usando local.', e);
           products = local_load();
+          hydrateFeaturedFromProducts();       /* <<< hidratar al cargar local */
           renderCategories(products); applyFilters();
         }
       } else {
         products = local_load();
+        hydrateFeaturedFromProducts();         /* <<< hidratar incóg./local primera vez */
         renderCategories(products); applyFilters();
       }
     });
@@ -1394,7 +1407,7 @@
   (function(){
     const LS_KEY = "ja_store_products_v2";
     const TAG    = "kaninosabioan-20";
-    const LS_FEATURED = "ja_featured_ids_v1"; // <<<<<< NUEVO
+    const LS_FEATURED = "ja_featured_ids_v1";
 
     function getAllProducts(){
       try{
@@ -1494,21 +1507,19 @@
       </div>`;
     }
 
-    // Destacados por IDs (orden exacto)
     function getFeaturedIds(){ try{return JSON.parse(localStorage.getItem(LS_FEATURED))||[]}catch{return[]} }
     function setFeaturedIds(v){ localStorage.setItem(LS_FEATURED, JSON.stringify(v||[])) }
 
     function renderModal(){
       const map = new Map(getAllProducts().map(p=>[p.id,p]));
       const ids = getFeaturedIds();
-      const feats = ids.map(id=>map.get(id)).filter(Boolean); // respeta orden agregado
+      const feats = ids.map(id=>map.get(id)).filter(Boolean);
       if (!feats.length){
         grid.innerHTML = `<div style="grid-column:1/-1;color:#aab3d1;text-align:center;padding:28px">No hay productos destacados. Marca ⭐ en cualquier tarjeta (modo Admin).</div>`;
         return;
       }
       grid.innerHTML = feats.map(card).join("");
 
-      // Eventos de quitar ⭐ dentro del modal
       if (document.documentElement.classList.contains('is-admin')){
         grid.querySelectorAll('[data-star]').forEach(btn=>{
           btn.addEventListener('click', ()=>{
@@ -1516,7 +1527,7 @@
             const arr = getFeaturedIds().filter(x=>x!==id);
             setFeaturedIds(arr);
             renderModal();
-            window.dispatchEvent(new Event('ja_products_updated')); // para refrescar grid etiquetas
+            window.dispatchEvent(new Event('ja_products_updated'));
             if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
           }, {passive:false});
         });
@@ -1540,7 +1551,6 @@
     btnX?.addEventListener("click", cerrar);
     modal?.addEventListener("click", (e)=>{ if (e.target === modal) cerrar(); });
 
-    // Re-render si cambian productos
     window.__renderFeaturedIfOpen = function(){
       if (modal.style.display === "flex") renderModal();
     };
