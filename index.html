@@ -41,7 +41,7 @@
     body{ font-family:'Outfit',sans-serif }
     .neon-title{ background:var(--grad-1); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 0 18px rgba(124,58,237,.25) }
     .btn-neon{ background:var(--btn-grad); color:#0b0f1a; font-weight:800; box-shadow:0 0 24px rgba(124,58,237,.35); transition:transform .12s, box-shadow .12s, opacity .12s }
-    .btn-neon:hover{ transform:translateY(-1px) scale(1.005); box-shadow:0 0 32px rgba(124,58,237,.55) } /* suavizado */
+    .btn-neon:hover{ transform:translateY(-1px) scale(1.005); box-shadow:0 0 32px rgba(124,58,237,.55) }
     .chip{ background:rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.35) }
     .card{ background:radial-gradient(1200px 500px at -10% -10%, rgba(124,58,237,.12), transparent 50%), radial-gradient(1000px 400px at 120% 120%, rgba(0,229,255,.10), transparent 45%), #12172a; border:1px solid rgba(124,58,237,.25) }
     .toolbar{ background:linear-gradient(180deg, rgba(18,23,42,.85), rgba(18,23,42,.6) 60%, rgba(18,23,42,.1)); border-bottom:1px solid rgba(124,58,237,.25); backdrop-filter:blur(8px) }
@@ -51,15 +51,13 @@
     .input{ background:#0e1430; border:1px solid rgba(124,58,237,.35); outline:none; color:white; border-radius:12px; padding:.7rem .9rem }
     .input:focus{ box-shadow:var(--ring) }
     .tag{ background:rgba(10,239,255,.12); border:1px solid rgba(10,239,255,.35) }
-
-    /* === FIX wobble lateral / scroll profesional === */
     html, body { max-width:100%; overflow-x:hidden; }
     body { touch-action: pan-y; overscroll-behavior-x: none; }
     #grid { overflow-x:hidden; }
     *, *::before, *::after { box-sizing:border-box; }
   </style>
 
-  <!-- ===== MS360 Add-on Styles (no sustituye los tuyos) ===== -->
+  <!-- ===== MS360 Add-on Styles ===== -->
   <style>
     :root { --ms360-ring: 0 0 0 1.5px rgba(124,58,237,.45), 0 0 18px rgba(124,58,237,.35), inset 0 0 12px rgba(0,229,255,.25) }
     :focus-visible { outline:2px solid #7C3AED; outline-offset:2px }
@@ -76,22 +74,17 @@
     .ms360-ibtn:hover{transform:translateY(-1px) scale(1.03);border-color:rgba(255,255,255,.25)}
   </style>
 
-  <!-- ===== Seguridad visual: Ocultar SIEMPRE los controles de admin al público ===== -->
+  <!-- Seguridad visual -->
   <style>
-    /* Ocultos por defecto para todo el mundo */
     #btnSettings, #btnAdmin, #btnVerify, #btnFix { display:none !important; }
-    /* Solo si el root tiene .is-admin se muestran */
     .is-admin #btnSettings,
     .is-admin #btnAdmin,
     .is-admin #btnVerify,
     .is-admin #btnFix { display:inline-flex !important; }
   </style>
-  <!-- ===== /MS360 Add-on Styles ===== -->
 
-  <!-- === Ocultar FAB “Destacados” (para no tapar el botón Arriba) === -->
-  <style>
-    #fabDestacados { display: none !important; }
-  </style>
+  <!-- Ocultar FAB “Destacados” -->
+  <style>#fabDestacados { display: none !important; }</style>
 </head>
 
 <body class="min-h-full text-white bg-[radial-gradient(1200px_600px_at_20%_-10%,rgba(124,58,237,.15),transparent_55%),radial-gradient(900px_500px_at_120%_10%,rgba(0,229,255,.12),transparent_50%),#0b0f1a]">
@@ -113,10 +106,8 @@
       <div class="flex items-center gap-2">
         <button id="btnSettings" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Ajustes</button>
         <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Admin</button>
-        <!-- === NUEVOS BOTONES ADMIN (ocultos si Admin OFF) === -->
         <button id="btnVerify" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 hidden">Verificar Tag</button>
         <button id="btnFix" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 hidden">Auto-Fix Tag</button>
-        <!-- === NUEVO: botón Destacados en el header (reemplaza al FAB) === -->
         <button id="btnDestacadosHeader" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">★ Destacados</button>
       </div>
     </div>
@@ -135,7 +126,6 @@
 
   <!-- Grid -->
   <main class="max-w-7xl mx-auto px-4 py-6">
-    <!-- 2 columnas por defecto en móvil -->
     <div id="grid" class="grid gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
     <p id="empty" class="hidden text-center text-white/60 mt-10">No hay productos que coincidan.</p>
   </main>
@@ -163,7 +153,6 @@
         <div class="gradient-border"><input required id="pTitle" class="input w-full" placeholder="Título / Nombre" /></div>
         <div class="gradient-border"><input id="pBrand" class="input w-full" placeholder="Marca (opcional)" /></div>
 
-        <!-- Imagen: URL o Archivo -->
         <div class="sm:col-span-2 grid gap-2">
           <div class="gradient-border"><input id="pImageUrl" class="input w-full" placeholder="URL de imagen (https://… Amazon u otro)" /></div>
           <div class="text-xs text-white/60">o sube un archivo (se guarda en Nube si está conectada, o local en este dispositivo)</div>
@@ -234,11 +223,9 @@
 
   <!-- App -->
   <script type="module">
-    // ======== CONFIG ========
     let ADMIN_KEY = localStorage.getItem('ja_admin_key') || "mega360";
     const AFFILIATE_TAG_DEFAULT = "kaninosabioan-20";
 
-    // ======== Estado/UI Refs ========
     let isAdmin = false;
     let editingId = null;
     let products = [];
@@ -276,14 +263,12 @@
     const btnConnectCloud = document.getElementById('btnConnectCloud');
     const btnDisconnectCloud = document.getElementById('btnDisconnectCloud');
 
-    /* === NUEVOS BOTONES ADMIN === */
     const btnVerify = document.getElementById('btnVerify');
     const btnFix = document.getElementById('btnFix');
 
     year.textContent = new Date().getFullYear();
     const uid = () => crypto.randomUUID();
 
-    // ======== Helpers UI ========
     function ensureTag(url){
       if(!url) return "#";
       if(/[?&]tag=/.test(url)) return url;
@@ -346,7 +331,6 @@
       empty.classList.toggle('hidden', filtered.length>0);
     }
 
-    // ===== Verificador y Auto-Fix del tag de Amazon (Admin) =====
     const TAG = "kaninosabioan-20";
     const LS_VERIFY_KEY = "ja_store_products_v2";
 
@@ -354,7 +338,7 @@
       const as = Array.from(document.querySelectorAll('a[href*="amazon."]'));
       const rows = as.map((a,i) => {
         let tag = null;
-               try { tag = new URL(a.href, location.href).searchParams.get("tag"); } catch {}
+        try { tag = new URL(a.href, location.href).searchParams.get("tag"); } catch {}
         return { idx: i+1, text: (a.textContent||'').trim(), tag, href: a.href, ok: tag === TAG };
       });
       console.log("[DOM] Verificación enlaces Amazon");
@@ -406,7 +390,6 @@
       localStorage.setItem(LS_VERIFY_KEY, JSON.stringify(list));
     }
 
-    // ======== Local Mode (sin nube) ========
     const LS_KEY = 'ja_store_products_v2';
     function local_load(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||[] }catch{ return [] } }
     function local_save(list){ localStorage.setItem(LS_KEY, JSON.stringify(list)) }
@@ -421,10 +404,9 @@
       });
     }
 
-    // ======== Cloud (Firebase) ========
     async function cloud_init(config){
       const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
-      const { getFirestore, collection, onSnapshot, query, orderBy, doc, setDoc, deleteDoc, serverTimestamp } =
+      const { getFirestore, collection, onSnapshot, query, orderBy } =
         await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
       const { getStorage, ref, uploadBytes, getDownloadURL } =
         await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js');
@@ -458,7 +440,6 @@
       };
     }
 
-    // ======== CRUD Handlers ========
     window.editProduct = (id)=>{
       const p = products.find(x=>x.id===id); if(!p) return;
       editingId = id;
@@ -544,7 +525,6 @@
       editingId = null; modal.close();
     });
 
-    // ======== Admin / Settings ========
     function updateAdminUI(){
       btnAdd.disabled = !isAdmin;
       btnVerify.classList.toggle('hidden', !isAdmin);
@@ -611,11 +591,9 @@
       alert('Se desconectó la nube. Ahora estás en modo local.');
     });
 
-    // ======== Filtros ========
     search.addEventListener('input', applyFilters);
     categoryFilter.addEventListener('change', applyFilters);
 
-    // ======== Eventos NUEVOS: Verificar y Auto-Fix ========
     btnVerify.addEventListener('click', () => {
       const dom = verifyDOM();
       const ls = verifyLS();
@@ -634,16 +612,14 @@
       alert("✅ Auto-Fix aplicado.\n• DOM corregido\n• LocalStorage normalizado\n\nRecarga la página para reflejarlo en las tarjetas.");
     });
 
-    // ======== Escuchar bootstrap del JSON (para refrescar sin recargar) ========
     window.addEventListener('ja_products_updated', ()=>{
-      if(!db){ // solo en modo local
+      if(!db){
         products = local_load();
         renderCategories(products);
         applyFilters();
       }
     });
 
-    // ======== Init ========
     window.addEventListener('DOMContentLoaded', async ()=>{
       isAdmin = !!localStorage.getItem('ja_admin');
       btnAdmin.textContent = isAdmin ? 'Admin (ON)' : 'Admin';
@@ -664,13 +640,13 @@
     });
   </script>
 
-  <!-- ===== Auto-SYNC con GitHub: trae products.json y actualiza cada 30s (dedupe) ===== -->
+  <!-- Auto-SYNC con GitHub -->
   <script>
   (function(){
     const RAW_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
     const LS_KEY  = "ja_store_products_v2";
     const TAG     = "kaninosabioan-20";
-    const REFRESH_MS = 30000; // 30s
+    const REFRESH_MS = 30000;
 
     function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || [] }catch{ return [] } }
     function lsSave(v){ localStorage.setItem(LS_KEY, JSON.stringify(v)) }
@@ -788,7 +764,7 @@
   })();
   </script>
 
-  <!-- RESET DE CACHÉ / SW / LOCALSTORAGE -->
+  <!-- RESET -->
   <script>
   async function resetStore(force=false) {
     try {
@@ -810,7 +786,7 @@
   }
   </script>
 
-  <!-- Afiliado Amazon: forzar tag también en enlaces del DOM -->
+  <!-- Afiliado Amazon: forzar tag -->
   <script>
   (function(){
     const TAG = "kaninosabioan-20";
@@ -830,7 +806,7 @@
   })();
   </script>
 
-  <!-- PWA: registrar Service Worker (único) -->
+  <!-- PWA -->
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
@@ -839,10 +815,9 @@
     }
   </script>
 
-  <!-- === MS360 Pro Viewer (solo añadido; no modifica tu app) === -->
+  <!-- MS360 Pro Viewer -->
   <div id="ms360-pro" class="fixed inset-0 z-[9999] hidden">
     <div class="absolute inset-0 bg-black/70" data-close="1"></div>
-
     <div class="relative mx-auto my-6 w-[96%] max-w-[1120px]">
       <div class="grid grid-cols-1 md:grid-cols-[112px_minmax(0,1fr)_360px] gap-4 rounded-2xl bg-[#0b0f1a] shadow-2xl ring-1 ring-white/10 overflow-hidden">
         <div class="md:col-span-3 flex items-center justify-between px-4 py-3 border-b border-white/10">
@@ -887,11 +862,9 @@
     </div>
   </div>
 
-  <!-- === Script activador MS360 Pro (sin forzar clases del grid) === -->
+  <!-- Script activador MS360 Pro -->
   <script>
   (() => {
-    // (ELIMINADO el forceTwoColsOnMobile: ya arrancamos con 2 columnas por CSS)
-
     const modal   = document.getElementById('ms360-pro');
     const mainImg = document.getElementById('ms360-main');
     const zoomBox = document.getElementById('ms360-zoom');
@@ -1078,14 +1051,14 @@
         const isAmazon = e.target.closest('a[href*="amazon."]');
         const isAdmin  = e.target.closest('button');
         if (isAmazon || isAdmin) return;
-        }
+      }
       const p = findProductFromCard(card);
       if (p) openViewer(p);
     }, {passive:true});
   })();
   </script>
 
-  <!-- ===== MS360 Add-on Script (encapsulado) ===== -->
+  <!-- ===== MS360 Add-on Script ===== -->
   <script>
   (() => { 'use strict';
     const $ = (s, r=document)=> r.querySelector(s);
@@ -1119,7 +1092,6 @@
       }
     });
 
-    /* Botón “Arriba” — lo mantenemos */
     safe(()=> {
       const btn = document.createElement('button');
       btn.id='ms360-top'; btn.className='btn-neon rounded-full px-4 py-3 font-extrabold'; btn.textContent='↑ Arriba';
@@ -1205,10 +1177,9 @@
 
   })();
   </script>
-  <!-- ===== /MS360 Add-on Script ===== -->
+  <!-- /MS360 Add-on Script -->
 
-
-  <!-- ====== LOGIN ADMIN SEGURO (AÑADIDO, NO MODIFICA TU APP) ====== -->
+  <!-- ====== LOGIN ADMIN SEGURO ====== -->
   <dialog id="admin-login" class="backdrop:bg-black/70 w-[min(420px,92vw)] rounded-2xl">
     <form method="dialog" class="card rounded-2xl p-5">
       <h3 class="text-lg font-extrabold neon-title mb-3">Acceso privado</h3>
@@ -1228,7 +1199,6 @@
   </dialog>
 
   <script>
-  // ====== Admin Shield: bloqueo total de botones/ajustes para visitantes ======
   (function(){
     const HTMLCLS = document.documentElement;
     const btnAdmin   = document.getElementById('btnAdmin');
@@ -1240,20 +1210,16 @@
     const msg        = document.getElementById('adm-msg');
     const brand      = document.getElementById('brandTrigger');
 
-    // === Seguridad: impedir abrir "settings" si no eres admin, incluso por consola ===
     const _showModal = HTMLDialogElement.prototype.showModal;
     HTMLDialogElement.prototype.showModal = function(){
       if(this.id === 'settings' && !isActive()) { alert('Solo Admin'); return; }
       return _showModal.call(this);
     };
 
-    // === Config por defecto: hash SHA-256 de "ms360.v1" + "mega360"
-    //     CAMBIA ESTE VALOR por tu propio hash (usa cualquier generador SHA-256).
     const DEFAULT_ADMIN_HASH = '600f70101043abb7c5b1ab0bd909306f8f3d98fca2cd206f627aa7639fda5a49';
-    const HASH_KEY = 'ja_admin_secret_hash'; // donde se guarda tu hash personalizado
-    const SESSION_KEY = 'ms360_admin_until'; // timestamp de expiración
+    const HASH_KEY = 'ja_admin_secret_hash';
+    const SESSION_KEY = 'ms360_admin_until';
 
-    // helpers
     const sha256 = async (txt) => {
       const enc = new TextEncoder().encode('ms360.v1' + txt);
       const buf = await crypto.subtle.digest('SHA-256', enc);
@@ -1267,8 +1233,7 @@
     const activate = (minutes=15) => {
       const until = now() + minutes*60*1000;
       sessionStorage.setItem(SESSION_KEY, String(until));
-      HTMLCLS.classList.add('is-admin'); // muestra botones
-      // Habilita botones del header por UI (tu app también toma ja_admin en reload)
+      HTMLCLS.classList.add('is-admin');
       localStorage.setItem('ja_admin','1');
     };
     const deactivate = () => {
@@ -1278,11 +1243,9 @@
       try { adminDlg.close(); } catch(e){}
     };
 
-    // Mostrar u ocultar según sesión al cargar
     if(isActive()) HTMLCLS.classList.add('is-admin');
     else HTMLCLS.classList.remove('is-admin');
 
-    // Bloqueo clicks en botones del header si no es admin (por si los ven por CSS cacheado)
     [btnAdmin, btnSettings].forEach(el=>{
       if(!el) return;
       el.addEventListener('click', (e)=>{
@@ -1290,10 +1253,9 @@
           e.preventDefault(); e.stopImmediatePropagation();
           openLogin();
         }
-      }, true); // captura
+      }, true);
     });
 
-    // Entrada oculta: triple click en el logo o "Shift + A" x3
     let clicks = 0, t=null, keyCount=0, keyTimer=null;
     function openLogin(){ passInput.value=''; msg.textContent=''; adminDlg.showModal(); setTimeout(()=>passInput.focus(), 80); }
     brand?.addEventListener('click', ()=>{
@@ -1307,7 +1269,6 @@
       }
     });
 
-    // Entrar
     enterBtn?.addEventListener('click', async ()=>{
       const pass = (passInput.value || '').trim();
       if(!pass){ msg.textContent='Escribe tu clave'; return; }
@@ -1316,13 +1277,12 @@
       if(hash === expected){
         activate(15);
         msg.textContent = 'Acceso concedido. Recargando…';
-        setTimeout(()=>location.reload(), 350); // tu app toma ja_admin y muestra opciones internas
+        setTimeout(()=>location.reload(), 350);
       } else {
         msg.textContent = 'Clave incorrecta';
       }
     });
 
-    // Cambiar clave: guarda un hash personalizado en localStorage
     changeBtn?.addEventListener('click', async ()=>{
       const newPass = prompt('Nueva clave secreta (no se guarda en texto plano):');
       if(!newPass) return;
@@ -1331,11 +1291,9 @@
       alert('✅ Clave cambiada. Usa la nueva para entrar.');
     });
 
-    // Expiración automática: si pasó el tiempo, cerrar sesión
     setInterval(()=>{
       if(!isActive() && HTMLCLS.classList.contains('is-admin')){
         deactivate();
-        // Seguridad extra: recarga para limpiar cualquier UI en memoria
         location.reload();
       }
     }, 15000);
@@ -1343,19 +1301,16 @@
   })();
   </script>
 
-  <!-- ================= FAB + MODAL DESTACADOS (no modifica tu JSON) ================= -->
-  <!-- FAB Destacados (ahora oculto por CSS para no tapar “Arriba”) -->
+  <!-- ================= FAB + MODAL DESTACADOS ================= -->
   <button id="fabDestacados" aria-label="Ver destacados" title="Ver destacados"
     style="position:fixed;bottom:20px;right:20px;z-index:9999;border:none;border-radius:9999px;padding:14px 16px;font-weight:700;cursor:pointer;box-shadow:0 10px 25px rgba(0,0,0,.25);background:linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4);color:#fff">
     ★ Destacados
   </button>
 
-  <!-- Modal Destacados -->
   <div id="modalDestacados" aria-hidden="true"
     style="position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55)">
     <div role="dialog" aria-modal="true" aria-labelledby="destacadosTitle"
         style="width:min(1100px,92vw);max-height:86vh;overflow:auto;border-radius:16px;background:#0f1426;border:1px solid rgba(255,255,255,.06);box-shadow:0 20px 60px rgba(0,0,0,.35)">
-      <!-- Header -->
       <div style="position:sticky;top:0;background:#0f1426;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;gap:12px;align-items:center;justify-content:space-between">
         <div>
           <h3 id="destacadosTitle" style="margin:0;color:#fff;font-size:18px;font-weight:800">Productos destacados</h3>
@@ -1375,24 +1330,16 @@
         </div>
       </div>
 
-      <!-- Grid -->
       <div id="gridDestacados" style="padding:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px"></div>
 
-      <!-- Footer -->
       <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:flex-end">
         <small style="color:#7f8ab2">Tip: comparte tus favoritos con el botón “Compartir”.</small>
       </div>
     </div>
   </div>
 
-  <!-- Estilos tarjetas -->
   <style>
-    .cardP {
-      background:#0b0f1a;border:1px solid rgba(255,255,255,.06);
-      border-radius:16px;overflow:hidden;display:flex;flex-direction:column;
-      box-shadow:0 10px 24px rgba(0,0,0,.25);
-      transition:transform .15s ease, box-shadow .15s ease;
-    }
+    .cardP { background:#0b0f1a;border:1px solid rgba(255,255,255,.06); border-radius:16px;overflow:hidden;display:flex;flex-direction:column; box-shadow:0 10px 24px rgba(0,0,0,.25); transition:transform .15s ease, box-shadow .15s ease; }
     .cardP:hover{ transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.32); }
     .imgWrap{ aspect-ratio:4/3; background:#0a0e1a; display:flex; align-items:center; justify-content:center; }
     .imgWrap img{ max-width:92%; max-height:92%; object-fit:contain; }
@@ -1400,127 +1347,143 @@
     .titleP{ color:#fff; font-weight:700; line-height:1.2; font-size:14px; min-height:34px; }
     .catP{ color:#9fb0d1; font-size:12px; }
     .rowBtns{ display:flex; gap:8px; margin-top:6px; }
-    .btnAmazon{
-      flex:1; border:none; border-radius:10px; padding:10px 12px; color:#fff; font-weight:700; cursor:pointer;
-      background:linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4);
-    }
-    .btnSec{
-      border:none; border-radius:10px; padding:10px 12px; color:#fff; background:#ffffff17; cursor:pointer;
-    }
-    .ribbon{
-      position:absolute; top:10px; left:0; padding:6px 10px; font-size:10px; font-weight:800; letter-spacing:.5px;
-      color:#fff; background:linear-gradient(90deg,#ec4899,#06b6d4); border-top-right-radius:10px; border-bottom-right-radius:10px;
-    }
+    .btnAmazon{ flex:1; border:none; border-radius:10px; padding:10px 12px; color:#fff; font-weight:700; cursor:pointer; background:linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4); }
+    .btnSec{ border:none; border-radius:10px; padding:10px 12px; color:#fff; background:#ffffff17; cursor:pointer; }
+    .ribbon{ position:absolute; top:10px; left:0; padding:6px 10px; font-size:10px; font-weight:800; letter-spacing:.5px; color:#fff; background:linear-gradient(90deg,#ec4899,#06b6d4); border-top-right-radius:10px; border-bottom-right-radius:10px; }
     .cardWrap{ position:relative; }
   </style>
 
-  <!-- Lógica Destacados -->
+  <!-- Lógica Destacados (FIX) -->
   <script>
   (function(){
-    // === 0) Localiza tu catálogo SIN modificarlo ===
-    const CATALOGO =
-      (window.PRODUCTOS && window.PRODUCTOS.PRODUCTOS) ||
-      (typeof PRODUCTOS !== 'undefined' && PRODUCTOS.PRODUCTOS) ||
-      null;
+    const LS_KEY = "ja_store_products_v2";
+    const TAG    = "kaninosabioan-20";
 
-    if (!CATALOGO) {
-      console.warn('No se encontró el objeto global con la clave PRODUCTOS.PRODUCTOS. El modal de Destacados no se podrá poblar.');
+    function getAllProducts(){
+      try{
+        const raw = localStorage.getItem(LS_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        if (Array.isArray(list) && list.length) return list.map(p => ({
+          id: p.id || crypto.randomUUID(),
+          title: p.title || p.TITLE || "",
+          image: p.image || p.IMAGE || "",
+          amazon: p.amazon || p.AMAZON || "",
+          category: p.category || p.CATEGORY || "Otros",
+          featured: !!(p.featured ?? p.FEATURE)
+        }));
+      }catch{}
+
+      if (Array.isArray(window.products) && window.products.length){
+        return window.products.map(p=>({
+          id: p.id || crypto.randomUUID(),
+          title: p.title || "",
+          image: p.image || "",
+          amazon: p.amazon || "",
+          category: p.category || "Otros",
+          featured: !!p.featured
+        }));
+      }
+
+      const legacy = (window.PRODUCTOS && window.PRODUCTOS.PRODUCTOS) ||
+                     (typeof PRODUCTOS !== "undefined" && PRODUCTOS.PRODUCTOS) || null;
+      if (legacy && typeof legacy === "object"){
+        return Object.values(legacy).map(p=>({
+          id: crypto.randomUUID(),
+          title: p.TITLE || "",
+          image: p.IMAGE || "",
+          amazon: p.AMAZON || "",
+          category: p.CATEGORY || "Otros",
+          featured: !!p.FEATURE
+        }));
+      }
+
+      return [];
     }
-
-    // === 1) Helpers ===
-    const toArray = obj => Object.entries(obj||{}).map(([id,p]) => ({id, ...p}));
-    const featured = () => toArray(CATALOGO || {}).filter(p => !!p.FEATURE);
 
     function ensureAffiliate(url){
-      if (!url) return '#';
-      return (/(\?|&)tag=/.test(url)) ? url : url + (url.includes('?')?'&':'?') + 'tag=kaninosabioan-20';
+      if (!url) return "#";
+      try{
+        const u = new URL(url, location.href);
+        if (/amazon\./i.test(u.hostname)) u.searchParams.set("tag", TAG);
+        return u.toString();
+      }catch{
+        const sep = url.includes("?") ? "&" : "?";
+        return url + sep + "tag=" + TAG;
+      }
     }
 
-    async function share(p){
-      const url = p?.AMAZON ? ensureAffiliate(p.AMAZON) : location.href;
-      const text = `${p?.TITLE||'Producto'} – Ver en Amazon`;
-      try{
-        if (navigator.share) await navigator.share({title: p?.TITLE||'Producto', text, url});
-        else {
-          await navigator.clipboard.writeText(url);
-          alert('Enlace copiado ✅');
-        }
-      }catch(e){}
+    const modal = document.getElementById("modalDestacados");
+    const fab   = document.getElementById("fabDestacados");
+    const hdr   = document.getElementById("btnDestacadosHeader");
+    const btnX  = document.getElementById("cerrarDestacados");
+    const sel   = document.getElementById("ordenDestacados");
+    const grid  = document.getElementById("gridDestacados");
+
+    let orden = "default";
+
+    function ordenar(list){
+      const arr = [...list];
+      if (orden === "titleAsc")  arr.sort((a,b)=> (a.title||"").localeCompare(b.title||""));
+      if (orden === "titleDesc") arr.sort((a,b)=> (b.title||"").localeCompare(a.title||""));
+      return arr;
     }
 
     function card(p){
-      const img = p.IMAGE||'';
-      const t = p.TITLE||'Producto';
-      const c = p.CATEGORY||'';
-      const a = ensureAffiliate(p.AMAZON);
-
+      const a = ensureAffiliate(p.amazon);
+      const t = (p.title||"Producto").replace(/"/g,"&quot;");
+      const i = p.image || "https://via.placeholder.com/800x600?text=Imagen";
+      const c = p.category || "Otros";
       return `
       <div class="cardWrap">
         <span class="ribbon">DESTACADO</span>
         <div class="cardP">
-          <div class="imgWrap"><img loading="lazy" alt="${t.replace(/"/g,'&quot;')}" src="${img}"></div>
+          <div class="imgWrap"><img loading="lazy" alt="${t}" src="${i}"></div>
           <div class="bodyP">
             <div class="titleP">${t}</div>
             <div class="catP">${c}</div>
             <div class="rowBtns">
               <button class="btnAmazon" onclick="window.open('${a}','_blank','noopener,noreferrer')">Ver en Amazon</button>
-              <button class="btnSec" onclick='(${share.toString()})(${JSON.stringify({TITLE:t, AMAZON:p.AMAZON})})'>Compartir</button>
+              <button class="btnSec" onclick="navigator.clipboard.writeText('${a}').then(()=>alert('Enlace copiado ✅')).catch(()=>{})">Compartir</button>
             </div>
           </div>
         </div>
       </div>`;
     }
 
-    // === 2) Render del modal ===
-    let orden = 'default';
-    function ordenar(list){
-      const arr = [...list];
-      if (orden==='titleAsc') arr.sort((a,b)=>(a.TITLE||'').localeCompare(b.TITLE||''));
-      if (orden==='titleDesc') arr.sort((a,b)=>(b.TITLE||'').localeCompare(a.TITLE||''));
-      return arr;
-    }
-
     function renderModal(){
-      const wrap = document.getElementById('gridDestacados');
-      if (!wrap) return;
-      const feats = ordenar(featured());
+      const all = getAllProducts();
+      const feats = ordenar(all.filter(p=> !!p.featured));
       if (!feats.length){
-        wrap.innerHTML = `<div style="grid-column:1/-1;color:#aab3d1;text-align:center;padding:28px">No hay productos destacados (FEATURE: true).</div>`;
+        grid.innerHTML = `<div style="grid-column:1/-1;color:#aab3d1;text-align:center;padding:28px">No hay productos destacados (marca “Destacado”).</div>`;
         return;
       }
-      wrap.innerHTML = feats.map(card).join('');
+      grid.innerHTML = feats.map(card).join("");
     }
 
-    // === 3) Abrir/Cerrar modal ===
-    const modal = document.getElementById('modalDestacados');
-    const fab   = document.getElementById('fabDestacados');
-    const hdr   = document.getElementById('btnDestacadosHeader'); // botón del header
-    const btnX  = document.getElementById('cerrarDestacados');
-    const sel   = document.getElementById('ordenDestacados');
-
-    function abrirDestacados(){
-      if (!CATALOGO){ alert('No se encontró el catálogo en window.PRODUCTOS.PRODUCTOS'); return; }
+    function abrir(){
       renderModal();
-      modal.style.display='flex';
-      modal.setAttribute('aria-hidden','false');
+      modal.style.display = "flex";
+      modal.setAttribute("aria-hidden","false");
+    }
+    function cerrar(){
+      modal.style.display = "none";
+      modal.setAttribute("aria-hidden","true");
     }
 
-    fab?.addEventListener('click', abrirDestacados);
-    hdr?.addEventListener('click', abrirDestacados); // abre desde el header
+    fab?.addEventListener("click", abrir);
+    hdr?.addEventListener("click", abrir);
+    btnX?.addEventListener("click", cerrar);
+    modal?.addEventListener("click", (e)=>{ if (e.target === modal) cerrar(); });
+    sel?.addEventListener("change", e=>{ orden = e.target.value; renderModal(); });
 
-    btnX?.addEventListener('click', ()=>{ 
-      modal.style.display='none'; 
-      modal.setAttribute('aria-hidden','true');
+    window.addEventListener("ja_products_updated", ()=>{
+      if (modal.style.display === "flex") renderModal();
     });
-    modal?.addEventListener('click',(e)=>{ if (e.target===modal){ btnX.click(); }});
-    sel?.addEventListener('change', (e)=>{ orden = e.target.value; renderModal(); });
 
-    // === 4) Accesibilidad: cerrar con Esc ===
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.style.display==='flex'){ btnX.click(); }});
+    document.addEventListener("keydown", (e)=>{ if(e.key==="Escape" && modal.style.display==="flex"){ cerrar(); }});
   })();
   </script>
   <!-- ================= /FAB + MODAL DESTACADOS ================= -->
-  <!-- ====== /LOGIN ADMIN SEGURO ====== -->
 
 </body>
 </html>
