@@ -55,6 +55,9 @@
     body { touch-action: pan-y; overscroll-behavior-x: none; }
     #grid { overflow-x:hidden; }
     *, *::before, *::after { box-sizing:border-box; }
+    /* Mostrar controles admin y estrella solo en sesión admin */
+    .admin-only{ display:none !important; }
+    .is-admin .admin-only{ display:inline-flex !important; }
   </style>
 
   <!-- ===== MS360 Add-on Styles ===== -->
@@ -225,6 +228,7 @@
   <script type="module">
     let ADMIN_KEY = localStorage.getItem('ja_admin_key') || "mega360";
     const AFFILIATE_TAG_DEFAULT = "kaninosabioan-20";
+    const LS_FEATURED = 'ja_featured_ids_v1'; /* <<<<<< NUEVO: lista fija de destacados */
 
     let isAdmin = false;
     let editingId = null;
@@ -269,6 +273,16 @@
     year.textContent = new Date().getFullYear();
     const uid = () => crypto.randomUUID();
 
+    /* ===== Helpers Destacados por ID (orden estable) ===== */
+    const feat = {
+      get(){ try{return JSON.parse(localStorage.getItem(LS_FEATURED))||[]}catch{return[]} },
+      set(v){ localStorage.setItem(LS_FEATURED, JSON.stringify(v||[])) },
+      has(id){ return feat.get().includes(id) },
+      add(id){ const s=new Set(feat.get()); s.add(id); feat.set([...s]) },
+      del(id){ feat.set(feat.get().filter(x=>x!==id)) },
+      toggle(id){ feat.has(id)?feat.del(id):feat.add(id) }
+    };
+
     function ensureTag(url){
       if(!url) return "#";
       if(/[?&]tag=/.test(url)) return url;
@@ -278,15 +292,21 @@
 
     function productCard(p){
       const price = p.price?`$${Number(p.price).toLocaleString()}`:'';
-      const tag = p.featured?`<span class="tag text-xs px-2 py-1 rounded-lg font-semibold">Destacado</span>`:'';
+      const tag = feat.has(p.id)?`<span class="tag text-xs px-2 py-1 rounded-lg font-semibold">Destacado</span>`:'';
       const brand = p.brand?`<span class="text-xs text-white/60">${p.brand}</span>`:'';
+      const starBtn = `
+        <button class="admin-only absolute top-2 right-2 px-2.5 py-1.5 rounded-lg border border-white/20 bg-white/10 text-white text-sm"
+                data-star="${p.id}" aria-pressed="${feat.has(p.id)?'true':'false'}" title="Alternar Destacado">
+          ${feat.has(p.id)?'★':'☆'}
+        </button>`;
       const adminBtns = isAdmin ? `
-        <div class="flex gap-2 mt-3">
+        <div class="flex gap-2 mt-3 admin-only">
           <button class="chip px-3 py-1.5 rounded-xl text-sm" onclick="editProduct('${p.id}')">Editar</button>
           <button class="chip px-3 py-1.5 rounded-xl text-sm" onclick="removeProduct('${p.id}')">Eliminar</button>
         </div>` : '';
       return `
-        <article class="card rounded-2xl p-3 sm:p-4 flex flex-col gradient-border">
+        <article class="card rounded-2xl p-3 sm:p-4 flex flex-col gradient-border relative">
+          ${starBtn}
           <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3]">
             <img src="${p.image}${p.image.includes('?')?'&':'?'}v=10"
                  alt="${p.title}"
@@ -297,7 +317,7 @@
           <div class="mt-3 flex items-start justify-between gap-3">
             <div class="min-w-0">
               <h3 class="font-extrabold leading-tight line-clamp-2">${p.title}</h3>
-              <div class="flex items-center gap-2 mt-1">${brand}${brand?'<span class="text-white/20">•</span>':''}<span class="text-xs text-white/60">${p.category}</span>${p.featured?'<span class="text-white/20">•</span>'+tag:''}</div>
+              <div class="flex items-center gap-2 mt-1">${brand}${brand?'<span class="text-white/20">•</span>':''}<span class="text-xs text-white/60">${p.category}</span>${feat.has(p.id)?'<span class="text-white/20">•</span>'+tag:''}</div>
               ${price?`<div class="mt-1 text-white/90 font-semibold">${price}</div>`:''}
             </div>
           </div>
@@ -320,8 +340,7 @@
       const term = (search.value||'').toLowerCase().trim();
       const cat = categoryFilter.value||'all';
       const filtered = products
-        .slice()
-        .sort((a,b)=> (b.featured - a.featured) || a.title.localeCompare(b.title))
+        /* SIN reordenar por Destacado, respeta orden original */
         .filter(p=>{
           const t = !term || p.title.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term);
           const c = cat==='all' || p.category===cat;
@@ -329,6 +348,23 @@
         });
       grid.innerHTML = filtered.map(productCard).join('');
       empty.classList.toggle('hidden', filtered.length>0);
+
+      // listeners del botón ★
+      grid.querySelectorAll('[data-star]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          if(!isAdmin){ alert('Solo Admin'); return; }
+          const id = btn.getAttribute('data-star');
+          const pressed = btn.getAttribute('aria-pressed')==='true';
+          feat.toggle(id);
+          btn.setAttribute('aria-pressed', String(!pressed));
+          btn.textContent = !pressed ? '★' : '☆';
+          // refrescar etiqueta “Destacado” visual
+          applyFilters();
+          // si el modal está abierto, refrescarlo también
+          if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
+        }, {passive:false});
+      });
     }
 
     const TAG = "kaninosabioan-20";
@@ -464,6 +500,8 @@
         products = products.filter(p=>p.id!==id);
         local_save(products);
         renderCategories(products); applyFilters();
+        // si se elimina y estaba destacado, quitarlo
+        if (feat.has(id)) feat.del(id);
       }
     };
 
@@ -514,6 +552,8 @@
           products = [{ id, ...data, createdAt: Date.now() }, ...products];
         }
         local_save(products);
+        // si lo marcaste “Destacado” en el formulario, también setear en la lista fija
+        if (data.featured) feat.add(id); else if (feat.has(id)) feat.del(id);
         renderCategories(products); applyFilters();
       }
 
@@ -529,6 +569,7 @@
       btnAdd.disabled = !isAdmin;
       btnVerify.classList.toggle('hidden', !isAdmin);
       btnFix.classList.toggle('hidden', !isAdmin);
+      document.documentElement.classList.toggle('is-admin', !!isAdmin);
       applyFilters();
     }
 
@@ -832,7 +873,7 @@
         <div class="order-1 md:order-2">
           <div class="relative bg-black/40 md:h-[520px] flex items-center justify-center">
             <div id="ms360-zoom"
-                 class="relative w-full h-[60vh] md:w-full md:h-full max-h-[520px] bg-center bg-no-repeat bg-contain cursor-zoom-in select-none"
+                 class="relative w-full h-[60vh] md:w-full md:h/full max-h-[520px] bg-center bg-no-repeat bg-contain cursor-zoom-in select-none"
                  role="img" aria-label="Vista principal del producto">
               <img id="ms360-main"
                    class="opacity-0 absolute inset-0 w-full h-full object-contain pointer-events-none"
@@ -1005,7 +1046,7 @@
       fs.id = 'ms360-fs';
       fs.className = 'fixed inset-0 z-[10000] bg-black flex items-center justify-center';
       fs.innerHTML = `
-        <img src="${src}" alt="" class="max-w-full max-h-full object-contain select-none" />
+        <img src="${src}" alt="" class="max-w/full max-h/full object-contain select-none" />
         <button id="ms360-fs-close" class="absolute top-3 right-3 px-3 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white">Cerrar</button>
         <button id="ms360-fs-prev"  class="absolute left-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white">‹</button>
         <button id="ms360-fs-next"  class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white">›</button>`;
@@ -1314,15 +1355,9 @@
       <div style="position:sticky;top:0;background:#0f1426;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;gap:12px;align-items:center;justify-content:space-between">
         <div>
           <h3 id="destacadosTitle" style="margin:0;color:#fff;font-size:18px;font-weight:800">Productos destacados</h3>
-          <small style="color:#aab3d1">Mostrando items con <code>FEATURE: true</code></small>
+          <small style="color:#aab3d1">Lista fija por ID (orden estable)</small>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
-          <label for="ordenDestacados" style="color:#aab3d1;font-size:12px">Orden</label>
-          <select id="ordenDestacados" style="background:#12182a;color:#fff;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 10px">
-            <option value="default">Predeterminado</option>
-            <option value="titleAsc">Título (A–Z)</option>
-            <option value="titleDesc">Título (Z–A)</option>
-          </select>
           <button id="cerrarDestacados" aria-label="Cerrar"
             style="background:#ffffff14;color:#fff;border:1px solid #ffffff1f;border-radius:10px;padding:8px 12px;cursor:pointer">
             Cerrar
@@ -1330,10 +1365,11 @@
         </div>
       </div>
 
-      <div id="gridDestacados" style="padding:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px"></div>
+      <!-- 2 columnas fijas -->
+      <div id="gridDestacados" style="padding:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px"></div>
 
       <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:flex-end">
-        <small style="color:#7f8ab2">Tip: comparte tus favoritos con el botón “Compartir”.</small>
+        <small style="color:#7f8ab2">Tip: en modo Admin puedes quitar/poner ⭐ aquí mismo.</small>
       </div>
     </div>
   </div>
@@ -1358,6 +1394,7 @@
   (function(){
     const LS_KEY = "ja_store_products_v2";
     const TAG    = "kaninosabioan-20";
+    const LS_FEATURED = "ja_featured_ids_v1"; // <<<<<< NUEVO
 
     function getAllProducts(){
       try{
@@ -1416,16 +1453,20 @@
     const fab   = document.getElementById("fabDestacados");
     const hdr   = document.getElementById("btnDestacadosHeader");
     const btnX  = document.getElementById("cerrarDestacados");
-    const sel   = document.getElementById("ordenDestacados");
     const grid  = document.getElementById("gridDestacados");
 
-    let orden = "default";
-
-    function ordenar(list){
-      const arr = [...list];
-      if (orden === "titleAsc")  arr.sort((a,b)=> (a.title||"").localeCompare(b.title||""));
-      if (orden === "titleDesc") arr.sort((a,b)=> (b.title||"").localeCompare(a.title||""));
-      return arr;
+    let lastOverflow='', lastGutter='';
+    function lockScroll(){
+      const html = document.documentElement;
+      lastOverflow = html.style.overflow || '';
+      lastGutter = html.style.scrollbarGutter || '';
+      html.style.scrollbarGutter = 'stable';
+      html.style.overflow = 'hidden';
+    }
+    function unlockScroll(){
+      const html = document.documentElement;
+      html.style.overflow = lastOverflow;
+      html.style.scrollbarGutter = lastGutter;
     }
 
     function card(p){
@@ -1433,6 +1474,9 @@
       const t = (p.title||"Producto").replace(/"/g,"&quot;");
       const i = p.image || "https://via.placeholder.com/800x600?text=Imagen";
       const c = p.category || "Otros";
+      const star = document.documentElement.classList.contains('is-admin')
+        ? `<button class="btnSec" data-star="${p.id}" aria-pressed="true" title="Quitar de Destacados">★</button>`
+        : '';
       return `
       <div class="cardWrap">
         <span class="ribbon">DESTACADO</span>
@@ -1443,42 +1487,64 @@
             <div class="catP">${c}</div>
             <div class="rowBtns">
               <button class="btnAmazon" onclick="window.open('${a}','_blank','noopener,noreferrer')">Ver en Amazon</button>
-              <button class="btnSec" onclick="navigator.clipboard.writeText('${a}').then(()=>alert('Enlace copiado ✅')).catch(()=>{})">Compartir</button>
+              ${star}
             </div>
           </div>
         </div>
       </div>`;
     }
 
+    // Destacados por IDs (orden exacto)
+    function getFeaturedIds(){ try{return JSON.parse(localStorage.getItem(LS_FEATURED))||[]}catch{return[]} }
+    function setFeaturedIds(v){ localStorage.setItem(LS_FEATURED, JSON.stringify(v||[])) }
+
     function renderModal(){
-      const all = getAllProducts();
-      const feats = ordenar(all.filter(p=> !!p.featured));
+      const map = new Map(getAllProducts().map(p=>[p.id,p]));
+      const ids = getFeaturedIds();
+      const feats = ids.map(id=>map.get(id)).filter(Boolean); // respeta orden agregado
       if (!feats.length){
-        grid.innerHTML = `<div style="grid-column:1/-1;color:#aab3d1;text-align:center;padding:28px">No hay productos destacados (marca “Destacado”).</div>`;
+        grid.innerHTML = `<div style="grid-column:1/-1;color:#aab3d1;text-align:center;padding:28px">No hay productos destacados. Marca ⭐ en cualquier tarjeta (modo Admin).</div>`;
         return;
       }
       grid.innerHTML = feats.map(card).join("");
+
+      // Eventos de quitar ⭐ dentro del modal
+      if (document.documentElement.classList.contains('is-admin')){
+        grid.querySelectorAll('[data-star]').forEach(btn=>{
+          btn.addEventListener('click', ()=>{
+            const id = btn.getAttribute('data-star');
+            const arr = getFeaturedIds().filter(x=>x!==id);
+            setFeaturedIds(arr);
+            renderModal();
+            window.dispatchEvent(new Event('ja_products_updated')); // para refrescar grid etiquetas
+            if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
+          }, {passive:false});
+        });
+      }
     }
 
     function abrir(){
       renderModal();
       modal.style.display = "flex";
       modal.setAttribute("aria-hidden","false");
+      lockScroll();
     }
     function cerrar(){
       modal.style.display = "none";
       modal.setAttribute("aria-hidden","true");
+      unlockScroll();
     }
 
     fab?.addEventListener("click", abrir);
     hdr?.addEventListener("click", abrir);
     btnX?.addEventListener("click", cerrar);
     modal?.addEventListener("click", (e)=>{ if (e.target === modal) cerrar(); });
-    sel?.addEventListener("change", e=>{ orden = e.target.value; renderModal(); });
 
-    window.addEventListener("ja_products_updated", ()=>{
+    // Re-render si cambian productos
+    window.__renderFeaturedIfOpen = function(){
       if (modal.style.display === "flex") renderModal();
-    });
+    };
+    window.addEventListener("ja_products_updated", window.__renderFeaturedIfOpen);
 
     document.addEventListener("keydown", (e)=>{ if(e.key==="Escape" && modal.style.display==="flex"){ cerrar(); }});
   })();
