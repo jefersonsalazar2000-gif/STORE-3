@@ -1,3 +1,4 @@
+
 {
   "PRODUCTOS": {
     "quay-nightfall-shield-b0bw5llkxy": {
@@ -628,6 +629,120 @@
       ],
       "AMAZON": "https://www.amazon.com/dp/B0D7SDQNZG?tag=kaninosabioan-20",
       "FEATURE": true
+    },
+
+    "vaso-termico-degradado-b0b2zhyf7j": {
+      "TITLE": "Vaso térmico de acero inoxidable 40 oz con asa, tapa y popote (degradado)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/612pE+CAIeL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0B2ZHYF7J?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "stanley-quencher-protour-b0fb7d5phw": {
+      "TITLE": "Stanley Quencher ProTour – Vaso térmico con tapa a prueba de fugas (variante)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/51fyKEXIv5L._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FB7D5PHW?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "stanley-quencher-protour-img2": {
+      "TITLE": "Stanley Quencher ProTour – Imagen adicional (referencia)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/71VNSgYqs2L._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FB7D5PHW?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "leggings-mohuachi-b09ygmrqkt": {
+      "TITLE": "MOHUACHI – Leggings de entrenamiento sin costuras, levantamiento de glúteos",
+      "PRICE": 0,
+      "CATEGORY": "Ropa",
+      "IMAGE": "https://m.media-amazon.com/images/I/515KggHkeXL._AC_SY879_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B09YGMRQKT?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "leggings-voyjoy-b0dm1ctkn7": {
+      "TITLE": "VOYJOY – Leggings de compresión, cintura media/alta, espalda en V",
+      "PRICE": 0,
+      "CATEGORY": "Ropa",
+      "IMAGE": "https://m.media-amazon.com/images/I/61dAQwSILkL._SX522_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DM1CTKN7?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "milkmakeup-water-jelly-tint-b0fd8qpcp2": {
+      "TITLE": "Milk Makeup – Tinte en gelatina de agua (labios y mejillas) hidratante",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/71kx8OfyzwL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FD8QPCP2?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "set-cepillos-limpieza-tapas-b0bnp3g32s": {
+      "TITLE": "Juego 3 en 1 de cepillos de limpieza para tapas/vasos y pajillas",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/61IjsjFDVRL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0BNP3G32S?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "modern-innovations-tablas-cuchillos-b0cp31fpgc": {
+      "TITLE": "Modern Innovations – Juego de tablas codificadas por colores + cuchillos",
+      "PRICE": 0,
+      "CATEGORY": "Cocina",
+      "IMAGE": "https://m.media-amazon.com/images/I/71zue7LwuPL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0CP31FPGC?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "organizador-multifuncion-cocina-b0c6xvxpcc": {
+      "TITLE": "Organizador de cocina multifunción para encimera (varios usos)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/51LwQIYeYpL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0C6XVXPCC?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "dispensador-toallas-reutilizable-b0dntr468k": {
+      "TITLE": "YOWEL – Dispensador de toallas reutilizables para encimera",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/41d0jR1bjZL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DNTR468K?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "rodillo-limpieza-mini-b0fc6g4sl3": {
+      "TITLE": "Rodillo quita pelusa mini reutilizable para viaje/auto/ropa",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/71EMlByQArL._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FC6G4SL3?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "limpiador-desagues-yugou-b0ddc2k6dl": {
+      "TITLE": "Yugou – Limpiador y desodorante para desagües (desatascador)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/71tCBzdA1QL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DDC2K6DL?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "ventilador-refrigeracion-laptop-b0dxf5sv2l": {
+      "TITLE": "Ventilador de refrigeración para laptop (compatible Thunderbolt 5/4)",
+      "PRICE": 0,
+      "CATEGORY": "Tecnología",
+      "IMAGE": "https://m.media-amazon.com/images/I/61a7F0+CyJL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DXF5SV2L?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+
+    "contenedor-ensalada-b0fqpbhm24": {
+      "TITLE": "Contenedor de ensalada de vidrio portátil con tapa (cápsulas y snacks)",
+      "PRICE": 0,
+      "CATEGORY": "Cocina",
+      "IMAGE": "https://m.media-amazon.com/images/I/71nIqR2GRnL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FQPBHM24?tag=kaninosabioan-20",
+      "FEATURE": false
     }
   }
 }
