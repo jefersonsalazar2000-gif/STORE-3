@@ -33,17 +33,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
 
   <!-- ================= AUTO CLOUD CONFIG =================
-       Con esto se conecta solo a Firebase en web/app/incógnito.
+       1) O pega aquí tu firebaseConfig (público) y funcionará en Web/App/Incógnito.
+       2) O sube un archivo firebaseConfig.json en la raíz del sitio con el JSON.
   -->
   <script>
     window.AUTO_FIREBASE_CONFIG = {
-      apiKey: "AIzaSyD04Eu_MW_RSzJaZt9DsFhvA9FefmioPzQ",
-      authDomain: "mega-store-360.firebaseapp.com",
-      projectId: "mega-store-360",
-      storageBucket: "mega-store-360.firebasestorage.app",
-      messagingSenderId: "515110738243",
-      appId: "1:515110738243:web:84ebd48215c295647eb7f6",
-      measurementId: "G-KRR7B05HL9"
+      // Si quieres autoconectar sin pegar JSON, llena estos campos:
+      // apiKey: "",
+      // authDomain: "",
+      // projectId: "",
+      // storageBucket: "",
+      // messagingSenderId: "",
+      // appId: ""
     };
   </script>
 
@@ -92,17 +93,16 @@
     .ms360-ibtn:hover{transform:translateY(-1px) scale(1.03);border-color:rgba(255,255,255,.25)}
   </style>
 
-  <!-- Seguridad visual (CORREGIDO): Admin siempre visible -->
+  <!-- Seguridad visual -->
   <style>
-    /* ANTES ocultaba también #btnAdmin; eso impedía entrar.
-       Ahora solo ocultamos Settings/Verify/Fix para no-admin. */
-    #btnSettings, #btnVerify, #btnFix { display:none !important; }
+    #btnSettings, #btnAdmin, #btnVerify, #btnFix { display:none !important; }
     .is-admin #btnSettings,
+    .is-admin #btnAdmin,
     .is-admin #btnVerify,
     .is-admin #btnFix { display:inline-flex !important; }
   </style>
 
-  <!-- Ocultar FAB “Destacados” en home (lo abrimos por header) -->
+  <!-- Ocultar FAB “Destacados” (puedes quitar este style si quieres el botón flotante siempre) -->
   <style>#fabDestacados { display: none !important; }</style>
 </head>
 
@@ -246,11 +246,8 @@
     const AFFILIATE_TAG_DEFAULT = "kaninosabioan-20";
     const LS_FEATURED = 'ja_featured_ids_v1';
 
-    let isAdmin = false;
-    let editingId = null;
     let products = [];
     let db = null, unsub = null, storage = null;
-    let cloudConfig = null;
 
     const grid = document.getElementById('grid');
     const empty = document.getElementById('empty');
@@ -306,14 +303,15 @@
       }catch{}
     }
 
-    /* ===== Hidratación automática de destacados desde productos.featured ===== */
-    function hydrateFeaturedFromProducts(){ syncFeaturedLSFromProducts(); }
-
     function ensureTag(url){
       if(!url) return "#";
       if(/[?&]tag=/.test(url)) return url;
       const sep = url.includes('?') ? '&' : '?';
       return `${url}${sep}tag=${AFFILIATE_TAG_DEFAULT}`;
+    }
+
+    function isAdminActive(){
+      return document.documentElement.classList.contains('is-admin');
     }
 
     function productCard(p){
@@ -325,11 +323,11 @@
                 data-star="${p.id}" aria-pressed="${feat.has(p.id)?'true':'false'}" title="Alternar Destacado">
           ${feat.has(p.id)?'★':'☆'}
         </button>`;
-      const adminBtns = isAdmin ? `
+      const adminBtns = `
         <div class="flex gap-2 mt-3 admin-only">
           <button class="chip px-3 py-1.5 rounded-xl text-sm" onclick="editProduct('${p.id}')">Editar</button>
           <button class="chip px-3 py-1.5 rounded-xl text-sm" onclick="removeProduct('${p.id}')">Eliminar</button>
-        </div>` : '';
+        </div>`;
       return `
         <article class="card rounded-2xl p-3 sm:p-4 flex flex-col gradient-border relative">
           ${starBtn}
@@ -365,9 +363,9 @@
     function applyFilters(){
       const term = (search.value||'').toLowerCase().trim();
       const cat = categoryFilter.value||'all';
-      const filtered = products
+      const filtered = (products||[])
         .filter(p=>{
-          const t = !term || p.title.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term);
+          const t = !term || p.title?.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term);
           const c = cat==='all' || p.category===cat;
           return t && c;
         });
@@ -378,7 +376,7 @@
       grid.querySelectorAll('[data-star]').forEach(btn=>{
         btn.addEventListener('click', async (e)=>{
           e.stopPropagation();
-          if(!isAdmin){ alert('Solo Admin'); return; }
+          if(!isAdminActive()){ alert('Solo Admin'); return; }
           const id = btn.getAttribute('data-star');
           const newVal = !(btn.getAttribute('aria-pressed')==='true');
           await window.setFeatured(id, newVal);
@@ -457,7 +455,7 @@
 
     async function cloud_init(config){
       const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
-      const { getFirestore, collection, onSnapshot, query, orderBy, doc, setDoc, serverTimestamp } =
+      const { getFirestore, collection, onSnapshot, query, orderBy, doc, setDoc, serverTimestamp, deleteDoc } =
         await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
       const { getStorage, ref, uploadBytes, getDownloadURL } =
         await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js');
@@ -479,28 +477,23 @@
             if (obj.featured === true) remoteFeat.add(obj.id);
           }
         });
-        // Guardar remoto en variable global para re-aplicar cuando llegue auto-sync local
         window.__ms360_remoteFeat = remoteFeat;
 
         // Base local (de LS o auto-sync GitHub)
         const base = (function(){ try{ return JSON.parse(localStorage.getItem('ja_store_products_v2'))||[] }catch{ return [] } })();
         const map = new Map(base.map(p=>[p.id,p]));
-        // Si hay docs completos en nube (guardados con cloud_save), añadirlos si no existen en local
-        for (const docu of remoteDocs){ if(docu && docu.id && !map.has(docu.id)) map.set(docu.id, docu); }
-        // Superponer featured
+        for (const rdoc of remoteDocs){ if(rdoc && rdoc.id && !map.has(rdoc.id)) map.set(rdoc.id, rdoc); }
         products = Array.from(map.values()).map(p => ({ ...p, featured: remoteFeat.has(p.id) }));
-        // Persistir local para que Incógnito/otras pestañas tengan feedback inmediato al refrescar
-        localStorage.setItem('ja_store_products_v2', JSON.stringify(products));
 
-        hydrateFeaturedFromProducts();
+        localStorage.setItem('ja_store_products_v2', JSON.stringify(products));
+        // Actualiza lista fija de destacados
+        try{ localStorage.setItem(LS_FEATURED, JSON.stringify([...remoteFeat])); }catch{}
+
         renderCategories(products); applyFilters();
         window.dispatchEvent(new Event('ja_products_updated'));
       });
 
-      window.cloud_delete = async (id)=>{
-        const { deleteDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
-        await deleteDoc(doc(db,'products',id));
-      };
+      window.cloud_delete = async (id)=>{ await deleteDoc(doc(db,'products',id)); };
       window.cloud_save = async (id, data)=>{
         await setDoc(doc(db,'products',id), { id, createdAt: serverTimestamp(), ...data }, { merge:true });
       };
@@ -515,23 +508,42 @@
       };
     }
 
-    // === Toggle Destacado global (local + nube) ===
+    // === Toggle Destacado global (local + nube) — con fallback y alertas limpias ===
     window.setFeatured = async function(id, value){
-      if(db){
-        await window.cloud_updateFeatured(id, value);
+      let cloudOK = true;
+      if (db) {
+        try {
+          await window.cloud_updateFeatured(id, value);
+        } catch (e) {
+          cloudOK = false;
+          console.error('[Featured] Error al escribir en Firestore:', e);
+          alert('⚠️ No se pudo guardar en la nube.\nRevisa Reglas de Firestore o configuración.\nSe aplicará localmente por ahora.');
+        }
       }
-      // Refleja local/LS inmediatamente
+
+      // Refleja SIEMPRE en local/LS para feedback inmediato
       products = (products||[]).map(p => p.id===id ? ({...p, featured: !!value}) : p);
       local_save(products);
-      syncFeaturedLSFromProducts();
+
+      // Mantener lista fija de IDs destacados para el modal
+      try {
+        const cur = (()=>{ try{return JSON.parse(localStorage.getItem(LS_FEATURED))||[]}catch{return[]} })();
+        const set = new Set(cur);
+        if (value) set.add(id); else set.delete(id);
+        localStorage.setItem(LS_FEATURED, JSON.stringify([...set]));
+      } catch {}
+
       applyFilters();
       if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
-    }
+
+      if (db && !cloudOK) {
+        console.warn('Manteniendo estado local; el snapshot remoto puede sobre-escribir hasta arreglar reglas/SDK.');
+      }
+    };
 
     // === Crear/editar productos (local o nube) ===
     window.editProduct = (id)=>{
       const p = products.find(x=>x.id===id); if(!p) return;
-      editingId = id;
       modalTitle.textContent = "Editar producto";
       pTitle.value = p.title||'';
       pBrand.value = p.brand||'';
@@ -543,26 +555,26 @@
       pFeatured.checked = !!p.featured;
       btnDelete.classList.remove('hidden');
       modal.showModal();
+      form._editingId = id;
     };
 
     window.removeProduct = async (id)=>{
       if(!confirm("¿Eliminar este producto?")) return;
       if(db){
         await window.cloud_delete(id);
-      } else {
-        products = products.filter(p=>p.id!==id);
-        local_save(products);
-        syncFeaturedLSFromProducts();
-        renderCategories(products); applyFilters();
       }
+      products = products.filter(p=>p.id!==id);
+      local_save(products);
+      syncFeaturedLSFromProducts();
+      renderCategories(products); applyFilters();
     };
 
     btnAdd.addEventListener('click', ()=>{
-      editingId = null;
       modalTitle.textContent = "Nuevo producto";
       form.reset();
       pFeatured.checked = false;
       btnDelete.classList.add('hidden');
+      form._editingId = null;
       modal.showModal();
     });
 
@@ -585,7 +597,12 @@
       let finalImage = (pImageUrl.value||'').trim();
       if(pImageFile.files[0]){
         if(db){
-          finalImage = await window.cloud_upload(pImageFile.files[0]);
+          try{
+            finalImage = await window.cloud_upload(pImageFile.files[0]);
+          }catch(e){
+            console.warn('Upload nube falló, guardo en local como dataURL', e);
+            finalImage = await fileToDataURL(pImageFile.files[0]);
+          }
         } else {
           finalImage = await fileToDataURL(pImageFile.files[0]);
         }
@@ -593,57 +610,30 @@
       if(!finalImage){ alert("Debes subir una imagen o pegar una URL."); return; }
       data.image = finalImage;
 
-      const id = editingId || uid();
+      const id = form._editingId || uid();
 
       if(db){
-        await window.cloud_save(id, data);
-      } else {
-        if(editingId){
-          products = products.map(p=> p.id===id ? ({...p, ...data}) : p);
-        } else {
-          products = [{ id, ...data, createdAt: Date.now() }, ...products];
-        }
-        local_save(products);
-        syncFeaturedLSFromProducts();
-        renderCategories(products); applyFilters();
+        try{ await window.cloud_save(id, data); }catch(e){ console.error('cloud_save error', e); }
       }
 
-      editingId = null; form.reset(); pFeatured.checked = false; btnDelete.classList.add('hidden'); modal.close();
+      if(form._editingId){
+        products = products.map(p=> p.id===id ? ({...p, ...data}) : p);
+      } else {
+        products = [{ id, ...data, createdAt: Date.now() }, ...products];
+      }
+      local_save(products);
+      syncFeaturedLSFromProducts();
+      renderCategories(products); applyFilters();
+
+      form._editingId = null; form.reset(); pFeatured.checked = false; btnDelete.classList.add('hidden'); modal.close();
     });
 
     btnDelete.addEventListener('click', async ()=>{
-      if(editingId){ await window.removeProduct(editingId); }
-      editingId = null; modal.close();
+      if(form._editingId){ await window.removeProduct(form._editingId); }
+      form._editingId = null; modal.close();
     });
 
-    function updateAdminUI(){
-      btnAdd.disabled = !isAdmin;
-      btnVerify.classList.toggle('hidden', !isAdmin);
-      btnFix.classList.toggle('hidden', !isAdmin);
-      document.documentElement.classList.toggle('is-admin', !!isAdmin);
-      applyFilters();
-    }
-
-    // Admin SIMPLE (prompt); el botón SIEMPRE visible
-    btnAdmin.addEventListener('click', ()=>{
-      if(isAdmin){
-        isAdmin = false;
-        localStorage.removeItem('ja_admin');
-        btnAdmin.textContent = 'Admin';
-        updateAdminUI();
-        return;
-      }
-      const key = prompt("Clave Admin:");
-      if(key === ADMIN_KEY){
-        isAdmin = true;
-        localStorage.setItem('ja_admin','1');
-        btnAdmin.textContent = 'Admin (ON)';
-        updateAdminUI();
-      } else {
-        alert("Clave incorrecta.");
-      }
-    });
-
+    // Sin prompt antiguo de Admin (el modal seguro gestiona todo)
     btnSettings.addEventListener('click', ()=>{
       adminKeyLabel.textContent = ADMIN_KEY;
       adminKeyInput.value = '';
@@ -666,7 +656,6 @@
       if(!raw){ alert('Pega aquí tu firebaseConfig JSON'); return; }
       try{
         const cfg = JSON.parse(raw);
-        cloudConfig = cfg;
         localStorage.setItem('ja_cloud_cfg', JSON.stringify(cfg));
         await cloud_init(cfg);
         cloudStatus.textContent = 'Estado: Nube conectada';
@@ -676,10 +665,9 @@
 
     btnDisconnectCloud.addEventListener('click', ()=>{
       localStorage.removeItem('ja_cloud_cfg');
-      cloudConfig = null;
       if(unsub) unsub();
       db = null; storage=null; products = local_load();
-      hydrateFeaturedFromProducts();
+      syncFeaturedLSFromProducts();
       renderCategories(products); applyFilters();
       cloudStatus.textContent = 'Estado: Local';
       alert('Se desconectó la nube. Ahora estás en modo local.');
@@ -707,15 +695,14 @@
     });
 
     window.addEventListener('ja_products_updated', ()=>{
-      // Siempre partimos de la base local y (si hay nube) le aplicamos el overlay de featured remoto
       let base = local_load();
       if (db && window.__ms360_remoteFeat instanceof Set) {
         products = base.map(p => ({ ...p, featured: window.__ms360_remoteFeat.has(p.id) }));
+        try{ localStorage.setItem(LS_FEATURED, JSON.stringify([...window.__ms360_remoteFeat])); }catch{}
       } else {
         products = base;
       }
       local_save(products);
-      hydrateFeaturedFromProducts();
       renderCategories(products);
       applyFilters();
     });
@@ -732,9 +719,6 @@
     }
 
     window.addEventListener('DOMContentLoaded', async ()=>{
-      isAdmin = !!localStorage.getItem('ja_admin');
-      btnAdmin.textContent = isAdmin ? 'Admin (ON)' : 'Admin';
-
       const autoCfg = await getAutoConfig();
       if(autoCfg){
         try{
@@ -743,12 +727,12 @@
         }catch(e){
           console.warn('No se pudo conectar a la nube. Usando local.', e);
           products = local_load();
-          hydrateFeaturedFromProducts();
+          syncFeaturedLSFromProducts();
           renderCategories(products); applyFilters();
         }
       } else {
         products = local_load();
-        hydrateFeaturedFromProducts();
+        syncFeaturedLSFromProducts();
         renderCategories(products); applyFilters();
       }
     });
@@ -832,7 +816,7 @@
       return obj;
     }
 
-    /* Conserva destacados locales cuando refresca desde GitHub */
+    /* Conserva DESTACADOS locales al mezclar con el repo */
     function mergeDedup(existingList, incomingList){
       const map = new Map();
       for (const ex of existingList || []) {
@@ -929,12 +913,12 @@
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("sw.js", {scope:"./"}).catch(()=>{});
+        navigator.serviceWorker.register("sw.js").catch(()=>{});
       });
     }
   </script>
 
-  <!-- MS360 Pro Viewer -->
+  <!-- MS360 Pro Viewer (visor de fotos) -->
   <div id="ms360-pro" class="fixed inset-0 z-[9999] hidden">
     <div class="absolute inset-0 bg-black/70" data-close="1"></div>
     <div class="relative mx-auto my-6 w-[96%] max-w-[1120px]">
@@ -943,19 +927,13 @@
           <h3 id="ms360-title" class="text-white text-base sm:text-lg font-semibold truncate"></h3>
           <button id="ms360-close" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white">Cerrar</button>
         </div>
-
         <div class="order-2 md:order-1 md:h-[520px] overflow-y-auto px-3 py-3 hidden md:block">
           <div id="ms360-thumbs-v" class="flex md:flex-col gap-2"></div>
         </div>
-
         <div class="order-1 md:order-2">
           <div class="relative bg-black/40 md:h-[520px] flex items-center justify-center">
-            <div id="ms360-zoom"
-                 class="relative w-full h-[60vh] md:w-full md:h/full max-h-[520px] bg-center bg-no-repeat bg-contain cursor-zoom-in select-none"
-                 role="img" aria-label="Vista principal del producto">
-              <img id="ms360-main"
-                   class="opacity-0 absolute inset-0 w-full h-full object-contain pointer-events-none"
-                   alt="" />
+            <div id="ms360-zoom" class="relative w-full h-[60vh] md:w-full md:h/full max-h-[520px] bg-center bg-no-repeat bg-contain cursor-zoom-in select-none" role="img" aria-label="Vista principal del producto">
+              <img id="ms360-main" class="opacity-0 absolute inset-0 w-full h-full object-contain pointer-events-none" alt="" />
             </div>
             <button id="ms360-prev" class="absolute left-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white">‹</button>
             <button id="ms360-next" class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white">›</button>
@@ -966,14 +944,10 @@
             <div id="ms360-thumbs-h" class="flex gap-2 overflow-x-auto"></div>
           </div>
         </div>
-
         <aside class="order-3 md:order-3 p-4 md:p-5 border-t md:border-t-0 md:border-l border-white/10">
           <div class="space-y-3">
             <div class="text-white/90 text-sm" id="ms360-price"></div>
-            <a id="ms360-amz" href="#" target="_blank" rel="nofollow noopener sponsored"
-               class="inline-flex items-center justify-center w/full px-4 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 to-blue-500 text-white font-medium">
-              Ver en Amazon
-            </a>
+            <a id="ms360-amz" href="#" target="_blank" rel="nofollow noopener sponsored" class="inline-flex items-center justify-center w/full px-4 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 to-blue-500 text-white font-medium">Ver en Amazon</a>
             <div class="text-white/60 text-xs leading-5">Enlace de afiliado • Disponible según inventario.</div>
           </div>
         </aside>
@@ -1168,8 +1142,7 @@
       if (!card) return;
       if (e.target.closest('a,button')) {
         const isAmazon = e.target.closest('a[href*="amazon."]');
-        const isAdmin  = e.target.closest('button');
-        if (isAmazon || isAdmin) return;
+        if (isAmazon) return;
       }
       const p = findProductFromCard(card);
       if (p) openViewer(p);
@@ -1276,11 +1249,6 @@
     });
 
     safe(()=> {
-      const enhance = () => { /* placeholder */ };
-      document.addEventListener('DOMContentLoaded', enhance);
-    });
-
-    safe(()=> {
       let deferred=null;
       window.addEventListener('beforeinstallprompt', (e)=>{
         e.preventDefault(); deferred = e;
@@ -1298,10 +1266,136 @@
         }, 2200);
       }, {once:true});
     });
-
   })();
   </script>
-  <!-- /MS360 Add-on Script -->
+
+  <!-- ====== LOGIN ADMIN SEGURO ====== -->
+  <dialog id="admin-login" class="backdrop:bg-black/70 w-[min(420px,92vw)] rounded-2xl">
+    <form method="dialog" class="card rounded-2xl p-5">
+      <h3 class="text-lg font-extrabold neon-title mb-3">Acceso privado</h3>
+      <p class="text-sm text-white/70 mb-3">Solo el dueño puede entrar. Sesión expira automáticamente en 15 minutos.</p>
+      <div class="gradient-border mb-3">
+        <input id="adm-pass" type="password" class="input w-full" autocomplete="current-password" placeholder="Clave secreta" />
+      </div>
+      <div class="flex items-center justify-between gap-2">
+        <button value="cancel" class="chip px-3 py-2 rounded-xl text-sm">Cancelar</button>
+        <div class="flex gap-2">
+          <button id="adm-change" type="button" class="chip px-3 py-2 rounded-xl text-sm">Cambiar clave</button>
+          <button id="adm-enter" type="button" class="btn-neon px-4 py-2 rounded-xl text-sm">Entrar</button>
+        </div>
+      </div>
+      <p id="adm-msg" class="text-xs text-white/60 mt-3"></p>
+    </form>
+  </dialog>
+
+  <script>
+  (function(){
+    const HTMLCLS = document.documentElement;
+    const btnAdmin   = document.getElementById('btnAdmin');
+    const btnSettings= document.getElementById('btnSettings');
+    const adminDlg   = document.getElementById('admin-login');
+    const passInput  = document.getElementById('adm-pass');
+    const enterBtn   = document.getElementById('adm-enter');
+    const changeBtn  = document.getElementById('adm-change');
+    const msg        = document.getElementById('adm-msg');
+    const brand      = document.getElementById('brandTrigger');
+
+    // Intercepta showModal de ajustes si no hay sesión admin activa
+    const _showModal = HTMLDialogElement.prototype.showModal;
+    HTMLDialogElement.prototype.showModal = function(){
+      if(this.id === 'settings' && !isActive()) { alert('Solo Admin'); return; }
+      return _showModal.call(this);
+    };
+
+    const DEFAULT_ADMIN_HASH = '600f70101043abb7c5b1ab0bd909306f8f3d98fca2cd206f627aa7639fda5a49'; // "mega360"
+    const HASH_KEY = 'ja_admin_secret_hash';
+    const SESSION_KEY = 'ms360_admin_until';
+
+    const sha256 = async (txt) => {
+      const enc = new TextEncoder().encode('ms360.v1' + txt);
+      const buf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    };
+    const now = () => Date.now();
+    const isActive = () => {
+      const until = +(sessionStorage.getItem(SESSION_KEY) || 0);
+      return until && until > now();
+    };
+    const activate = (minutes=15) => {
+      const until = now() + minutes*60*1000;
+      sessionStorage.setItem(SESSION_KEY, String(until));
+      HTMLCLS.classList.add('is-admin');
+      localStorage.setItem('ja_admin','1');
+      // habilitar botón agregar
+      try{ document.getElementById('btnAdd').disabled = false; }catch{}
+    };
+    const deactivate = () => {
+      sessionStorage.removeItem(SESSION_KEY);
+      HTMLCLS.classList.remove('is-admin');
+      localStorage.removeItem('ja_admin');
+      try { adminDlg.close(); } catch(e){}
+      try{ document.getElementById('btnAdd').disabled = true; }catch{}
+    };
+
+    if(isActive()) HTMLCLS.classList.add('is-admin');
+    else HTMLCLS.classList.remove('is-admin');
+
+    // Al hacer click en Admin o Ajustes sin sesión, abre login
+    [btnAdmin, btnSettings].forEach(el=>{
+      if(!el) return;
+      el.addEventListener('click', (e)=>{
+        if(!isActive()){
+          e.preventDefault(); e.stopImmediatePropagation();
+          openLogin();
+        }
+      }, true);
+    });
+
+    // Accesos rápidos al login: triple click en logo o Shift+A x3
+    let clicks = 0, t=null, keyCount=0, keyTimer=null;
+    function openLogin(){ passInput.value=''; msg.textContent=''; adminDlg.showModal(); setTimeout(()=>passInput.focus(), 80); }
+    brand?.addEventListener('click', ()=>{
+      clicks++; clearTimeout(t); t = setTimeout(()=>{ clicks=0 }, 400);
+      if(clicks>=3){ clicks=0; openLogin(); }
+    });
+    document.addEventListener('keydown', (e)=>{
+      if(e.shiftKey && (e.key==='A' || e.key==='a')){
+        keyCount++; clearTimeout(keyTimer); keyTimer=setTimeout(()=>{keyCount=0}, 600);
+        if(keyCount>=3){ keyCount=0; openLogin(); }
+      }
+    });
+
+    enterBtn?.addEventListener('click', async ()=>{
+      const pass = (passInput.value || '').trim();
+      if(!pass){ msg.textContent='Escribe tu clave'; return; }
+      const hash = await sha256(pass);
+      const expected = localStorage.getItem(HASH_KEY) || DEFAULT_ADMIN_HASH;
+      if(hash === expected){
+        activate(15);
+        msg.textContent = 'Acceso concedido. Recargando…';
+        setTimeout(()=>location.reload(), 350);
+      } else {
+        msg.textContent = 'Clave incorrecta';
+      }
+    });
+
+    changeBtn?.addEventListener('click', async ()=>{
+      const newPass = prompt('Nueva clave secreta (no se guarda en texto plano):');
+      if(!newPass) return;
+      const h = await sha256(newPass.trim());
+      localStorage.setItem(HASH_KEY, h);
+      alert('✅ Clave cambiada. Usa la nueva para entrar.');
+    });
+
+    // Auto-expira sesión admin
+    setInterval(()=>{
+      if(!isActive() && HTMLCLS.classList.contains('is-admin')){
+        deactivate();
+        location.reload();
+      }
+    }, 15000);
+  })();
+  </script>
 
   <!-- ================= FAB + MODAL DESTACADOS ================= -->
   <button id="fabDestacados" aria-label="Ver destacados" title="Ver destacados"
@@ -1326,7 +1420,6 @@
         </div>
       </div>
 
-      <!-- 2 columnas fijas -->
       <div id="gridDestacados" style="padding:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px"></div>
 
       <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:flex-end">
@@ -1350,7 +1443,7 @@
     .ribbon{ display:none !important; }
   </style>
 
-  <!-- Lógica Destacados (usa IDs guardados y respeta nube) -->
+  <!-- Lógica Destacados (modal) -->
   <script>
   (function(){
     const LS_KEY = "ja_store_products_v2";
@@ -1471,9 +1564,8 @@
         grid.querySelectorAll('[data-star]').forEach(btn=>{
           btn.addEventListener('click', async ()=>{
             const id = btn.getAttribute('data-star');
-            if (window.setFeatured) {
-              await window.setFeatured(id, false);
-            } else {
+            if (window.setFeatured) { await window.setFeatured(id, false); }
+            else {
               const arr = getFeaturedIds().filter(x=>x!==id);
               setFeaturedIds(arr);
             }
