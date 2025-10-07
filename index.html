@@ -32,22 +32,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
 
-  <!-- ================= AUTO CLOUD CONFIG =================
-       1) O pega aquí tu firebaseConfig (público) y funcionará en Web/App/Incógnito.
-       2) O sube un archivo firebaseConfig.json en la raíz del sitio con el JSON.
-  -->
-  <script>
-    window.AUTO_FIREBASE_CONFIG = {
-      // Rellena estos campos para conexión automática en todas las sesiones
-      // apiKey: "",
-      // authDomain: "",
-      // projectId: "",
-      // storageBucket: "",
-      // messagingSenderId: "",
-      // appId: ""
-    };
-  </script>
-
   <style>
     :root{
       --grad-1: linear-gradient(135deg,#00E5FF 0%, #7C3AED 50%, #FF0099 100%);
@@ -71,7 +55,6 @@
     body { touch-action: pan-y; overscroll-behavior-x: none; }
     #grid { overflow-x:hidden; }
     *, *::before, *::after { box-sizing:border-box; }
-    /* Mostrar controles admin y estrella solo en sesión admin */
     .admin-only{ display:none !important; }
     .is-admin .admin-only{ display:inline-flex !important; }
   </style>
@@ -102,7 +85,7 @@
     .is-admin #btnFix { display:inline-flex !important; }
   </style>
 
-  <!-- Ocultar FAB “Destacados” -->
+  <!-- Ocultar FAB “Destacados” (lo mostramos desde el header) -->
   <style>#fabDestacados { display: none !important; }</style>
 </head>
 
@@ -240,8 +223,25 @@
     </form>
   </dialog>
 
-  <!-- App -->
+  <!-- App (productos + favoritos con persistencia global) -->
   <script type="module">
+    /* =====================
+       AUTO FIREBASE CONFIG
+       - OPCIÓN A: PEGA AQUÍ tu config para que TODOS (incluido incógnito) se conecten a la nube.
+       - OPCIÓN B: Sube un archivo /firebaseConfig.json con ese JSON.
+       - OPCIÓN C: Usa Ajustes → Conectar nube (solo guardará en este navegador).
+    ===================== */
+    const AUTO_FIREBASE_CONFIG = {
+      /* EJEMPLO (reemplaza todo el objeto por el tuyo):
+      apiKey: "TU_API_KEY",
+      authDomain: "tu-proyecto.firebaseapp.com",
+      projectId: "tu-proyecto",
+      storageBucket: "tu-proyecto.appspot.com",
+      messagingSenderId: "000000000000",
+      appId: "1:000000000000:web:xxxxxxxxxxxx"
+      */
+    };
+
     let ADMIN_KEY = localStorage.getItem('ja_admin_key') || "mega360";
     const AFFILIATE_TAG_DEFAULT = "kaninosabioan-20";
     const LS_FEATURED = 'ja_featured_ids_v1';
@@ -251,7 +251,6 @@
     let products = [];
     let db = null, unsub = null, storage = null;
     let cloudConfig = null;
-    let cloudIds = new Set(); // << ids presentes en la nube
 
     const grid = document.getElementById('grid');
     const empty = document.getElementById('empty');
@@ -300,15 +299,16 @@
       toggle(id){ feat.has(id)?feat.del(id):feat.add(id) }
     };
 
-    function syncFeaturedLSFromProducts(){
+    /* ====== NUEVO: sincronizar LS destacados con nube ====== */
+    function syncLSFeaturedWithCloudFromProducts(){
       try{
-        const ids = (products||[]).filter(p=>!!p.featured && !!p.id).map(p=>p.id);
+        const ids = (products||[]).filter(p=>!!p.featured && p.id).map(p=>p.id);
         feat.set(ids);
       }catch{}
     }
 
-    /* ===== Hidratación automática de destacados desde productos.featured ===== */
-    function hydrateFeaturedFromProducts(){ syncFeaturedLSFromProducts(); }
+    /* ===== Hidratación automática de destacados desde products.featured ===== */
+    function hydrateFeaturedFromProducts(){ syncLSFeaturedWithCloudFromProducts(); }
 
     function ensureTag(url){
       if(!url) return "#";
@@ -319,12 +319,13 @@
 
     function productCard(p){
       const price = p.price?`$${Number(p.price).toLocaleString()}`:'';
-      const tag = feat.has(p.id)?`<span class="tag text-xs px-2 py-1 rounded-lg font-semibold">Destacado</span>`:'';
+      const isFeat = !!p.featured || feat.has(p.id);
+      const tag = isFeat?`<span class="tag text-xs px-2 py-1 rounded-lg font-semibold">Destacado</span>`:'';
       const brand = p.brand?`<span class="text-xs text-white/60">${p.brand}</span>`:'';
       const starBtn = `
         <button class="admin-only absolute top-2 right-2 px-2.5 py-1.5 rounded-lg border border-white/20 bg-white/10 text-white text-sm"
-                data-star="${p.id}" aria-pressed="${feat.has(p.id)?'true':'false'}" title="Alternar Destacado">
-          ${feat.has(p.id)?'★':'☆'}
+                data-star="${p.id}" aria-pressed="${isFeat?'true':'false'}" title="Alternar Destacado">
+          ${isFeat?'★':'☆'}
         </button>`;
       const adminBtns = isAdmin ? `
         <div class="flex gap-2 mt-3 admin-only">
@@ -344,13 +345,13 @@
           <div class="mt-3 flex items-start justify-between gap-3">
             <div class="min-w-0">
               <h3 class="font-extrabold leading-tight line-clamp-2">${p.title}</h3>
-              <div class="flex items-center gap-2 mt-1">${brand}${brand?'<span class="text-white/20">•</span>':''}<span class="text-xs text-white/60">${p.category}</span>${feat.has(p.id)?'<span class="text-white/20">•</span>'+tag:''}</div>
+              <div class="flex items-center gap-2 mt-1">${brand}${brand?'<span class="text-white/20">•</span>':''}<span class="text-xs text-white/60">${p.category}</span>${isFeat?'<span class="text-white/20">•</span>'+tag:''}</div>
               ${price?`<div class="mt-1 text-white/90 font-semibold">${price}</div>`:''}
             </div>
           </div>
           <div class="mt-3">
             <a href="${ensureTag(p.amazon)}" target="_blank" rel="nofollow sponsored noopener" class="btn-neon w-full justify-center px-4 py-2 rounded-xl inline-flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a 1 1 0 1 1 1.414-1.414L11 19.586V14a 1 1 0 0 1 1-1z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a 1 1 0 1 1 1.414-1.414L11 19.586V14a1 1 0 0 1 1-1z"/></svg>
               Ver en Amazon
             </a>
             ${adminBtns}
@@ -381,8 +382,9 @@
           e.stopPropagation();
           if(!isAdmin){ alert('Solo Admin'); return; }
           const id = btn.getAttribute('data-star');
-          const newVal = !(btn.getAttribute('aria-pressed')==='true');
-          await window.setFeatured(id, newVal);
+          const p = products.find(x=>x.id===id);
+          const current = !!(p?.featured || feat.has(id));
+          await toggleFeatured(id, !current);
         }, {passive:false});
       });
     }
@@ -397,6 +399,8 @@
         try { tag = new URL(a.href, location.href).searchParams.get("tag"); } catch {}
         return { idx: i+1, text: (a.textContent||'').trim(), tag, href: a.href, ok: tag === TAG };
       });
+      console.log("[DOM] Verificación enlaces Amazon");
+      console.table(rows);
       const bad = rows.filter(r => !r.ok);
       return { total: rows.length, ok: rows.length - bad.length, fail: bad.length, bad };
     }
@@ -410,6 +414,8 @@
         catch { const m = /\btag=([^&#]+)/.exec(p.amazon||""); tag = m && m[1] || null; }
         return { idx: i+1, id:p.id, title:p.title, tag, ok: tag === TAG, amazon:p.amazon };
       });
+      console.log("[LS] Verificación productos LocalStorage");
+      console.table(rows);
       const bad = rows.filter(r => !r.ok);
       return { total: rows.length, ok: rows.length - bad.length, fail: bad.length, bad };
     }
@@ -458,7 +464,7 @@
 
     async function cloud_init(config){
       const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
-      const { getFirestore, collection, onSnapshot, query, orderBy, doc, setDoc, serverTimestamp } =
+      const { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc } =
         await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
       const { getStorage, ref, uploadBytes, getDownloadURL } =
         await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js');
@@ -471,11 +477,9 @@
       if(unsub) unsub();
       unsub = onSnapshot(q, snap=>{
         products = [];
-        cloudIds = new Set();
-        snap.forEach(d=> { const obj=d.data(); products.push(obj); if(obj?.id) cloudIds.add(obj.id); });
-        hydrateFeaturedFromProducts();
+        snap.forEach(d=> products.push(d.data()));
+        syncLSFeaturedWithCloudFromProducts();   // << sincroniza destacados con nube
         renderCategories(products); applyFilters();
-        window.dispatchEvent(new Event('ja_products_updated'));
       });
 
       window.cloud_delete = async (id)=>{
@@ -483,7 +487,12 @@
         await deleteDoc(doc(db,'products',id));
       };
       window.cloud_save = async (id, data)=>{
-        await setDoc(doc(db,'products',id), { id, createdAt: serverTimestamp(), ...data }, { merge:true });
+        const { doc: _doc, setDoc: _setDoc, serverTimestamp: _ts } =
+          await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+        await _setDoc(_doc(db,'products',id), { id, createdAt:_ts(), ...data });
+      };
+      window.cloud_update = async (id, partial)=>{
+        await updateDoc(doc(db,'products',id), partial);
       };
       window.cloud_upload = async (file)=>{
         const fileName = `${Date.now()}_${file.name.replace(/\s+/g,'_')}`;
@@ -491,26 +500,29 @@
         await uploadBytes(fileRef,file);
         return await getDownloadURL(fileRef);
       };
-      window.cloud_updateFeatured = async (id, value)=>{
-        await setDoc(doc(db,'products',id), { id, featured: !!value, updatedAt: serverTimestamp() }, { merge:true });
-      };
     }
 
-    // === Toggle Destacado global (local + nube) ===
-    window.setFeatured = async function(id, value){
-      // Actualiza en la nube si está conectada
-      if(db){
-        await window.cloud_updateFeatured(id, value);
+    /* ====== NUEVO: alternar destacado con soporte nube ====== */
+    async function toggleFeatured(id, next){
+      const p = products.find(x=>x.id===id);
+      const value = (typeof next === 'boolean') ? next : !(p?.featured || feat.has(id));
+      try{
+        if(db){
+          await window.cloud_update(id, { featured: value });
+          if(p) p.featured = value;           // feedback inmediato
+          syncLSFeaturedWithCloudFromProducts();
+        } else {
+          if(value) feat.add(id); else feat.del(id);
+          if(p) p.featured = value;
+          local_save(products);
+        }
+      }finally{
+        applyFilters();
+        window.dispatchEvent(new Event('ja_products_updated'));
+        if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
       }
-      // Refleja local/LS inmediatamente para que se vea sin esperar snapshot
-      products = (products||[]).map(p => p.id===id ? ({...p, featured: !!value}) : p);
-      local_save(products);
-      syncFeaturedLSFromProducts();
-      applyFilters();
-      if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
     }
 
-    // === Crear/editar productos (local o nube) ===
     window.editProduct = (id)=>{
       const p = products.find(x=>x.id===id); if(!p) return;
       editingId = id;
@@ -534,7 +546,7 @@
       } else {
         products = products.filter(p=>p.id!==id);
         local_save(products);
-        syncFeaturedLSFromProducts();
+        if (feat.has(id)) feat.del(id);
         renderCategories(products); applyFilters();
       }
     };
@@ -586,7 +598,7 @@
           products = [{ id, ...data, createdAt: Date.now() }, ...products];
         }
         local_save(products);
-        syncFeaturedLSFromProducts();
+        if (data.featured) feat.add(id); else if (feat.has(id)) feat.del(id);
         renderCategories(products); applyFilters();
       }
 
@@ -696,41 +708,38 @@
       }
     });
 
-    async function getAutoConfig(){
+    async function autoConnectCloud(){
+      // 1) Preferir configuración guardada (Ajustes)
       const savedCfg = localStorage.getItem('ja_cloud_cfg');
-      if(savedCfg){ try{ return JSON.parse(savedCfg) }catch{}}
-      if (window.AUTO_FIREBASE_CONFIG && window.AUTO_FIREBASE_CONFIG.apiKey) return window.AUTO_FIREBASE_CONFIG;
+      if(savedCfg){
+        try{ await cloud_init(JSON.parse(savedCfg)); cloudStatus.textContent = 'Estado: Nube conectada'; return; }
+        catch(e){ console.warn('No se pudo usar config guardada', e); }
+      }
+      // 2) Usar constante embebida si está completa
+      if (AUTO_FIREBASE_CONFIG && AUTO_FIREBASE_CONFIG.apiKey){
+        try{ await cloud_init(AUTO_FIREBASE_CONFIG); cloudStatus.textContent = 'Estado: Nube conectada'; return; }
+        catch(e){ console.warn('AUTO_FIREBASE_CONFIG inválida', e); }
+      }
+      // 3) Intentar /firebaseConfig.json
       try{
-        const res = await fetch('firebaseConfig.json?'+Date.now(), {cache:'no-store'});
-        if(res.ok){ return await res.json(); }
-      }catch{}
-      return null;
+        const r = await fetch('firebaseConfig.json', {cache:'no-store'});
+        if(r.ok){ const cfg = await r.json(); await cloud_init(cfg); cloudStatus.textContent = 'Estado: Nube conectada'; return; }
+      }catch(e){ console.warn('No hay firebaseConfig.json', e); }
+      // 4) Local fallback
+      products = local_load();
+      hydrateFeaturedFromProducts();
+      renderCategories(products); applyFilters();
+      cloudStatus.textContent = 'Estado: Local';
     }
 
     window.addEventListener('DOMContentLoaded', async ()=>{
       isAdmin = !!localStorage.getItem('ja_admin');
       btnAdmin.textContent = isAdmin ? 'Admin (ON)' : 'Admin';
-
-      const autoCfg = await getAutoConfig();
-      if(autoCfg){
-        try{
-          await cloud_init(autoCfg);
-          cloudStatus.textContent = 'Estado: Nube conectada';
-        }catch(e){
-          console.warn('No se pudo conectar a la nube. Usando local.', e);
-          products = local_load();
-          hydrateFeaturedFromProducts();
-          renderCategories(products); applyFilters();
-        }
-      } else {
-        products = local_load();
-        hydrateFeaturedFromProducts();
-        renderCategories(products); applyFilters();
-      }
+      await autoConnectCloud();
     });
   </script>
 
-  <!-- Auto-SYNC con GitHub -->
+  <!-- Auto-SYNC con GitHub (solo lectura, no afecta destacados en nube) -->
   <script>
   (function(){
     const RAW_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
@@ -942,7 +951,7 @@
           <div class="space-y-3">
             <div class="text-white/90 text-sm" id="ms360-price"></div>
             <a id="ms360-amz" href="#" target="_blank" rel="nofollow noopener sponsored"
-               class="inline-flex items-center justify-center w-full px-4 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 to-blue-500 text-white font-medium">
+               class="inline-flex items-center justify-center w-full px-3 py-2 rounded-xl bg-gradient-to-r from-fuchsia-500 to-blue-500 text-white text-xs font-semibold">
               Ver en Amazon
             </a>
             <div class="text-white/60 text-xs leading-5">Enlace de afiliado • Disponible según inventario.</div>
@@ -1247,13 +1256,6 @@
     });
 
     safe(()=> {
-      const enhance = () => {
-        // nothing extra here; placeholder for future
-      };
-      document.addEventListener('DOMContentLoaded', enhance);
-    });
-
-    safe(()=> {
       let deferred=null;
       window.addEventListener('beforeinstallprompt', (e)=>{
         e.preventDefault(); deferred = e;
@@ -1425,7 +1427,7 @@
       <div id="gridDestacados" style="padding:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px"></div>
 
       <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:flex-end">
-        <small style="color:#7f8ab2">Tip: en modo Admin puedes quitar/poner ⭐ aquí mismo.</small>
+        <small style="color:#7f8ab2">Tip: en modo Admin puedes quitar ⭐ aquí mismo.</small>
       </div>
     </div>
   </div>
@@ -1439,15 +1441,12 @@
     .titleP{ color:#fff; font-weight:700; line-height:1.2; font-size:14px; min-height:34px; }
     .catP{ color:#9fb0d1; font-size:12px; }
     .rowBtns{ display:flex; gap:8px; margin-top:6px; }
-    /* BOTÓN AMAZON MÁS PEQUEÑO */
-    .btnAmazon{ flex:1; border:none; border-radius:10px; padding:8px 10px; font-size:12px; color:#fff; font-weight:700; cursor:pointer; background:linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4); }
-    .btnSec{ border:none; border-radius:10px; padding:8px 10px; font-size:12px; color:#fff; background:#ffffff17; cursor:pointer; }
+    .btnAmazon{ flex:1; border:none; border-radius:10px; padding:8px 10px; color:#fff; font-weight:700; cursor:pointer; background:linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4); font-size:12px; }
+    .btnSec{ border:none; border-radius:10px; padding:8px 10px; color:#fff; background:#ffffff17; cursor:pointer; font-size:12px; }
     .cardWrap{ position:relative; }
-    /* *** IMPORTANTE: Oculto etiqueta visual dentro de destacados (pedido del cliente) *** */
-    .ribbon{ display:none !important; }
   </style>
 
-  <!-- Lógica Destacados (FIX) -->
+  <!-- Lógica Destacados (SYNC NUBE + sin etiqueta dentro del modal) -->
   <script>
   (function(){
     const LS_KEY = "ja_store_products_v2";
@@ -1513,18 +1512,14 @@
     const btnX  = document.getElementById("cerrarDestacados");
     const grid  = document.getElementById("gridDestacados");
 
-    let lastOverflow='', lastGutter='';
-    function lockScroll(){
-      const html = document.documentElement;
-      lastOverflow = html.style.overflow || '';
-      lastGutter = html.style.scrollbarGutter || '';
-      html.style.scrollbarGutter = 'stable';
-      html.style.overflow = 'hidden';
-    }
-    function unlockScroll(){
-      const html = document.documentElement;
-      html.style.overflow = lastOverflow;
-      html.style.scrollbarGutter = lastGutter;
+    function getFeaturedIds(){ try{return JSON.parse(localStorage.getItem(LS_FEATURED))||[]}catch{return[]} }
+    function setFeaturedIds(v){ localStorage.setItem(LS_FEATURED, JSON.stringify(v||[])) }
+
+    function featuredIdsFromAny(){
+      const list = getAllProducts();
+      const byField = list.filter(p=>!!p.featured && p.id).map(p=>p.id);
+      const byLS = getFeaturedIds();
+      return Array.from(new Set([...byField, ...byLS]));
     }
 
     function card(p){
@@ -1537,7 +1532,6 @@
         : '';
       return `
       <div class="cardWrap">
-        <!-- ribbon removida/oculta -->
         <div class="cardP">
           <div class="imgWrap"><img loading="lazy" alt="${t}" src="${i}"></div>
           <div class="bodyP">
@@ -1552,12 +1546,9 @@
       </div>`;
     }
 
-    function getFeaturedIds(){ try{return JSON.parse(localStorage.getItem(LS_FEATURED))||[]}catch{return[]} }
-    function setFeaturedIds(v){ localStorage.setItem(LS_FEATURED, JSON.stringify(v||[])) }
-
     function renderModal(){
       const map = new Map(getAllProducts().map(p=>[p.id,p]));
-      const ids = getFeaturedIds();
+      const ids = featuredIdsFromAny();
       const feats = ids.map(id=>map.get(id)).filter(Boolean);
       if (!feats.length){
         grid.innerHTML = `<div style="grid-column:1/-1;color:#aab3d1;text-align:center;padding:28px">No hay productos destacados. Marca ⭐ en cualquier tarjeta (modo Admin).</div>`;
@@ -1569,39 +1560,26 @@
         grid.querySelectorAll('[data-star]').forEach(btn=>{
           btn.addEventListener('click', async ()=>{
             const id = btn.getAttribute('data-star');
-            if (window.setFeatured) {
-              await window.setFeatured(id, false);
-            } else {
+            if (window.toggleFeatured) await window.toggleFeatured(id, false);
+            else {
               const arr = getFeaturedIds().filter(x=>x!==id);
               setFeaturedIds(arr);
             }
             renderModal();
-            if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
           }, {passive:false});
         });
       }
     }
 
-    function abrir(){
-      renderModal();
-      modal.style.display = "flex";
-      modal.setAttribute("aria-hidden","false");
-      lockScroll();
-    }
-    function cerrar(){
-      modal.style.display = "none";
-      modal.setAttribute("aria-hidden","true");
-      unlockScroll();
-    }
+    function abrir(){ renderModal(); modal.style.display = "flex"; modal.setAttribute("aria-hidden","false"); document.documentElement.style.overflow='hidden'; }
+    function cerrar(){ modal.style.display = "none"; modal.setAttribute("aria-hidden","true"); document.documentElement.style.overflow=''; }
 
     fab?.addEventListener("click", abrir);
     hdr?.addEventListener("click", abrir);
     btnX?.addEventListener("click", cerrar);
     modal?.addEventListener("click", (e)=>{ if (e.target === modal) cerrar(); });
 
-    window.__renderFeaturedIfOpen = function(){
-      if (modal.style.display === "flex") renderModal();
-    };
+    window.__renderFeaturedIfOpen = function(){ if (modal.style.display === "flex") renderModal(); };
     window.addEventListener("ja_products_updated", window.__renderFeaturedIfOpen);
 
     document.addEventListener("keydown", (e)=>{ if(e.key==="Escape" && modal.style.display==="flex"){ cerrar(); }});
