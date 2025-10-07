@@ -101,7 +101,6 @@
     #grid .card a.btn-neon { padding:8px 10px !important; font-size:12px !important; line-height:1.1 !important; border-radius:10px !important; transform:none !important; }
     #grid .card a.btn-neon:hover { transform:none !important; box-shadow:0 0 28px rgba(124,58,237,.45) !important; }
     #grid .card a.btn-neon svg { width:14px !important; height:14px !important; }
-    /* Estrella translúcida (solo Admin) */
     .ms360-star{
       position:absolute; top:8px; right:8px; width:36px; height:36px; border-radius:10px;
       display:inline-flex; align-items:center; justify-content:center;
@@ -111,14 +110,106 @@
     }
     .ms360-star:hover{ transform:translateY(-1px) scale(1.02); border-color:rgba(255,255,255,.28); }
     .ms360-star[aria-pressed="true"]{ background:rgba(252,211,77,.18); border-color:rgba(252,211,77,.45); text-shadow:0 0 10px rgba(252,211,77,.35); }
-    /* Ocultar ribbon de destacados en modal */
     #modalDestacados .ribbon { display:none !important; }
-    /* Logo Amazon header */
     .ms360-amzlink{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);transition:transform .12s,border-color .12s,background .12s}
     .ms360-amzlink:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.10)}
     .ms360-amzlogo{height:16px;display:block}
     .ms360-amztext{font-size:12px;color:#fff;opacity:.85;font-weight:700;white-space:nowrap}
     @media (max-width:480px){.ms360-amztext{display:none}}
+  </style>
+
+  <!-- ======================= -->
+  <!--  MODO TILES CON ESENCIA -->
+  <!-- ======================= -->
+  <style id="ms360-tiles-essence">
+    /* Se activa solo cuando el <html> tiene la clase .ms360-tiles */
+    html.ms360-tiles #grid{
+      display:grid !important;
+      grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+      gap:12px !important;
+    }
+    /* Tarjeta dark con glow sutil neón (tu identidad) */
+    html.ms360-tiles #grid .card{
+      background:
+        radial-gradient(900px 480px at 110% -10%, rgba(0,229,255,.08), transparent 55%),
+        radial-gradient(900px 480px at -10% 120%, rgba(124,58,237,.10), transparent 50%),
+        #12172a !important;
+      border:1px solid rgba(124,58,237,.22) !important;
+      box-shadow:0 10px 28px rgba(0,0,0,.35) !important;
+      color:#E7ECFF !important;
+      border-radius:18px !important;
+      padding:10px !important;
+    }
+    /* Marco cuadrado blanco estilo catálogo */
+    html.ms360-tiles #grid .card .aspect-\[4\/3\]{
+      aspect-ratio:1/1 !important;
+      background:#fff !important;
+      border-radius:14px !important;
+      padding:8px !important;
+      position:relative; overflow:hidden;
+    }
+    html.ms360-tiles #grid .card .aspect-\[4\/3\]::before{
+      content:""; position:absolute; inset:0; padding:1px; border-radius:14px;
+      background:var(--grad-1);
+      -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+      opacity:.45;
+    }
+    /* Imagen centrada sin recortes */
+    html.ms360-tiles #grid .card .aspect-\[4\/3\] img{
+      object-fit:contain !important;
+      width:100% !important; height:100% !important;
+      mix-blend:multiply;
+      filter:saturate(1.02) contrast(1.02);
+    }
+    /* Título centrado (dos líneas) */
+    html.ms360-tiles #grid .card h3{
+      color:#fff !important;
+      font-weight:800 !important;
+      font-size:13px !important;
+      line-height:1.25 !important;
+      text-align:center !important;
+      margin-top:10px !important;
+      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+      min-height:2.6em;
+      text-shadow:0 0 14px rgba(124,58,237,.22);
+    }
+    html.ms360-tiles #grid .card .text-xs,
+    html.ms360-tiles #grid .card .text-white\/60,
+    html.ms360-tiles #grid .card .text-white\/90{
+      color:#AAB4D9 !important;
+      text-align:center;
+    }
+    /* Botón Amazon compacto full width */
+    html.ms360-tiles #grid .card a.btn-neon{
+      width:100% !important;
+      justify-content:center !important;
+      padding:8px 10px !important;
+      font-size:12px !important;
+      border-radius:10px !important;
+      margin-top:10px !important;
+      transform:none !important;
+    }
+    html.ms360-tiles #grid .card a.btn-neon:hover{ transform:none !important; }
+    /* Estrella admin integradita */
+    html.ms360-tiles .ms360-star{
+      background:rgba(0,0,0,.25) !important;
+      border-color:rgba(255,255,255,.18) !important;
+      color:#fff !important;
+    }
+    html.ms360-tiles .ms360-star[aria-pressed="true"]{
+      background:rgba(252,211,77,.22) !important;
+      border-color:rgba(252,211,77,.5) !important;
+      color:#ffe08a !important;
+      text-shadow:0 0 10px rgba(252,211,77,.4);
+    }
+    /* Responsive */
+    @media (min-width:640px){
+      html.ms360-tiles #grid{ grid-template-columns:repeat(4,minmax(0,1fr)) !important; }
+    }
+    @media (min-width:1024px){
+      html.ms360-tiles #grid{ grid-template-columns:repeat(5,minmax(0,1fr)) !important; }
+    }
   </style>
 </head>
 
@@ -1596,7 +1687,6 @@
 
   <!-- ======= OVERRIDES SOLICITADOS ======= -->
   <style>
-    /* ribbon y tamaños en modal (ya oculto) */
     #modalDestacados .ribbon { display: none !important; }
     #modalDestacados .btnAmazon { padding: 8px 10px !important; font-size: 12px !important; line-height: 1.1 !important; border-radius: 8px !important; }
   </style>
@@ -1624,6 +1714,22 @@
       const yt = headerBar.querySelector('a[href*="youtube.com"]');
       if (yt && yt.nextSibling) headerBar.insertBefore(a, yt.nextSibling);
       else headerBar.appendChild(a);
+    })();
+  </script>
+
+  <!-- ========================= -->
+  <!--  ACTIVADOR MODO TILES JS  -->
+  <!-- ========================= -->
+  <script>
+    (function(){
+      // Añade la clase al <html> para aplicar los estilos de tiles
+      const html = document.documentElement;
+      function enableTiles(){ html.classList.add('ms360-tiles'); }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', enableTiles, { once:true });
+      } else {
+        enableTiles();
+      }
     })();
   </script>
 
