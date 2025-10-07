@@ -349,7 +349,7 @@
             </div>
           </div>
           <div class="mt-3">
-            <a href="${ensureTag(p.amazon)}" target="_blank" rel="nofollow sponsored noopener" class="btn-neon w-full justify-center px-4 py-2 rounded-xl inline-flex items-center gap-2">
+            <a href="${ensureTag(p.amazon)}" target="_blank" rel="nofollow sponsored noopener" class="btn-neon w/full justify-center px-4 py-2 rounded-xl inline-flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c3.86 0 7 3.141 7 7.001 0 3.86-3.14 7-7 7a1 1 0 1 1 0-2c2.761 0 5-2.239 5-5 0-2.762-2.239-5.001-5-5.001-2.762 0-5.001 2.239-5.001 5.001a1 1 0 1 1-2 0C5 5.141 8.141 2 12.001 2z"/><path d="M12 13a1 1 0 0 1 1 1v5.586l1.293-1.293a1 1 0 0 1 1.414 1.414l-3 3a.998.998 0 0 1-1.414 0l-3-3a 1 1 0 1 1 1.414-1.414L11 19.586V14a 1 1 0 0 1 1-1z"/></svg>
               Ver en Amazon
             </a>
@@ -807,11 +807,11 @@
       try{
         const u = new URL(url);
         if(!/amazon\./i.test(u.hostname)) return url;
-        u.searchParams.set("tag", TAG);
+        u.searchParams.set("tag", "kaninosabioan-20");
         return u.toString();
       }catch{
         const sep = url.includes('?') ? '&' : '?';
-        return `${url}${sep}tag=${TAG}`;
+        return `${url}${sep}tag=${"kaninosabioan-20"}`;
       }
     }
 
@@ -833,18 +833,28 @@
       return obj;
     }
 
+    /* ✅ FUNCIÓN CORREGIDA PARA CONSERVAR TUS DESTACADOS LOCALES */
     function mergeDedup(existingList, incomingList){
+      // 1) Índice basado en lo que YA hay en local (mantiene su featured)
       const map = new Map();
-      for (const inc of incomingList) {
-        const k = stableKey(inc);
-        map.set(k, { ...inc, id: k });
-      }
-      for (const ex of existingList) {
+      for (const ex of existingList || []) {
         const k = stableKey(ex);
-        if (!map.has(k)) {
-          map.set(k, { ...ex });
+        map.set(k, { ...ex, id: k, featured: !!ex.featured });
+      }
+
+      // 2) Mezclamos lo que viene del repo pero respetando el featured local
+      for (const inc of (incomingList || [])) {
+        const k = stableKey(inc);
+        const prev = map.get(k);
+        if (!prev) {
+          map.set(k, { ...inc, id: k, featured: !!inc.featured });
+        } else {
+          const featuredLocal = !!prev.featured;
+          map.set(k, { ...prev, ...inc, id: k, featured: featuredLocal });
         }
       }
+
+      // 3) Ordenar: destacados primero y luego alfabético
       return Array.from(map.values())
         .sort((a,b)=> (b.featured - a.featured) || String(a.title).localeCompare(String(b.title)));
     }
@@ -867,7 +877,7 @@
 
         lsSave(merged);
         window.dispatchEvent(new Event('ja_products_updated'));
-        console.log("✅ Auto-sync: productos actualizados (dedupe por ASIN/título)");
+        console.log("✅ Auto-sync: productos actualizados (⭐ preservados)");
       }catch(e){
         console.warn("[auto-sync] No se pudo leer products.json:", e);
       }
@@ -967,7 +977,7 @@
           <div class="space-y-3">
             <div class="text-white/90 text-sm" id="ms360-price"></div>
             <a id="ms360-amz" href="#" target="_blank" rel="nofollow noopener sponsored"
-               class="inline-flex items-center justify-center w-full px-4 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 to-blue-500 text-white font-medium">
+               class="inline-flex items-center justify-center w/full px-4 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 to-blue-500 text-white font-medium">
               Ver en Amazon
             </a>
             <div class="text-white/60 text-xs leading-5">Enlace de afiliado • Disponible según inventario.</div>
