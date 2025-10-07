@@ -50,12 +50,11 @@
       -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none }
     .input{ background:#0e1430; border:1px solid rgba(124,58,237,.35); outline:none; color:white; border-radius:12px; padding:.7rem .9rem }
     .input:focus{ box-shadow:var(--ring) }
-    .tag{ background:rgba(10,239,255,.12); border:1px solid rgba(10,239,255,.35) }
+    .tag{ display:none !important; } /* ocultar cualquier chip de "Destacado" */
     html, body { max-width:100%; overflow-x:hidden; }
     body { touch-action: pan-y; overscroll-behavior-x: none; }
     #grid { overflow-x:hidden; }
     *, *::before, *::after { box-sizing:border-box; }
-    /* Mostrar controles admin y estrella solo en sesión admin */
     .admin-only{ display:none !important; }
     .is-admin .admin-only{ display:inline-flex !important; }
   </style>
@@ -86,52 +85,41 @@
     .is-admin #btnFix { display:inline-flex !important; }
   </style>
 
-  <!-- Ocultar FAB “Destacados” -->
-  <style>#fabDestacados { display: none !important; }</style>
+  <!-- Ocultar FAB “Destacados” y botón del header -->
+  <style>#fabDestacados, #btnDestacadosHeader { display: none !important; }</style>
 
-  <!-- ===================== BLOQUE NUEVO (mejoras estéticas y layout) ===================== -->
+  <!-- ===== Ajustes visuales extra: 3 por fila en móviles + btn Amazon más pequeño ===== -->
   <style>
-    /* ——— Vista app con 3 productos por fila (móviles) ——— */
     @media (max-width: 480px) {
-      #grid {
-        display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 10px !important;
-      }
-      #grid .card { padding: 10px !important; }
-      #grid .card h3 { font-size: 12px !important; line-height: 1.2 !important; }
-      #grid .card .text-xs { font-size: 10px !important; }
-      #grid .card .mt-1.text-white\/90.font-semibold { font-size: 12px !important; }
-      #grid .rounded-xl.overflow-hidden.bg-soft.aspect-\[4\/3\] { border-radius: 10px !important; }
+      #grid { display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:10px !important; }
+      #grid .card { padding:10px !important; }
+      #grid .card h3 { font-size:12px !important; line-height:1.2 !important; }
+      #grid .card .text-xs { font-size:10px !important; }
+      #grid .card .mt-1.text-white\/90.font-semibold { font-size:12px !important; }
+      #grid .rounded-xl.overflow-hidden.bg-soft.aspect-\[4\/3\] { border-radius:10px !important; }
     }
-
-    /* ——— Ocultar botón "★ Destacados" del header ——— */
-    #btnDestacadosHeader { display: none !important; }
-
-    /* ——— Botón “Ver en Amazon” (más pequeño, sin “temblores”) ——— */
-    #grid .card a.btn-neon {
-      padding: 8px 10px !important;
-      font-size: 12px !important;
-      line-height: 1.1 !important;
-      border-radius: 10px !important;
-      transform: none !important;
+    #grid .card a.btn-neon { padding:8px 10px !important; font-size:12px !important; line-height:1.1 !important; border-radius:10px !important; transform:none !important; }
+    #grid .card a.btn-neon:hover { transform:none !important; box-shadow:0 0 28px rgba(124,58,237,.45) !important; }
+    #grid .card a.btn-neon svg { width:14px !important; height:14px !important; }
+    /* Estrella translúcida (solo Admin) */
+    .ms360-star{
+      position:absolute; top:8px; right:8px; width:36px; height:36px; border-radius:10px;
+      display:inline-flex; align-items:center; justify-content:center;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14);
+      color:#fff; font-size:18px; line-height:1; backdrop-filter:blur(6px);
+      transition:transform .12s ease, border-color .12s ease, background .12s ease, opacity .12s ease; opacity:.8;
     }
-    #grid .card a.btn-neon:hover { transform: none !important; box-shadow: 0 0 28px rgba(124,58,237,.45) !important; }
-    #grid .card a.btn-neon svg { width: 14px !important; height: 14px !important; }
-
-    /* ——— Estilo para el logo Amazon del header ——— */
-    .ms360-amzlink {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 8px 10px; border-radius: 12px;
-      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
-      transition: transform .12s ease, border-color .12s ease, background .12s ease;
-    }
-    .ms360-amzlink:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.22); background: rgba(255,255,255,.10); }
-    .ms360-amzlogo { height: 16px; display: block; }
-    .ms360-amztext { font-size: 12px; color: #fff; opacity: .85; font-weight: 700; white-space: nowrap; }
-    @media (max-width: 480px) { .ms360-amztext { display: none; } }
+    .ms360-star:hover{ transform:translateY(-1px) scale(1.02); border-color:rgba(255,255,255,.28); }
+    .ms360-star[aria-pressed="true"]{ background:rgba(252,211,77,.18); border-color:rgba(252,211,77,.45); text-shadow:0 0 10px rgba(252,211,77,.35); }
+    /* Ocultar ribbon de destacados en modal */
+    #modalDestacados .ribbon { display:none !important; }
+    /* Logo Amazon header */
+    .ms360-amzlink{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);transition:transform .12s,border-color .12s,background .12s}
+    .ms360-amzlink:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.10)}
+    .ms360-amzlogo{height:16px;display:block}
+    .ms360-amztext{font-size:12px;color:#fff;opacity:.85;font-weight:700;white-space:nowrap}
+    @media (max-width:480px){.ms360-amztext{display:none}}
   </style>
-  <!-- =================== /BLOQUE NUEVO =================== -->
 </head>
 
 <body class="min-h-full text-white bg-[radial-gradient(1200px_600px_at_20%_-10%,rgba(124,58,237,.15),transparent_55%),radial-gradient(900px_500px_at_120%_10%,rgba(0,229,255,.12),transparent_50%),#0b0f1a]">
@@ -327,6 +315,19 @@
       toggle(id){ feat.has(id)?feat.del(id):feat.add(id) }
     };
 
+    /* Ordenar: fijados primero, luego por createdAt desc, luego por título */
+    function sortProductsByFeaturedFirst(list){
+      return [...list].sort((a,b)=>{
+        const fa = feat.has(a.id)?1:0;
+        const fb = feat.has(b.id)?1:0;
+        if (fa !== fb) return fb - fa;
+        const ca = (typeof a.createdAt === 'number') ? a.createdAt : 0;
+        const cb = (typeof b.createdAt === 'number') ? b.createdAt : 0;
+        if (cb !== ca) return cb - ca;
+        return String(a.title||'').localeCompare(String(b.title||''));
+      });
+    }
+
     /* ===== Hidratación automática de destacados desde productos.featured ===== */
     function hydrateFeaturedFromProducts(){
       try{
@@ -349,11 +350,12 @@
 
     function productCard(p){
       const price = p.price?`$${Number(p.price).toLocaleString()}`:'';
-      const tag = feat.has(p.id)?`<span class="tag text-xs px-2 py-1 rounded-lg font-semibold">Destacado</span>`:'';
       const brand = p.brand?`<span class="text-xs text-white/60">${p.brand}</span>`:'';
       const starBtn = `
-        <button class="admin-only absolute top-2 right-2 px-2.5 py-1.5 rounded-lg border border-white/20 bg-white/10 text-white text-sm"
-                data-star="${p.id}" aria-pressed="${feat.has(p.id)?'true':'false'}" title="Alternar Destacado">
+        <button class="admin-only ms360-star"
+                data-star="${p.id}"
+                aria-pressed="${feat.has(p.id)?'true':'false'}"
+                title="${feat.has(p.id)?'Quitar de primeros':'Fijar al inicio'}">
           ${feat.has(p.id)?'★':'☆'}
         </button>`;
       const adminBtns = isAdmin ? `
@@ -374,7 +376,7 @@
           <div class="mt-3 flex items-start justify-between gap-3">
             <div class="min-w-0">
               <h3 class="font-extrabold leading-tight line-clamp-2">${p.title}</h3>
-              <div class="flex items-center gap-2 mt-1">${brand}${brand?'<span class="text-white/20">•</span>':''}<span class="text-xs text-white/60">${p.category}</span>${feat.has(p.id)?'<span class="text-white/20">•</span>'+tag:''}</div>
+              <div class="flex items-center gap-2 mt-1">${brand}${brand?'<span class="text-white/20">•</span>':''}<span class="text-xs text-white/60">${p.category}</span></div>
               ${price?`<div class="mt-1 text-white/90 font-semibold">${price}</div>`:''}
             </div>
           </div>
@@ -396,16 +398,16 @@
     function applyFilters(){
       const term = (search.value||'').toLowerCase().trim();
       const cat = categoryFilter.value||'all';
-      const filtered = products
-        .filter(p=>{
-          const t = !term || p.title.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term);
-          const c = cat==='all' || p.category===cat;
-          return t && c;
-        });
-      grid.innerHTML = filtered.map(productCard).join('');
-      empty.classList.toggle('hidden', filtered.length>0);
+      const filtered = products.filter(p=>{
+        const t = !term || p.title.toLowerCase().includes(term) || (p.brand||'').toLowerCase().includes(term);
+        const c = cat==='all' || p.category===cat;
+        return t && c;
+      });
 
-      // listeners del botón ★
+      const ordered = sortProductsByFeaturedFirst(filtered);
+      grid.innerHTML = ordered.map(productCard).join('');
+      empty.classList.toggle('hidden', ordered.length>0);
+
       grid.querySelectorAll('[data-star]').forEach(btn=>{
         btn.addEventListener('click', (e)=>{
           e.stopPropagation();
@@ -415,7 +417,7 @@
           feat.toggle(id);
           btn.setAttribute('aria-pressed', String(!pressed));
           btn.textContent = !pressed ? '★' : '☆';
-          applyFilters();
+          applyFilters(); // reordenar al instante
           if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
         }, {passive:false});
       });
@@ -510,7 +512,7 @@
       unsub = onSnapshot(q, snap=>{
         products = [];
         snap.forEach(d=> products.push(d.data()));
-        hydrateFeaturedFromProducts();      /* <<< hidratar destacados al cargar nube */
+        hydrateFeaturedFromProducts();
         renderCategories(products); applyFilters();
       });
 
@@ -680,7 +682,7 @@
       cloudConfig = null;
       if(unsub) unsub();
       db = null; storage=null; products = local_load();
-      hydrateFeaturedFromProducts();           /* <<< hidratar al pasar a local */
+      hydrateFeaturedFromProducts();
       renderCategories(products); applyFilters();
       cloudStatus.textContent = 'Estado: Local';
       alert('Se desconectó la nube. Ahora estás en modo local.');
@@ -710,7 +712,7 @@
     window.addEventListener('ja_products_updated', ()=>{
       if(!db){
         products = local_load();
-        hydrateFeaturedFromProducts();         /* <<< hidratar en auto-sync/local */
+        hydrateFeaturedFromProducts();
         renderCategories(products);
         applyFilters();
       }
@@ -727,12 +729,12 @@
         }catch(e){
           console.warn('No se pudo reconectar a la nube. Usando local.', e);
           products = local_load();
-          hydrateFeaturedFromProducts();       /* <<< hidratar al cargar local */
+          hydrateFeaturedFromProducts();
           renderCategories(products); applyFilters();
         }
       } else {
         products = local_load();
-        hydrateFeaturedFromProducts();         /* <<< hidratar incóg./local primera vez */
+        hydrateFeaturedFromProducts();
         renderCategories(products); applyFilters();
       }
     });
@@ -1149,7 +1151,7 @@
         const isAmazon = e.target.closest('a[href*="amazon."]');
         const isAdmin  = e.target.closest('button');
         if (isAmazon || isAdmin) return;
-      }
+        }
       const p = findProductFromCard(card);
       if (p) openViewer(p);
     }, {passive:true});
@@ -1268,14 +1270,13 @@
             </div>`;
           toastHost.appendChild(box);
           box.querySelector('#ms360-pwa-ok')?.addEventListener('click', async ()=>{ if(!deferred) return; deferred.prompt(); await deferred.userChoice; deferred=null; box.remove(); });
-          box.querySelector('#ms360-pwa-no')?.addEventListener('click', ()=> box.remove());
+          box.querySelector('#ms360-pwa-no' )?.addEventListener('click', ()=> box.remove());
         }, 2200);
       }, {once:true});
     });
 
   })();
   </script>
-  <!-- /MS360 Add-on Script -->
 
   <!-- ====== LOGIN ADMIN SEGURO ====== -->
   <dialog id="admin-login" class="backdrop:bg-black/70 w-[min(420px,92vw)] rounded-2xl">
@@ -1442,7 +1443,7 @@
     .rowBtns{ display:flex; gap:8px; margin-top:6px; }
     .btnAmazon{ flex:1; border:none; border-radius:10px; padding:10px 12px; color:#fff; font-weight:700; cursor:pointer; background:linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4); }
     .btnSec{ border:none; border-radius:10px; padding:10px 12px; color:#fff; background:#ffffff17; cursor:pointer; }
-    .ribbon{ position:absolute; top:10px; left:0; padding:6px 10px; font-size:10px; font-weight:800; letter-spacing:.5px; color:#fff; background:linear-gradient(90deg,#ec4899,#06b6d4); border-top-right-radius:10px; border-bottom-right-radius:10px; }
+    .ribbon{ display:none !important; } /* ocultar cintillo DESTACADO */
     .cardWrap{ position:relative; }
   </style>
 
@@ -1532,11 +1533,10 @@
       const i = p.image || "https://via.placeholder.com/800x600?text=Imagen";
       const c = p.category || "Otros";
       const star = document.documentElement.classList.contains('is-admin')
-        ? `<button class="btnSec" data-star="${p.id}" aria-pressed="true" title="Quitar de Destacados">★</button>`
+        ? `<button class="btnSec" data-star="${p.id}" aria-pressed="${JSON.parse(localStorage.getItem('${LS_FEATURED}')||'[]').includes(p.id)}" title="Alternar ⭐">★</button>`
         : '';
       return `
       <div class="cardWrap">
-        <span class="ribbon">DESTACADO</span>
         <div class="cardP">
           <div class="imgWrap"><img loading="lazy" alt="${t}" src="${i}"></div>
           <div class="bodyP">
@@ -1568,8 +1568,9 @@
         grid.querySelectorAll('[data-star]').forEach(btn=>{
           btn.addEventListener('click', ()=>{
             const id = btn.getAttribute('data-star');
-            const arr = getFeaturedIds().filter(x=>x!==id);
-            setFeaturedIds(arr);
+            const arr = getFeaturedIds();
+            if (arr.includes(id)) setFeaturedIds(arr.filter(x=>x!==id));
+            else setFeaturedIds([...arr, id]);
             renderModal();
             window.dispatchEvent(new Event('ja_products_updated'));
             if (typeof window.__renderFeaturedIfOpen === 'function') window.__renderFeaturedIfOpen();
@@ -1578,51 +1579,29 @@
       }
     }
 
-    function abrir(){
-      renderModal();
-      modal.style.display = "flex";
-      modal.setAttribute("aria-hidden","false");
-      lockScroll();
-    }
-    function cerrar(){
-      modal.style.display = "none";
-      modal.setAttribute("aria-hidden","true");
-      unlockScroll();
-    }
+    function abrir(){ renderModal(); modal.style.display="flex"; modal.setAttribute("aria-hidden","false"); lockScroll(); }
+    function cerrar(){ modal.style.display="none"; modal.setAttribute("aria-hidden","true"); unlockScroll(); }
 
     fab?.addEventListener("click", abrir);
     hdr?.addEventListener("click", abrir);
     btnX?.addEventListener("click", cerrar);
     modal?.addEventListener("click", (e)=>{ if (e.target === modal) cerrar(); });
 
-    window.__renderFeaturedIfOpen = function(){
-      if (modal.style.display === "flex") renderModal();
-    };
+    window.__renderFeaturedIfOpen = function(){ if (modal.style.display === "flex") renderModal(); };
     window.addEventListener("ja_products_updated", window.__renderFeaturedIfOpen);
 
     document.addEventListener("keydown", (e)=>{ if(e.key==="Escape" && modal.style.display==="flex"){ cerrar(); }});
   })();
   </script>
-  <!-- ================= /FAB + MODAL DESTACADOS ================= -->
 
   <!-- ======= OVERRIDES SOLICITADOS ======= -->
   <style>
-    /* 1) Ocultar la etiqueta/ribbon "DESTACADO" dentro del modal de destacados */
-    #modalDestacados .ribbon {
-      display: none !important;
-    }
-
-    /* 2) Hacer más pequeño el botón "Ver en Amazon" SOLO en el modal de destacados */
-    #modalDestacados .btnAmazon {
-      padding: 8px 10px !important;
-      font-size: 12px !important;
-      line-height: 1.1 !important;
-      border-radius: 8px !important;
-    }
+    /* ribbon y tamaños en modal (ya oculto) */
+    #modalDestacados .ribbon { display: none !important; }
+    #modalDestacados .btnAmazon { padding: 8px 10px !important; font-size: 12px !important; line-height: 1.1 !important; border-radius: 8px !important; }
   </style>
-  <!-- ======= /OVERRIDES SOLICITADOS ======= -->
 
-  <!-- ===================== BLOQUE NUEVO: inject logo Amazon en header ===================== -->
+  <!-- ===== Logo Amazon en header (enlace afiliado directo) ===== -->
   <script>
     (function(){
       const TAG = "kaninosabioan-20";
@@ -1647,7 +1626,6 @@
       else headerBar.appendChild(a);
     })();
   </script>
-  <!-- =================== /BLOQUE NUEVO =================== -->
 
 </body>
 </html>
