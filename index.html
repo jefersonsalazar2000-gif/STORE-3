@@ -58,9 +58,14 @@
     .admin-only{ display:none !important; }
     .is-admin .admin-only{ display:inline-flex !important; }
 
-    /* Botones del header SIEMPRE ocultos si no hay admin */
+    /* Botones del header ocultos salvo modo admin */
     .header-admin-btn{ display:none !important; }
     .is-admin .header-admin-btn{ display:inline-flex !important; }
+
+    /* Logo Amazon: chip claro y legible */
+    .logo-chip{ background:#fff !important; border:1px solid rgba(255,255,255,.12) }
+    .logo-chip img{ display:block; height:24px; width:auto; max-width:92px }
+    @media (min-width:640px){ .logo-chip img{ height:26px } }
   </style>
 
   <!-- Add-ons UI -->
@@ -132,12 +137,17 @@
       <!-- YouTube chip -->
       <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
 
-      <!-- Amazon logo (enlace afiliado) -->
-      <a href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" class="ml-1 inline-flex items-center justify-center w-10 h-10 rounded-xl chip hover:opacity-90" title="Ir a Amazon">
-        <!-- SVG Amazon simple (monocromo) -->
-        <svg viewBox="0 0 512 512" width="22" height="22" aria-hidden="true">
-          <path fill="currentColor" d="M432.7 334.9c-40.4 29.9-101.2 60.1-165.5 60.1-92.6 0-174.4-51.4-209.5-126.8-4.4-9.4 5.6-18.7 14.7-13.9 58.9 30.6 128.3 48.9 201.5 48.9 63.5 0 126.1-13.3 183-39.8 10.4-4.8 20.7 6.7 12.7 14.9-9.3 9.7-20.4 19-37 26.6zM354.4 395.6c-7.7 9.9-25.4 7.2-36.3 4.4-11.8-3-22.9-6.7-35.9-11.1-28.6-9.9-63.8-22.1-111.6-22.1-30.4 0-63.8 6.1-93.8 17.1-11.2 4.1-20-9.8-9.8-17.5 41-31 114.2-45.4 174.4-45.4 59 0 104.5 10.7 138.8 23.3 10.9 4.1 20.5 8.1 29.2 12.2 10.8 5 14.7 15.9 4.9 29z"/>
-        </svg>
+      <!-- Amazon (logo oficial, nítido) -->
+      <a href="https://www.amazon.com/?tag=kaninosabioan-20"
+         target="_blank" rel="nofollow sponsored noopener"
+         class="ml-1 inline-flex items-center justify-center h-10 rounded-xl px-3 logo-chip"
+         title="Ir a Amazon (afiliado)">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
+          alt="Amazon"
+          referrerpolicy="no-referrer"
+          loading="eager"
+        />
       </a>
 
       <!-- Botones ocultos por defecto; solo visibles en modo admin -->
@@ -184,7 +194,7 @@
     const AFF_TAG = "kaninosabioan-20";
     const LS_KEY  = 'ja_store_products_v2';
     const LS_FEATURED = 'ja_featured_ids_v1';
-    const MIGRATION_FLAG = 'ja_migrated_2025_10_07_fix_ids_v2'; // ⚠️ fuerza limpieza para corregir pares img/título
+    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v3';
 
     // ---- Migración 1 sola vez para limpiar datos antiguos/corruptos
     if (!localStorage.getItem(MIGRATION_FLAG)) {
@@ -213,7 +223,7 @@
       }
     }
     const norm = (p)=>({
-      id: (p.id || '').trim(),                               // <— ahora viene de la clave
+      id: (p.id || '').trim(),
       title: (p.title || p.TITLE || '').trim(),
       brand: (p.brand || p.BRAND || '').trim(),
       image: (p.image || p.IMAGE || '').trim(),
@@ -238,7 +248,7 @@
 
     // ---- Render
     function productCard(p){
-      const price = (p.price || p.price===0) && p.price!=='' ? `US$ ${Number(p.price).toLocaleString()}` : '';
+      const price = (p.price || p.price===0) && p.price!=='' ? `${Number(p.price).toLocaleString()}` : '';
       const starBtn = `
         <button class="admin-only ms360-star absolute top-2 right-2 z-10 bg-[rgba(14,20,48,.8)] border border-white/15 rounded-lg px-2 py-1 text-sm"
                 data-star="${p.id}"
@@ -329,7 +339,6 @@
       applyFilters();
     }
     document.addEventListener('keydown', (e)=>{
-      // Atajo Alt+A / Option+A
       if ((e.altKey || e.metaKey) && (e.key.toLowerCase()==='a')) {
         e.preventDefault();
         setAdmin(!isAdmin);
@@ -350,7 +359,6 @@
 
       function normalizeIncoming(data){
         const obj = data && data.PRODUCTOS ? data.PRODUCTOS : {};
-        // Mantenemos el ID desde la clave del JSON para que NUNCA se crucen imagen/título
         return Object.entries(obj).map(([id, data]) => {
           return norm({ ...data, id });
         });
@@ -362,10 +370,7 @@
           if(!res.ok) throw new Error("HTTP "+res.status);
           const json = await res.json();
 
-          // ✅ REEMPLAZA completamente (no mergea)
           const incoming = normalizeIncoming(json).filter(p => p.title && p.image);
-
-          // Fuerza tag correcto
           incoming.forEach(p => p.amazon = ensureTag(p.amazon));
 
           saveLocal(incoming);
@@ -400,7 +405,7 @@
     const btnAdmin = document.getElementById('btnAdmin');
     if (btnAdmin){
       btnAdmin.addEventListener('click', ()=>{
-        setAdmin(false); // al pulsarlo, sales del modo admin para que quede oculto
+        setAdmin(false);
       });
     }
 
@@ -432,7 +437,6 @@
       function enableTiles(){ html.classList.add('ms360-tiles'); }
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enableTiles, { once:true });
       else enableTiles();
-      // Asegura estado admin oculto si no está activo
       html.classList.toggle('is-admin', isAdmin);
     })();
   </script>
