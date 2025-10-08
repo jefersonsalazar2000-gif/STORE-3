@@ -182,17 +182,17 @@
 
         <!-- ICONOS ORIGINALES (YouTube → Instagram → Amazon) -->
         <div class="header-ctas--icons">
-          <!-- YouTube -->
+          <!-- YouTube: icono oficial 2017 (squircle/square) -->
           <a class="cta-icon" href="https://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube">
             <img src="https://commons.wikimedia.org/wiki/Special:FilePath/YouTube_social_red_square_(2017).svg" alt="YouTube">
           </a>
 
-          <!-- Instagram -->
+          <!-- Instagram: logo 2016 (degradado original) -->
           <a class="cta-icon" href="https://www.instagram.com/mega_store_360/" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
             <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Instagram_logo_2016.svg" alt="Instagram">
           </a>
 
-          <!-- Amazon (afiliado) -->
+          <!-- Amazon: logo oficial (wordmark + sonrisa) dentro de pastilla blanca -->
           <a class="cta-icon cta-amz" href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" title="Amazon" aria-label="Amazon">
             <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Amazon_logo.svg" alt="Amazon">
           </a>
@@ -664,218 +664,6 @@
         }).catch(()=>{});
       });
     }
-  </script>
-
-  <!-- ========== ADMIN BADGE + TAG TOOLS (nuevo) ========== -->
-  <style>
-    .admin-badge{position:fixed;right:14px;bottom:14px;z-index:9999;background:linear-gradient(135deg,#00E5FF,#7C3AED,#FF0099);
-      color:#0b0f1a;font:600 12px/1.2 system-ui,-apple-system,Segoe UI,Roboto;padding:10px 12px;border-radius:12px;
-      box-shadow:0 8px 24px rgba(0,0,0,.35);display:none}
-    .admin-badge small{display:block;opacity:.85}
-  </style>
-  <div id="adminBadge" class="admin-badge">
-    <div id="tagState">⏳ Chequeando tag…</div>
-    <small id="tagCount"></small>
-  </div>
-  <script>
-  (function(){
-    const AFF_TAG='kaninosabioan-20';
-    const AMAZON_HOSTS=['amazon.com','www.amazon.com','amzn.to','a.co'];
-    const isAdmin = document.documentElement.classList.contains('is-admin') || localStorage.getItem('ja_admin');
-
-    const $badge=document.getElementById('adminBadge');
-    const $state=document.getElementById('tagState');
-    const $count=document.getElementById('tagCount');
-    if(isAdmin) $badge.style.display='block';
-
-    function getAmazonLinks(){
-      return [...document.querySelectorAll('a[href]')].filter(a=>{
-        try{ const u=new URL(a.href,location.origin); return AMAZON_HOSTS.includes(u.hostname); }catch{ return false; }
-      });
-    }
-    function verifyTag(){
-      const links=getAmazonLinks();
-      let withTag=0, withoutTag=0;
-      links.forEach(a=>{
-        try{
-          const u=new URL(a.href,location.origin);
-          if(u.hostname.endsWith('amazon.com')){
-            if(u.searchParams.get('tag')===AFF_TAG) withTag++; else withoutTag++;
-          }
-        }catch{}
-      });
-      if(isAdmin){
-        $state.textContent = withoutTag===0 ? `✅ Afiliado activo: ${AFF_TAG}` : `⚠️ Faltan ${withoutTag} enlaces con tag`;
-        $count.textContent = `Con tag: ${withTag}`;
-      }
-      return {withTag, withoutTag};
-    }
-    function autoFixTag(){
-      const links=getAmazonLinks(); let fixed=0;
-      links.forEach(a=>{
-        try{
-          const u=new URL(a.href,location.origin);
-          if(u.hostname.endsWith('amazon.com') && u.searchParams.get('tag')!==AFF_TAG){
-            u.searchParams.set('tag',AFF_TAG); a.href=u.toString(); fixed++;
-          }
-        }catch{}
-      });
-      if(isAdmin){ $state.textContent=`🔧 Enlaces corregidos: ${fixed}`; verifyTag(); }
-      return fixed;
-    }
-    window.MS360_TagTools={verifyTag,autoFixTag};
-    verifyTag();
-
-    // Conecta los botones del header si están presentes
-    document.getElementById('btnVerify')?.addEventListener('click', ()=> MS360_TagTools.verifyTag());
-    document.getElementById('btnFix')?.addEventListener('click', ()=> MS360_TagTools.autoFixTag());
-  })();
-  </script>
-
-  <!-- ========== PRODUCT EDITOR (añadir/editar/eliminar + export, nuevo) ========== -->
-  <script>
-  (function(){
-    const LS_KEY  = 'ja_store_products_v2';
-    const LS_EDITS= 'ja_store_edits_v1';
-    const isAdmin = !!localStorage.getItem('ja_admin');
-
-    const $grid = document.getElementById('grid');
-    const $btnAdd = document.getElementById('btnAdd');
-
-    function loadBase(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||[] }catch{ return [] } }
-    function loadEdits(){ try{ return JSON.parse(localStorage.getItem(LS_EDITS))||{add:[],upd:{},del:[]} }catch{ return {add:[],upd:{},del:[]} } }
-    function saveEdits(m){ localStorage.setItem(LS_EDITS, JSON.stringify(m)); }
-
-    function merge(){
-      const base = loadBase();
-      const edits = loadEdits();
-      const killed = new Set(edits.del||[]);
-      const updMap = edits.upd||{};
-      const merged = base.filter(p=>!killed.has(p.id)).map(p=>updMap[p.id]?{...p,...updMap[p.id]}:p);
-      (edits.add||[]).forEach(p=>{ if(!merged.find(x=>x.id===p.id)) merged.push(p); });
-      localStorage.setItem(LS_KEY, JSON.stringify(merged));
-      window.dispatchEvent(new Event('ja_products_updated'));
-      return merged;
-    }
-    window.addEventListener('ja_products_updated', ()=> setTimeout(merge,0));
-
-    function decorateCards(){
-      if(!isAdmin) return;
-      $grid.querySelectorAll('article.card').forEach(card=>{
-        if(card.querySelector('[data-msedit]')) return;
-        const id = (card.querySelector('[data-star]')?.getAttribute('data-star')) || '';
-        if(!id) return;
-        const wrap = document.createElement('div');
-        wrap.setAttribute('data-msedit','');
-        wrap.style.cssText='position:absolute;left:8px;top:8px;display:flex;gap:6px';
-        wrap.innerHTML = `
-          <button class="chip px-2 py-1 rounded-md text-xs">✎ Editar</button>
-          <button class="chip px-2 py-1 rounded-md text-xs">🗑 Eliminar</button>`;
-        const [btnEdit, btnDel] = wrap.querySelectorAll('button');
-        btnEdit.addEventListener('click', (e)=>{ e.stopPropagation(); openEditor(id); });
-        btnDel.addEventListener('click',  (e)=>{ e.stopPropagation(); delProduct(id); });
-        card.appendChild(wrap);
-      });
-    }
-    const mo = new MutationObserver(()=> decorateCards());
-    mo.observe($grid, {childList:true, subtree:true});
-
-    function openEditor(id=null){
-      const merged = JSON.parse(localStorage.getItem(LS_KEY)||'[]');
-      const current = id ? merged.find(p=>p.id===id) : {id:'',title:'',brand:'',image:'',amazon:'',price:'',category:'Otros'};
-      const isNew = !id;
-
-      const shade=document.createElement('div');
-      shade.style.cssText='position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px';
-      shade.innerHTML=`
-        <div class="card rounded-2xl p-5 max-w-xl w-full relative">
-          <button id="msEdClose" class="ms360-ibtn absolute top-3 right-3">✕</button>
-          <h2 class="text-lg font-extrabold mb-4">${isNew? 'Agregar producto' : 'Editar producto'}</h2>
-          <div class="grid gap-3">
-            <label class="text-sm">ID <input id="msEdId" class="input w-full" placeholder="id-unico" value="${current.id}" ${isNew?'':'readonly'}/></label>
-            <label class="text-sm">Título <input id="msEdTitle" class="input w-full" value="${current.title||''}"/></label>
-            <label class="text-sm">Marca <input id="msEdBrand" class="input w-full" value="${current.brand||''}"/></label>
-            <label class="text-sm">Imagen URL <input id="msEdImage" class="input w-full" value="${current.image||''}"/></label>
-            <label class="text-sm">Amazon URL <input id="msEdAmazon" class="input w-full" value="${current.amazon||''}"/></label>
-            <label class="text-sm">Precio <input id="msEdPrice" type="number" step="0.01" class="input w-full" value="${current.price||''}"/></label>
-            <label class="text-sm">Categoría <input id="msEdCat" class="input w-full" value="${current.category||'Otros'}"/></label>
-          </div>
-          <div class="mt-4 flex gap-2">
-            <button id="msEdSave" class="btn-neon rounded-lg px-4 py-2">${isNew?'Agregar':'Guardar'}</button>
-            <button id="msEdExport" class="chip rounded-lg px-3 py-2">Exportar JSON</button>
-          </div>
-        </div>`;
-      document.body.appendChild(shade);
-
-      const $ = (sel)=> shade.querySelector(sel);
-      $('#msEdClose').onclick = ()=> shade.remove();
-
-      $('#msEdSave').onclick = ()=>{
-        const obj = {
-          id: $('#msEdId').value.trim(),
-          title: $('#msEdTitle').value.trim(),
-          brand: $('#msEdBrand').value.trim(),
-          image: $('#msEdImage').value.trim(),
-          amazon: $('#msEdAmazon').value.trim(),
-          price: $('#msEdPrice').value ? Number($('#msEdPrice').value) : '',
-          category: $('#msEdCat').value.trim() || 'Otros',
-          createdAt: Date.now()
-        };
-        if(!obj.id || !obj.title || !obj.image || !obj.amazon){ alert('ID, Título, Imagen y Amazon son obligatorios'); return; }
-
-        const edits = loadEdits();
-        if(isNew){
-          const exists = merged.some(p=>p.id===obj.id);
-          if(exists){ alert('Ese ID ya existe'); return; }
-          edits.add = [...(edits.add||[]), obj];
-        }else{
-          edits.upd = {...(edits.upd||{}), [obj.id]: obj};
-        }
-        saveEdits(edits);
-        merge();
-        shade.remove();
-      };
-
-      $('#msEdExport').onclick = ()=>{
-        const finalList = JSON.parse(localStorage.getItem(LS_KEY)||'[]');
-        const out = { PRODUCTOS: Object.fromEntries(finalList.map(p=>[p.id,{
-          TITLE:p.title, BRAND:p.brand, IMAGE:p.image, AMAZON:p.amazon, PRICE:p.price, CATEGORY:p.category, FEATURE:false
-        }])) };
-        const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
-        const url=URL.createObjectURL(blob); const a=document.createElement('a');
-        a.href=url; a.download='products.json (MERGED, súbelo a GitHub).json'; a.click(); URL.revokeObjectURL(url);
-      };
-    }
-
-    function delProduct(id){
-      if(!confirm('¿Eliminar este producto?')) return;
-      const edits = loadEdits();
-      edits.add = (edits.add||[]).filter(p=>p.id!==id);
-      const upd = {...(edits.upd||{})}; delete upd[id]; edits.upd=upd;
-      edits.del = Array.from(new Set([...(edits.del||[]), id]));
-      saveEdits(edits);
-      merge();
-    }
-
-    if(isAdmin && $btnAdd){
-      $btnAdd.disabled=false;
-      $btnAdd.addEventListener('click', ()=> openEditor(null));
-    }
-
-    merge(); // aplica edits si ya existían
-  })();
-  </script>
-
-  <!-- ========== HOOK para reflejar botón +Agregar al cambiar admin (opcional) ========== -->
-  <script>
-    window.addEventListener('storage', ()=>{
-      const isAdmin = !!localStorage.getItem('ja_admin');
-      const btnAdd = document.getElementById('btnAdd');
-      if(btnAdd){
-        btnAdd.disabled = !isAdmin;
-        btnAdd.classList.toggle('admin-only', !isAdmin);
-      }
-    });
   </script>
 
 </body>
