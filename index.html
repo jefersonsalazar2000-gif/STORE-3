@@ -62,12 +62,11 @@
     .header-admin-btn{ display:none !important; }
     .is-admin .header-admin-btn{ display:inline-flex !important; }
 
-    /* Logo Amazon (para el botón lateral antiguo) */
+    /* Botón Amazon antiguo (se oculta con CSS más abajo) */
     .logo-chip{ background:#fff !important; border:1px solid rgba(255,255,255,.12) }
     .logo-chip img{ display:block; height:24px; width:auto; max-width:92px }
     @media (min-width:640px){ .logo-chip img{ height:26px } }
 
-    /* Bloqueo de scroll cuando el revisor está abierto */
     .no-scroll{ position:fixed; overflow:hidden; width:100%; }
   </style>
 
@@ -116,40 +115,32 @@
     @media (min-width:1024px){ html.ms360-tiles #grid{ grid-template-columns:repeat(5,minmax(0,1fr)) !important; } }
   </style>
 
-  <!-- ======== AJUSTES HEADER: título + dos botones debajo ======== -->
+  <!-- ======== AJUSTES HEADER ======== -->
   <style>
-    /* Título: mismo degradado de J_A, 1 línea, más compacto y profesional */
+    /* Título: degradado igual a J_A, 1 línea, profesional */
     header .flex-1 h1{
       background: var(--grad-1) !important;
       -webkit-background-clip: text !important; background-clip: text !important;
       color: transparent !important; text-shadow: 0 0 18px rgba(124,58,237,.25) !important;
       white-space: nowrap !important; overflow: hidden; text-overflow: ellipsis;
       font-weight: 900 !important; letter-spacing: .02em;
-      font-size: clamp(18px, 6vw, 34px); line-height: 1.05;
-      margin-bottom: .35rem;
+      font-size: clamp(18px, 6vw, 34px); line-height: 1.05; margin-bottom:.35rem;
     }
-    /* Quitar subtítulo para mantener limpio */
+    /* Sin subtítulo para limpiar */
     header .flex-1 > p{ display:none !important; }
 
-    /* Filas de CTAs (solo YouTube + Amazon) bajo el título */
-    .header-ctas{
-      display:flex; gap:.5rem; align-items:center; flex-wrap:wrap;
-    }
+    /* Fila de CTAs alineada a la DERECHA, justo debajo del título */
+    .header-ctas{ display:flex; gap:.5rem; align-items:center; justify-content:flex-end; flex-wrap:wrap; }
     .cta{
-      display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
-      height:36px; padding:0 .9rem; border-radius:12px; font-weight:800; font-size:.9rem;
-      border:1px solid rgba(255,255,255,.12);
+      display:inline-flex; align-items:center; justify-content:center; gap:.55rem;
+      height:36px; padding:0 1rem; border-radius:12px; font-weight:800; font-size:.92rem;
+      border:1px solid rgba(255,255,255,.12); white-space:nowrap;
     }
     .cta svg,.cta img{ height:18px; width:auto; display:block }
     .cta-yb{ background:var(--btn-grad); color:#0b0f1a; }
     .cta-amz{ background:#fff; color:#0b0f1a; }
-    /* En pantallas muy pequeñas, esconde el texto para que el logo siempre se vea */
-    @media (max-width:380px){
-      .cta span{ display:none; }
-      .cta{ width:44px; padding:0; }
-    }
 
-    /* Ocultar los botones antiguos del lado derecho del header: SOLO queremos 2 */
+    /* Oculta los botones antiguos del extremo derecho del header */
     header .max-w-7xl > a[href*="youtube.com"],
     header .max-w-7xl > a.logo-chip{ display:none !important; }
   </style>
@@ -168,27 +159,28 @@
 
       <div class="flex-1">
         <h1 class="text-xl sm:text-2xl font-extrabold neon-title leading-none">MEGA STORE 360</h1>
-        <!-- CTAs NUEVAS: SOLO DOS, bajo el título -->
+
+        <!-- CTAs NUEVAS: SOLO 2, a la DERECHA y debajo del título -->
         <div class="header-ctas">
           <a class="cta cta-yb" href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" rel="noopener">
-            <!-- Ícono YouTube (SVG inline para que siempre se vea) -->
+            <!-- Ícono YouTube inline (texto completo "YouTube") -->
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.5a4 4 0 0 0-2.8-2.8C18.7 3 12 3 12 3s-6.7 0-8.7.7A4 4 0 0 0 .5 6.5 41 41 0 0 0 0 12a41 41 0 0 0 .5 5.5 4 4 0 0 0 2.8 2.8C5.3 21 12 21 12 21s6.7 0 8.7-.7a4 4 0 0 0 2.8-2.8A41 41 0 0 0 24 12a41 41 0 0 0-.5-5.5Z" fill="currentColor" opacity=".25"/><path d="M10 8.5v7l6-3.5-6-3.5Z" fill="currentColor"/></svg>
             <span>YouTube</span>
           </a>
           <a class="cta cta-amz" href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="" referrerpolicy="no-referrer">
+            <!-- Logo oficial Amazon -->
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" referrerpolicy="no-referrer">
             <span>Amazon</span>
           </a>
         </div>
       </div>
 
-      <!-- (Los botones del lado derecho siguen en el HTML original pero se ocultan por CSS) -->
+      <!-- (Se dejan, pero ocultos por CSS) -->
       <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
       <a href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" class="ml-1 inline-flex items-center justify-center h-10 rounded-xl px-3 logo-chip" title="Ir a Amazon (afiliado)">
         <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" referrerpolicy="no-referrer" loading="eager"/>
       </a>
 
-      <!-- Botones ocultos por defecto; solo visibles en modo admin -->
       <div class="flex items-center gap-2">
         <button id="btnSettings" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 header-admin-btn">Ajustes</button>
         <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 header-admin-btn">Salir Admin</button>
