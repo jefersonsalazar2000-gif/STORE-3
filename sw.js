@@ -1,51 +1,72 @@
-// sw.js — caché pro con Stale-While-Revalidate
-const CACHE_STATIC = 'ms360-static-v3';
-const CACHE_RUNTIME = 'ms360-rt-v3';
-const STATIC_ASSETS = [
-  '/', '/index.html',
-  '/icon-180x180-v6.png', '/icon-192x192-v6.png',
-  'https://cdn.tailwindcss.com'
+/* J_A MEGA STORE 360 — Service Worker con actualización instantánea */
+const CACHE_NAME = 'ms360-cache-v3';
+const NEVER_CACHE = [
+  'https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json'
 ];
 
-self.addEventListener('install', e=>{
-  e.waitUntil(caches.open(CACHE_STATIC).then(c=>c.addAll(STATIC_ASSETS)));
+// Tomar control inmediato
+self.addEventListener('install', (e) => {
   self.skipWaiting();
 });
 
-self.addEventListener('activate', e=>{
-  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>{
-    if(![CACHE_STATIC,CACHE_RUNTIME].includes(k)) return caches.delete(k);
-  }))));
-  self.clients.claim();
+// Limpiar caches viejos y reclamar clientes
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.map(k => (k === CACHE_NAME ? null : caches.delete(k))))
+    ).then(() => self.clients.claim())
+  );
 });
 
-const SWR = async (req) => {
-  const cache = await caches.open(CACHE_RUNTIME);
-  const cached = await cache.match(req);
-  const fetchPromise = fetch(req).then(res=>{
-    if(res && res.status===200 && res.type!=='opaque') cache.put(req, res.clone());
-    return res;
-  }).catch(()=> cached);
-  return cached || fetchPromise;
-};
+// Mensaje desde la página para saltar espera
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
-self.addEventListener('fetch', e=>{
-  const url = new URL(e.request.url);
-  if (/products\.json$/i.test(url.pathname) ||
-      /\.(?:png|jpg|jpeg|gif|webp|avif)$/i.test(url.pathname) ||
-      url.hostname.includes('fonts.googleapis.com') ||
-      url.hostname.includes('fonts.gstatic.com') ||
-      url.hostname.includes('raw.githubusercontent.com')) {
-    e.respondWith(SWR(e.request));
+// Estrategias:
+// - Navegación/HTML: network-first (si falla, cache)
+// - Imágenes/CSS/JS: stale-while-revalidate
+// - products.json y cualquier URL en NEVER_CACHE: siempre network, sin cache
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = request.url;
+
+  // Nunca cachear ciertos recursos (productos.json)
+  if (NEVER_CACHE.some(x => url.startsWith(x))) {
+    event.respondWith(fetch(request, { cache: 'no-store' }));
     return;
   }
-  if (e.request.mode === 'navigate') {
-    e.respondWith(
-      caches.match('/index.html').then(r=> r || fetch(e.request))
+
+  // HTML y navegaciones
+  const isHTML = request.mode === 'navigate' ||
+                 (request.headers.get('accept') || '').includes('text/html');
+
+  if (isHTML) {
+    event.respondWith(
+      fetch(request, { cache: 'no-store' })
+        .then((resp) => {
+          const clone = resp.clone();
+          caches.open(CACHE_NAME).then(c => c.put(request, clone)).catch(()=>{});
+          return resp;
+        })
+        .catch(() => caches.match(request))
     );
     return;
   }
-  e.respondWith(
-    fetch(e.request).catch(()=> caches.match(e.request))
+
+  // Otros: stale-while-revalidate
+  event.respondWith(
+    caches.match(request).then((cached) => {
+      const fetchPromise = fetch(request).then((networkResp) => {
+        // No guardes respuestas opacas o errores
+        if (networkResp && networkResp.ok && networkResp.type !== 'opaque') {
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, networkResp.clone())).catch(()=>{});
+        }
+        return networkResp;
+      }).catch(() => cached || fetch(request, { cache: 'force-cache' }));
+      return cached || fetchPromise;
+    })
   );
 });
