@@ -75,16 +75,12 @@
   <style>
     :root { --ms360-ring: 0 0 0 1.5px rgba(124,58,237,.45), 0 0 18px rgba(124,58,237,.35), inset 0 0 12px rgba(0,229,255,.25) }
     :focus-visible { outline:2px solid #7C3AED; outline-offset:2px }
-    .ms360-focus:focus-visible { box-shadow: var(--ms360-ring) }
     .ms360-skeleton{position:relative;overflow:hidden;background:#0f1430}
     .ms360-skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);transform:translateX(-100%);animation:ms360-shimmer 1.1s infinite}
-    @keyframes ms360-shimmer{100%{transform:translateX(100%)}}
     #ms360-top{position:fixed;right:14px;bottom:14px;z-index:9998;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s, transform .2s}
     #ms360-top.ms360-show{opacity:1;pointer-events:auto;transform:translateY(0)}
     #ms360-toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:10000;display:grid;gap:8px}
-    .ms360-toast{background:rgba(18,23,42,.96);border:1px solid rgba(124,58,237,.35);color:#fff;padding:10px 14px;border-radius:12px}
-    .ms360-actions{position:absolute;top:10px;right:10px;display:flex;gap:6px}
-    .ms360-ibtn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:rgba(14,20,48,.75);border:1px solid rgba(255,255,255,.12);color:#fff;backdrop-filter:blur(6px);transition:transform .12s ease,border-color .12s ease}
+    .ms360-ibtn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:rgba(14,20,48,.75);border:1px solid rgba(255,255,255,.12);color:#fff;backdrop-filter:blur(6px);transition:transform .12s,border-color .12s}
     .ms360-ibtn:hover{transform:translateY(-1px) scale(1.03);border-color:rgba(255,255,255,.25)}
   </style>
 
@@ -127,15 +123,15 @@
   <!-- Header -->
   <header class="toolbar sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-      <div id="brandTrigger" class="w-10 h-10 rounded-xl gradient-border flex items-center justify-center shrink-0">
+      <div id="brandTrigger" class="w-10 h-10 rounded-xl gradient-border flex items-center justify-center shrink-0 select-none">
         <div class="w-full h-full rounded-[14px] bg-[#0e1430] flex items-center justify-center">
-          <!-- J_A con degradado igual que el título -->
+          <!-- J_A con degradado -->
           <span class="text-xl font-extrabold neon-title">J_A</span>
         </div>
       </div>
       <div class="flex-1">
         <h1 class="text-xl sm:text-2xl font-extrabold neon-title leading-none">MEGA STORE 360</h1>
-        <p class="text-xs text-white/70 -mt-0.5">De todo • Tecnología • Hogar • Accesorios</p>
+        <p class="text-xs neon-title -mt-0.5">De todo • Tecnología • Hogar • Accesorios</p>
       </div>
 
       <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
@@ -145,18 +141,13 @@
          target="_blank" rel="nofollow sponsored noopener"
          class="ml-1 inline-flex items-center justify-center h-10 rounded-xl px-3 logo-chip"
          title="Ir a Amazon (afiliado)">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
-          alt="Amazon"
-          referrerpolicy="no-referrer"
-          loading="eager"
-        />
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" referrerpolicy="no-referrer" loading="eager"/>
       </a>
 
       <!-- Botones ocultos por defecto; solo visibles en modo admin -->
       <div class="flex items-center gap-2">
         <button id="btnSettings" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 header-admin-btn">Ajustes</button>
-        <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 header-admin-btn">Admin</button>
+        <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 header-admin-btn">Salir Admin</button>
         <button id="btnVerify" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 header-admin-btn hidden">Verificar Tag</button>
         <button id="btnFix" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 header-admin-btn hidden">Auto-Fix Tag</button>
         <button id="btnDestacadosHeader" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">★ Destacados</button>
@@ -197,15 +188,15 @@
     const AFF_TAG = "kaninosabioan-20";
     const LS_KEY  = 'ja_store_products_v2';
     const LS_FEATURED = 'ja_featured_ids_v1';
-    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v5';
+    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v6';
 
-    // ---- Migración 1 sola vez para limpiar datos antiguos/corruptos
+    // ---- Migración (limpia datos locales antiguos)
     if (!localStorage.getItem(MIGRATION_FLAG)) {
       try { localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_FEATURED); } catch {}
       localStorage.setItem(MIGRATION_FLAG, '1');
     }
 
-    // ---- Helpers Featured
+    // ---- Featured
     const feat = {
       get(){ try{return JSON.parse(localStorage.getItem(LS_FEATURED))||[]}catch{return[]} },
       set(v){ localStorage.setItem(LS_FEATURED, JSON.stringify(v||[])) },
@@ -213,7 +204,7 @@
       toggle(id){ const s=new Set(feat.get()); s.has(id)?s.delete(id):s.add(id); feat.set([...s]) }
     };
 
-    // ---- Normalización segura + afiliado
+    // ---- Afiliado
     function ensureTag(url){
       if(!url) return "#";
       try{
@@ -225,6 +216,8 @@
         return `${url}${sep}tag=${AFF_TAG}`;
       }
     }
+
+    // ---- Normalizador
     const norm = (p)=>({
       id: (p.id || '').trim(),
       title: (p.title || p.TITLE || '').trim(),
@@ -251,15 +244,14 @@
 
     // ---- Render
     function productCard(p){
-      // Mostrar precio solo si > 0 (evita "0" y "US$")
+      // Muestra precio solo si > 0
       const nprice = Number(p.price);
       const showPrice = Number.isFinite(nprice) && nprice > 0;
       const price = showPrice ? `${nprice.toLocaleString()}` : '';
 
       const starBtn = `
         <button class="admin-only ms360-star absolute top-2 right-2 z-10 bg-[rgba(14,20,48,.8)] border border-white/15 rounded-lg px-2 py-1 text-sm"
-                data-star="${p.id}"
-                aria-pressed="${feat.has(p.id)?'true':'false'}"
+                data-star="${p.id}" aria-pressed="${feat.has(p.id)?'true':'false'}"
                 title="${feat.has(p.id)?'Quitar de primeros':'Fijar al inicio'}">
           ${feat.has(p.id)?'★':'☆'}
         </button>`;
@@ -338,25 +330,55 @@
     search.addEventListener('input', applyFilters, {passive:true});
     categoryFilter.addEventListener('change', applyFilters, {passive:true});
 
-    // ---- Activación secreta de Admin
+    // ---- Activación Admin (4 métodos)
     function setAdmin(on){
       isAdmin = !!on;
       document.documentElement.classList.toggle('is-admin', isAdmin);
       if (isAdmin) localStorage.setItem('ja_admin','1'); else localStorage.removeItem('ja_admin');
       applyFilters();
     }
-    document.addEventListener('keydown', (e)=>{
-      if ((e.altKey || e.metaKey) && (e.key.toLowerCase()==='a')) {
-        e.preventDefault();
-        setAdmin(!isAdmin);
-      }
-    }, {passive:false});
+    // 1) /admin + Enter
     search.addEventListener('keydown',(e)=>{
       if (e.key==='Enter' && search.value.trim().toLowerCase()==='/admin'){
-        e.preventDefault();
-        search.value='';
-        setAdmin(!isAdmin);
+        e.preventDefault(); search.value=''; setAdmin(!isAdmin);
       }
+    });
+    // 2) Atajos de teclado
+    document.addEventListener('keydown', (e)=>{
+      const k = e.key.toLowerCase();
+      if ((e.altKey && k==='a') || (e.metaKey && e.shiftKey && k==='a') || (e.ctrlKey && e.shiftKey && k==='a')){
+        e.preventDefault(); setAdmin(!isAdmin);
+      }
+    }, {passive:false});
+    // 3) Long-press en el logo J_A
+    (function(){
+      const trigger = document.getElementById('brandTrigger');
+      let t=null;
+      trigger.addEventListener('pointerdown', ()=>{ t=setTimeout(()=>setAdmin(!isAdmin), 1200); });
+      const clear=()=>{ if(t){clearTimeout(t); t=null;} };
+      ['pointerup','pointerleave','pointercancel'].forEach(ev=>trigger.addEventListener(ev, clear));
+    })();
+    // 4) ?admin=1 o #admin
+    (function(){
+      const sp = new URLSearchParams(location.search);
+      if (sp.get('admin')==='1' || location.hash.includes('admin')) setAdmin(true);
+    })();
+
+    // ---- Botones del header (solo cuando ya estás en admin)
+    document.getElementById('btnAdmin')?.addEventListener('click', ()=> setAdmin(false));
+    document.getElementById('btnSettings')?.addEventListener('click', ()=> alert('Panel de ajustes próximamente.'));
+
+    // ---- Verificador / Auto-Fix Tag (solo admin)
+    const btnVerify = document.getElementById('btnVerify');
+    const btnFix = document.getElementById('btnFix');
+    btnVerify?.addEventListener('click', () => {
+      const as = [...document.querySelectorAll('a[href*="amazon."]')];
+      const bad = as.filter(a => !/[\?&]tag=/.test(a.href));
+      alert(`Links Amazon: ${as.length} | Con tag: ${as.length-bad.length} | Sin tag: ${bad.length}`);
+    });
+    btnFix?.addEventListener('click', () => {
+      document.querySelectorAll('a[href*="amazon."]').forEach(a => a.href = ensureTag(a.href));
+      alert('Auto-Fix aplicado');
     });
 
     // ================== AUTO-SYNC GITHUB (REPLACE + ID estable) ==================
@@ -366,9 +388,7 @@
 
       function normalizeIncoming(data){
         const obj = data && data.PRODUCTOS ? data.PRODUCTOS : {};
-        return Object.entries(obj).map(([id, data]) => {
-          return norm({ ...data, id });
-        });
+        return Object.entries(obj).map(([id, data]) => norm({ ...data, id }));
       }
 
       async function pull(){
@@ -396,7 +416,7 @@
       document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
     })();
 
-    // ---- Parche universal de enlaces Amazon en el DOM + Interceptor de clic
+    // ---- Parche universal + Interceptor de clic para tag
     (function(){
       function patch(){
         document.querySelectorAll('a[href*="amazon."]').forEach(a=>{
@@ -405,7 +425,6 @@
           a.target = '_blank';
         });
       }
-      // Interceptor: fuerza el tag justo al hacer clic
       document.addEventListener('click', (ev)=>{
         const a = ev.target.closest && ev.target.closest('a[href]');
         if(!a) return;
@@ -418,7 +437,6 @@
           }
         }catch{}
       }, {capture:true});
-
       window.addEventListener('load', patch, {once:true});
       new MutationObserver(patch).observe(document.body,{childList:true,subtree:true});
     })();
@@ -427,31 +445,18 @@
     const LS_OVERRIDES = 'ja_image_overrides_v1';
     function getOverrides(){ try{return JSON.parse(localStorage.getItem(LS_OVERRIDES))||{}}catch{return{}} }
     function setOverrides(v){ localStorage.setItem(LS_OVERRIDES, JSON.stringify(v||{})); }
-
-    // Aplicar overrides al listado
     function applyImageOverrides(list){
       const map = getOverrides();
-      return list.map(p => {
-        if (map[p.id] && map[p.id].image) p.image = map[p.id].image;
-        return p;
-      });
+      return list.map(p => { if (map[p.id]?.image) p.image = map[p.id].image; return p; });
     }
 
-    // Helpers scroll-lock para el modal
+    // Scroll-lock helpers
     let __scrollY = 0;
-    function lockScroll(){
-      __scrollY = window.scrollY || 0;
-      document.body.classList.add('no-scroll');
-      document.body.style.top = `-${__scrollY}px`;
-    }
-    function unlockScroll(){
-      document.body.classList.remove('no-scroll');
-      document.body.style.top = '';
-      window.scrollTo(0, __scrollY);
-    }
+    function lockScroll(){ __scrollY = window.scrollY||0; document.body.classList.add('no-scroll'); document.body.style.top=`-${__scrollY}px`; }
+    function unlockScroll(){ document.body.classList.remove('no-scroll'); document.body.style.top=''; window.scrollTo(0,__scrollY); }
 
-    // Inserta botón flotante “Revisar imágenes” (solo admin)
-    (function addImageAuditUI(){
+    // Botón flotante (aparece en admin)
+    (function(){
       const btn = document.createElement('button');
       btn.textContent = 'Revisar imágenes';
       btn.id = 'imgAuditBtn';
@@ -490,50 +495,39 @@
           </div>
         </div>
       `;
-      document.body.appendChild(wrap);
-      lockScroll();
+      document.body.appendChild(wrap); lockScroll();
 
       wrap.querySelector('#imgAuditClose').onclick = ()=>{ wrap.remove(); unlockScroll(); };
-      bindAuditActions();
-      bindExportActions();
+      bindAuditActions(); bindExportActions();
     }
 
     function bindExportActions(){
       const btnExport = document.getElementById('imgAuditExport');
       const btnReset  = document.getElementById('imgAuditReset');
-      if (btnExport){
-        btnExport.onclick = ()=>{
-          const data = JSON.stringify(getOverrides(), null, 2);
-          const blob = new Blob([data], {type:'application/json'});
-          const url  = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url; a.download = 'image_overrides.json';
-          document.body.appendChild(a); a.click(); a.remove();
-          URL.revokeObjectURL(url);
-          alert('Descargado: image_overrides.json. Sube estos cambios a tu products.json para que se vean en incógnito y en todos los dispositivos.');
-        };
-      }
-      if (btnReset){
-        btnReset.onclick = ()=>{
-          localStorage.removeItem(LS_OVERRIDES);
-          products = loadLocal();
-          applyFilters();
-          alert('Correcciones locales borradas en este navegador.');
-        };
-      }
+      btnExport.onclick = ()=>{
+        const data = JSON.stringify(getOverrides(), null, 2);
+        const blob = new Blob([data], {type:'application/json'});
+        const url  = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'image_overrides.json';
+        document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+        alert('Descargado: image_overrides.json. Sube estos cambios a tu products.json para que se vean en incógnito.');
+      };
+      btnReset.onclick = ()=>{
+        localStorage.removeItem(LS_OVERRIDES);
+        products = loadLocal(); products = applyImageOverrides(products); applyFilters();
+        alert('Correcciones locales borradas en este navegador.');
+      };
     }
 
     function findDuplicateImages(list){
       const map = {};
       list.forEach(p=>{
-        const key = (p.image||'').trim();
-        if(!key) return;
-        map[key] = map[key] || [];
-        map[key].push(p);
+        const key = (p.image||'').trim(); if(!key) return;
+        map[key] = map[key] || []; map[key].push(p);
       });
       return Object.values(map).filter(arr => arr.length > 1);
     }
-
     function findSuspects(list){
       const out = [];
       list.forEach(p=>{
@@ -546,62 +540,40 @@
       });
       return out;
     }
-
     function renderDupeTable(groups){
       if(!groups.length) return `<div class="text-white/60">Sin duplicados. ✅</div>`;
       return groups.map(g=>{
         const rows = g.map(p=>`
           <tr data-id="${p.id}">
-            <td class="align-top p-2 w-[72px]">
-              <img src="${p.image}" alt="" class="w-16 h-16 object-contain bg-soft rounded-md"/>
-            </td>
+            <td class="align-top p-2 w-[72px]"><img src="${p.image}" alt="" class="w-16 h-16 object-contain bg-soft rounded-md"/></td>
             <td class="align-top p-2">
               <div class="font-semibold">${p.title}</div>
               <div class="text-white/60 text-xs">${p.id}</div>
-              <div class="mt-1">
-                <input class="input w-full" placeholder="Pega URL de imagen correcta"
-                       value="${p.image}" data-edit="${p.id}" />
-              </div>
+              <div class="mt-1"><input class="input w-full" placeholder="Pega URL de imagen correcta" value="${p.image}" data-edit="${p.id}" /></div>
             </td>
-            <td class="align-top p-2 w-[140px]">
-              <button class="btn-neon rounded-lg px-3 py-2 w-full" data-save="${p.id}">Guardar</button>
-            </td>
+            <td class="align-top p-2 w-[140px]"><button class="btn-neon rounded-lg px-3 py-2 w-full" data-save="${p.id}">Guardar</button></td>
           </tr>
         `).join('');
         return `
-          <div class="overflow-auto rounded-xl border border-white/10">
-            <table class="w-full text-sm"><tbody>${rows}</tbody></table>
-          </div>
+          <div class="overflow-auto rounded-xl border border-white/10"><table class="w-full text-sm"><tbody>${rows}</tbody></table></div>
           ${g.length===2 ? `<div class="mt-2"><button class="chip px-3 py-2 rounded-lg" data-swap="${g[0].id},${g[1].id}">Intercambiar imágenes</button></div>` : ''}
         `;
       }).join('<div class="h-4"></div>');
     }
-
     function renderSuspectTable(list){
       if(!list.length) return `<div class="text-white/60">Sin sospechosos. ✅</div>`;
       const rows = list.map(p=>`
         <tr data-id="${p.id}">
-          <td class="align-top p-2 w-[72px]">
-            <img src="${p.image}" alt="" class="w-16 h-16 object-contain bg-soft rounded-md"/>
-          </td>
+          <td class="align-top p-2 w-[72px]"><img src="${p.image}" alt="" class="w-16 h-16 object-contain bg-soft rounded-md"/></td>
           <td class="align-top p-2">
             <div class="font-semibold">${p.title}</div>
             <div class="text-white/60 text-xs">${p.id} • ${p.category}</div>
-            <div class="mt-1">
-              <input class="input w-full" placeholder="Pega URL de imagen correcta"
-                     value="${p.image}" data-edit="${p.id}" />
-            </div>
+            <div class="mt-1"><input class="input w-full" placeholder="Pega URL de imagen correcta" value="${p.image}" data-edit="${p.id}" /></div>
           </td>
-          <td class="align-top p-2 w-[140px]">
-            <button class="btn-neon rounded-lg px-3 py-2 w-full" data-save="${p.id}">Guardar</button>
-          </td>
-        </tr>
-      `).join('');
-      return `<div class="overflow-auto rounded-xl border border-white/10">
-        <table class="w-full text-sm"><tbody>${rows}</tbody></table>
-      </div>`;
+          <td class="align-top p-2 w-[140px]"><button class="btn-neon rounded-lg px-3 py-2 w-full" data-save="${p.id}">Guardar</button></td>
+        </tr>`).join('');
+      return `<div class="overflow-auto rounded-xl border border-white/10"><table class="w-full text-sm"><tbody>${rows}</tbody></table></div>`;
     }
-
     function bindAuditActions(){
       document.querySelectorAll('[data-save]').forEach(btn=>{
         btn.onclick = ()=>{
@@ -610,10 +582,8 @@
           const url = (input?.value||'').trim();
           if(!url){ alert('Pon una URL de imagen válida'); return; }
           const ov = getOverrides(); ov[id] = ov[id] || {}; ov[id].image = url; setOverrides(ov);
-          products = applyImageOverrides(products);
-          applyFilters();
-          btn.textContent = 'Guardado ✓';
-          setTimeout(()=> btn.textContent='Guardar', 1200);
+          products = applyImageOverrides(products); applyFilters();
+          btn.textContent = 'Guardado ✓'; setTimeout(()=> btn.textContent='Guardar', 1200);
         };
       });
       document.querySelectorAll('[data-swap]').forEach(btn=>{
@@ -627,22 +597,14 @@
           ov[a] = {...(ov[a]||{}), image: imgB};
           ov[b] = {...(ov[b]||{}), image: imgA};
           setOverrides(ov);
-          products = applyImageOverrides(products);
-          applyFilters();
-          btn.textContent = 'Intercambiado ✓';
-          setTimeout(()=> btn.textContent='Intercambiar imágenes', 1200);
+          products = applyImageOverrides(products); applyFilters();
+          btn.textContent = 'Intercambiado ✓'; setTimeout(()=> btn.textContent='Intercambiar imágenes', 1200);
         };
       });
     }
-
-    // Integra overrides al inicio y en cada actualización
-    products = applyImageOverrides(products);
-    applyFilters();
-    window.addEventListener('ja_products_updated', ()=>{
-      products = applyImageOverrides(products);
-      applyFilters();
-    });
-    /* ======== FIN REVISOR ======== */
+    // Integra overrides
+    products = applyImageOverrides(products); applyFilters();
+    window.addEventListener('ja_products_updated', ()=>{ products = applyImageOverrides(products); applyFilters(); });
 
     // ---- Botón “Arriba”
     (function(){
@@ -653,7 +615,7 @@
       window.addEventListener('scroll', ()=> { btn.classList.toggle('ms360-show', (window.scrollY||0) > 380); }, {passive:true});
     })();
 
-    // ---- Activa layout Tiles
+    // ---- Layout Tiles + estado admin
     (function(){
       const html = document.documentElement;
       function enableTiles(){ html.classList.add('ms360-tiles'); }
