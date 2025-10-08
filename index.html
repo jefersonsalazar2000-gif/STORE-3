@@ -49,13 +49,18 @@
       -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none }
     .input{ background:#0e1430; border:1px solid rgba(124,58,237,.35); outline:none; color:white; border-radius:12px; padding:.7rem .9rem }
     .input:focus{ box-shadow:var(--ring) }
-    .tag{ display:none !important; }
     html, body { max-width:100%; overflow-x:hidden; }
     body { touch-action: pan-y; overscroll-behavior-x: none; }
     #grid { overflow-x:hidden; }
     *, *::before, *::after { box-sizing:border-box; }
+
+    /* Admin oculto por defecto */
     .admin-only{ display:none !important; }
     .is-admin .admin-only{ display:inline-flex !important; }
+
+    /* Botones del header SIEMPRE ocultos si no hay admin */
+    .header-admin-btn{ display:none !important; }
+    .is-admin .header-admin-btn{ display:inline-flex !important; }
   </style>
 
   <!-- Add-ons UI -->
@@ -123,13 +128,24 @@
         <h1 class="text-xl sm:text-2xl font-extrabold neon-title leading-none">MEGA STORE 360</h1>
         <p class="text-xs text-white/70 -mt-0.5">De todo • Tecnología • Hogar • Accesorios</p>
       </div>
+
+      <!-- YouTube chip -->
       <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
 
+      <!-- Amazon logo (enlace afiliado) -->
+      <a href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" class="ml-1 inline-flex items-center justify-center w-10 h-10 rounded-xl chip hover:opacity-90" title="Ir a Amazon">
+        <!-- SVG Amazon simple (monocromo) -->
+        <svg viewBox="0 0 512 512" width="22" height="22" aria-hidden="true">
+          <path fill="currentColor" d="M432.7 334.9c-40.4 29.9-101.2 60.1-165.5 60.1-92.6 0-174.4-51.4-209.5-126.8-4.4-9.4 5.6-18.7 14.7-13.9 58.9 30.6 128.3 48.9 201.5 48.9 63.5 0 126.1-13.3 183-39.8 10.4-4.8 20.7 6.7 12.7 14.9-9.3 9.7-20.4 19-37 26.6zM354.4 395.6c-7.7 9.9-25.4 7.2-36.3 4.4-11.8-3-22.9-6.7-35.9-11.1-28.6-9.9-63.8-22.1-111.6-22.1-30.4 0-63.8 6.1-93.8 17.1-11.2 4.1-20-9.8-9.8-17.5 41-31 114.2-45.4 174.4-45.4 59 0 104.5 10.7 138.8 23.3 10.9 4.1 20.5 8.1 29.2 12.2 10.8 5 14.7 15.9 4.9 29z"/>
+        </svg>
+      </a>
+
+      <!-- Botones ocultos por defecto; solo visibles en modo admin -->
       <div class="flex items-center gap-2">
-        <button id="btnSettings" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Ajustes</button>
-        <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">Admin</button>
-        <button id="btnVerify" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 hidden">Verificar Tag</button>
-        <button id="btnFix" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 hidden">Auto-Fix Tag</button>
+        <button id="btnSettings" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 header-admin-btn">Ajustes</button>
+        <button id="btnAdmin" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 header-admin-btn">Admin</button>
+        <button id="btnVerify" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 header-admin-btn hidden">Verificar Tag</button>
+        <button id="btnFix" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90 header-admin-btn hidden">Auto-Fix Tag</button>
         <button id="btnDestacadosHeader" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">★ Destacados</button>
       </div>
     </div>
@@ -138,12 +154,12 @@
   <!-- Controles -->
   <section class="max-w-7xl mx-auto px-4 mt-4 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
     <div class="gradient-border">
-      <input id="search" class="input w-full" placeholder="Buscar productos… (ej. iPhone, smartwatch)" />
+      <input id="search" class="input w-full" placeholder="Buscar productos… (escribe /admin y Enter para modo admin)" />
     </div>
     <select id="categoryFilter" class="input">
       <option value="all">Todas las categorías</option>
     </select>
-    <button id="btnAdd" class="btn-neon px-4 py-2 rounded-xl text-sm disabled:opacity-40" disabled>+ Agregar</button>
+    <button id="btnAdd" class="btn-neon px-4 py-2 rounded-xl text-sm disabled:opacity-40 admin-only" disabled>+ Agregar</button>
   </section>
 
   <!-- Grid -->
@@ -168,11 +184,11 @@
     const AFF_TAG = "kaninosabioan-20";
     const LS_KEY  = 'ja_store_products_v2';
     const LS_FEATURED = 'ja_featured_ids_v1';
-    const MIGRATION_FLAG = 'ja_migrated_2025_10_07'; // ⚠️ borra 1 vez listas antiguas
+    const MIGRATION_FLAG = 'ja_migrated_2025_10_07_fix_ids_v2'; // ⚠️ fuerza limpieza para corregir pares img/título
 
-    // ---- Migración 1 sola vez para limpiar datos corruptos
+    // ---- Migración 1 sola vez para limpiar datos antiguos/corruptos
     if (!localStorage.getItem(MIGRATION_FLAG)) {
-      try { localStorage.removeItem(LS_KEY); } catch {}
+      try { localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_FEATURED); } catch {}
       localStorage.setItem(MIGRATION_FLAG, '1');
     }
 
@@ -184,20 +200,26 @@
       toggle(id){ const s=new Set(feat.get()); s.has(id)?s.delete(id):s.add(id); feat.set([...s]) }
     };
 
-    // ---- Normalización segura
+    // ---- Normalización segura (con ID estable desde la clave del JSON)
     function ensureTag(url){
       if(!url) return "#";
-      try{ const u=new URL(url,location.href); if(/amazon\./i.test(u.hostname)) u.searchParams.set("tag", AFF_TAG); return u.toString(); }
-      catch{ const sep=url.includes("?")?"&":"?"; return `${url}${sep}tag=${AFF_TAG}`; }
+      try{
+        const u=new URL(url,location.href);
+        if(/amazon\./i.test(u.hostname)) u.searchParams.set("tag", AFF_TAG);
+        return u.toString();
+      }catch{
+        const sep=url.includes("?")?"&":"?";
+        return `${url}${sep}tag=${AFF_TAG}`;
+      }
     }
     const norm = (p)=>({
-      id: p.id || crypto.randomUUID(),
+      id: (p.id || '').trim(),                               // <— ahora viene de la clave
       title: (p.title || p.TITLE || '').trim(),
       brand: (p.brand || p.BRAND || '').trim(),
       image: (p.image || p.IMAGE || '').trim(),
       amazon: ensureTag(p.amazon || p.AMAZON || '#'),
-      price: p.price || p.PRICE || '',
-      category: p.category || p.CATEGORY || 'Otros',
+      price: p.price ?? p.PRICE ?? '',
+      category: (p.category || p.CATEGORY || 'Otros').trim(),
       featured: !!(p.featured ?? p.FEATURE),
       createdAt: typeof p.createdAt==='number' ? p.createdAt : Date.now()
     });
@@ -216,9 +238,9 @@
 
     // ---- Render
     function productCard(p){
-      const price = p.price ? `US$ ${Number(p.price).toLocaleString()}` : '';
+      const price = (p.price || p.price===0) && p.price!=='' ? `US$ ${Number(p.price).toLocaleString()}` : '';
       const starBtn = `
-        <button class="admin-only ms360-star"
+        <button class="admin-only ms360-star absolute top-2 right-2 z-10 bg-[rgba(14,20,48,.8)] border border-white/15 rounded-lg px-2 py-1 text-sm"
                 data-star="${p.id}"
                 aria-pressed="${feat.has(p.id)?'true':'false'}"
                 title="${feat.has(p.id)?'Quitar de primeros':'Fijar al inicio'}">
@@ -228,7 +250,7 @@
         <article class="card rounded-2xl p-3 sm:p-4 flex flex-col gradient-border relative">
           ${starBtn}
           <div class="rounded-xl overflow-hidden bg-soft aspect-[4/3]">
-            <img src="${p.image}${p.image?.includes('?')?'&':'?'}v=12"
+            <img src="${p.image}${p.image?.includes('?')?'&':'?'}v=${encodeURIComponent(p.id||'13')}"
                  alt="${p.title}" class="w-full h-full object-contain" loading="lazy"
                  onerror="this.onerror=null;this.src='https://via.placeholder.com/800x600?text=Imagen';">
           </div>
@@ -298,38 +320,40 @@
     // ---- Filtros
     search.addEventListener('input', applyFilters, {passive:true});
     categoryFilter.addEventListener('change', applyFilters, {passive:true});
-    document.documentElement.classList.toggle('is-admin', isAdmin);
 
-    // ---- Verificador + AutoFix tag
-    const TAG = AFF_TAG;
-    const btnVerify = document.getElementById('btnVerify');
-    const btnFix = document.getElementById('btnFix');
-    btnVerify.addEventListener('click', () => {
-      const as = [...document.querySelectorAll('a[href*="amazon."]')];
-      const bad = as.filter(a => !/[\?&]tag=/.test(a.href));
-      alert(`Links Amazon: ${as.length} | Con tag: ${as.length-bad.length} | Sin tag: ${bad.length}`);
-    });
-    btnFix.addEventListener('click', () => {
-      document.querySelectorAll('a[href*="amazon."]').forEach(a => a.href = ensureTag(a.href));
-      alert('Auto-Fix aplicado');
-    });
-
-    // ---- Botón Admin (simple)
-    document.getElementById('btnAdmin').addEventListener('click', ()=>{
-      isAdmin = !isAdmin;
+    // ---- Activación secreta de Admin
+    function setAdmin(on){
+      isAdmin = !!on;
       document.documentElement.classList.toggle('is-admin', isAdmin);
-      localStorage.setItem('ja_admin', isAdmin?'1':'');
+      if (isAdmin) localStorage.setItem('ja_admin','1'); else localStorage.removeItem('ja_admin');
       applyFilters();
+    }
+    document.addEventListener('keydown', (e)=>{
+      // Atajo Alt+A / Option+A
+      if ((e.altKey || e.metaKey) && (e.key.toLowerCase()==='a')) {
+        e.preventDefault();
+        setAdmin(!isAdmin);
+      }
+    }, {passive:false});
+    search.addEventListener('keydown',(e)=>{
+      if (e.key==='Enter' && search.value.trim().toLowerCase()==='/admin'){
+        e.preventDefault();
+        search.value='';
+        setAdmin(!isAdmin);
+      }
     });
 
-    // ================== AUTO-SYNC GITHUB (REPLACE) ==================
+    // ================== AUTO-SYNC GITHUB (REPLACE + ID estable) ==================
     (function(){
       const RAW_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
       const REFRESH_MS = 30000;
 
       function normalizeIncoming(data){
         const obj = data && data.PRODUCTOS ? data.PRODUCTOS : {};
-        return Object.values(obj).map(norm);
+        // Mantenemos el ID desde la clave del JSON para que NUNCA se crucen imagen/título
+        return Object.entries(obj).map(([id, data]) => {
+          return norm({ ...data, id });
+        });
       }
 
       async function pull(){
@@ -338,17 +362,17 @@
           if(!res.ok) throw new Error("HTTP "+res.status);
           const json = await res.json();
 
-          // ✅ REEMPLAZA completamente (no mergea) para evitar cruces de imágenes
-          const incoming = normalizeIncoming(json);
+          // ✅ REEMPLAZA completamente (no mergea)
+          const incoming = normalizeIncoming(json).filter(p => p.title && p.image);
 
-          // Fuerza tag y shape correcto
+          // Fuerza tag correcto
           incoming.forEach(p => p.amazon = ensureTag(p.amazon));
 
           saveLocal(incoming);
           products = loadLocal();
           renderCategories(products); applyFilters();
           window.dispatchEvent(new Event('ja_products_updated'));
-          console.log("✅ Auto-sync REPLACE: productos actualizados =", products.length);
+          console.log("✅ Auto-sync REPLACE (IDs estables): productos =", products.length);
         }catch(e){
           console.warn("[auto-sync] No se pudo leer products.json:", e);
         }
@@ -358,6 +382,27 @@
       setInterval(pull, REFRESH_MS);
       document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
     })();
+
+    // ---- Verificador + AutoFix tag (solo visible en admin)
+    const btnVerify = document.getElementById('btnVerify');
+    const btnFix = document.getElementById('btnFix');
+    if (btnVerify) btnVerify.addEventListener('click', () => {
+      const as = [...document.querySelectorAll('a[href*="amazon."]')];
+      const bad = as.filter(a => !/[\?&]tag=/.test(a.href));
+      alert(`Links Amazon: ${as.length} | Con tag: ${as.length-bad.length} | Sin tag: ${bad.length}`);
+    });
+    if (btnFix) btnFix.addEventListener('click', () => {
+      document.querySelectorAll('a[href*="amazon."]').forEach(a => a.href = ensureTag(a.href));
+      alert('Auto-Fix aplicado');
+    });
+
+    // ---- Botón Admin (visible solo en modo admin)
+    const btnAdmin = document.getElementById('btnAdmin');
+    if (btnAdmin){
+      btnAdmin.addEventListener('click', ()=>{
+        setAdmin(false); // al pulsarlo, sales del modo admin para que quede oculto
+      });
+    }
 
     // ---- Parche universal de enlaces Amazon en el DOM
     (function(){
@@ -387,6 +432,8 @@
       function enableTiles(){ html.classList.add('ms360-tiles'); }
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enableTiles, { once:true });
       else enableTiles();
+      // Asegura estado admin oculto si no está activo
+      html.classList.toggle('is-admin', isAdmin);
     })();
   </script>
 
