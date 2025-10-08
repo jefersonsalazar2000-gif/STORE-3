@@ -66,6 +66,9 @@
     .logo-chip{ background:#fff !important; border:1px solid rgba(255,255,255,.12) }
     .logo-chip img{ display:block; height:24px; width:auto; max-width:92px }
     @media (min-width:640px){ .logo-chip img{ height:26px } }
+
+    /* Bloqueo de scroll del fondo cuando el revisor está abierto */
+    .no-scroll{ position:fixed; overflow:hidden; width:100%; }
   </style>
 
   <!-- Add-ons UI -->
@@ -134,7 +137,6 @@
         <p class="text-xs text-white/70 -mt-0.5">De todo • Tecnología • Hogar • Accesorios</p>
       </div>
 
-      <!-- YouTube chip -->
       <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
 
       <!-- Amazon (logo oficial, nítido) -->
@@ -194,7 +196,7 @@
     const AFF_TAG = "kaninosabioan-20";
     const LS_KEY  = 'ja_store_products_v2';
     const LS_FEATURED = 'ja_featured_ids_v1';
-    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v4';
+    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v5';
 
     // ---- Migración 1 sola vez para limpiar datos antiguos/corruptos
     if (!localStorage.getItem(MIGRATION_FLAG)) {
@@ -379,8 +381,7 @@
 
           saveLocal(incoming);
           products = loadLocal();
-          // aplica overrides tras actualización
-          products = applyImageOverrides(products);
+          products = applyImageOverrides(products);  // aplica correcciones locales
           renderCategories(products); applyFilters();
           window.dispatchEvent(new Event('ja_products_updated'));
           console.log("✅ Auto-sync REPLACE (IDs estables): productos =", products.length);
@@ -435,6 +436,19 @@
       });
     }
 
+    // Helpers scroll-lock para el modal
+    let __scrollY = 0;
+    function lockScroll(){
+      __scrollY = window.scrollY || 0;
+      document.body.classList.add('no-scroll');
+      document.body.style.top = `-${__scrollY}px`;
+    }
+    function unlockScroll(){
+      document.body.classList.remove('no-scroll');
+      document.body.style.top = '';
+      window.scrollTo(0, __scrollY);
+    }
+
     // Inserta botón flotante “Revisar imágenes” (solo admin)
     (function addImageAuditUI(){
       const btn = document.createElement('button');
@@ -451,12 +465,16 @@
 
       const wrap = document.createElement('div');
       wrap.id = 'imgAuditPanel';
-      wrap.style.cssText = 'position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px';
+      wrap.style.cssText = 'position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto';
       wrap.innerHTML = `
-        <div class="card rounded-2xl p-4 sm:p-6 max-w-4xl w-full text-sm relative">
+        <div class="card rounded-2xl p-4 sm:p-6 max-w-4xl w-full text-sm relative" style="max-height:85vh; overflow:auto;">
+          <div class="absolute top-3 left-3 flex gap-2">
+            <button id="imgAuditExport" class="chip px-3 py-2 rounded-lg">Exportar cambios</button>
+            <button id="imgAuditReset" class="chip px-3 py-2 rounded-lg">Reset</button>
+          </div>
           <button id="imgAuditClose" class="ms360-ibtn absolute top-3 right-3">✕</button>
           <h2 class="text-lg font-extrabold mb-3">Revisor de imágenes</h2>
-          <p class="text-white/70 mb-4">Corrige URLs que no coinciden con el producto. Los cambios se guardan en tu navegador.</p>
+          <p class="text-white/70 mb-4">Corrige URLs que no coinciden con el producto. Los cambios se guardan en <strong>este navegador</strong>. Exporta para hacerlos permanentes.</p>
 
           <div class="grid gap-4">
             <section>
@@ -472,9 +490,36 @@
         </div>
       `;
       document.body.appendChild(wrap);
+      lockScroll();
 
-      wrap.querySelector('#imgAuditClose').onclick = ()=> wrap.remove();
+      wrap.querySelector('#imgAuditClose').onclick = ()=>{ wrap.remove(); unlockScroll(); };
       bindAuditActions();
+      bindExportActions();
+    }
+
+    function bindExportActions(){
+      const btnExport = document.getElementById('imgAuditExport');
+      const btnReset  = document.getElementById('imgAuditReset');
+      if (btnExport){
+        btnExport.onclick = ()=>{
+          const data = JSON.stringify(getOverrides(), null, 2);
+          const blob = new Blob([data], {type:'application/json'});
+          const url  = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = 'image_overrides.json';
+          document.body.appendChild(a); a.click(); a.remove();
+          URL.revokeObjectURL(url);
+          alert('Descargado: image_overrides.json. Sube estos cambios a tu products.json para que se vean en incógnito y en todos los dispositivos.');
+        };
+      }
+      if (btnReset){
+        btnReset.onclick = ()=>{
+          localStorage.removeItem(LS_OVERRIDES);
+          products = loadLocal();
+          applyFilters();
+          alert('Correcciones locales borradas en este navegador.');
+        };
+      }
     }
 
     function findDuplicateImages(list){
