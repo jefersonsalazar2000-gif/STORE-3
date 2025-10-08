@@ -7,9 +7,9 @@
   <meta name="theme-color" content="#0b0f1a"/>
 
   <!-- PWA -->
-  <link rel="manifest" href="manifest.json?v=6" />
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192-v6.png?v=6">
-  <link rel="apple-touch-icon" href="icon-180x180-v6.png?v=6">
+  <link rel="manifest" href="manifest.json?v=7" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192-v7.png?v=7">
+  <link rel="apple-touch-icon" href="icon-180x180-v7.png?v=7">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -62,7 +62,7 @@
     .header-admin-btn{ display:none !important; }
     .is-admin .header-admin-btn{ display:inline-flex !important; }
 
-    /* Logo Amazon: chip claro y legible */
+    /* Logo Amazon */
     .logo-chip{ background:#fff !important; border:1px solid rgba(255,255,255,.12) }
     .logo-chip img{ display:block; height:24px; width:auto; max-width:92px }
     @media (min-width:640px){ .logo-chip img{ height:26px } }
@@ -87,7 +87,7 @@
   <!-- Ocultar FAB y botón del header “Destacados” -->
   <style>#fabDestacados, #btnDestacadosHeader { display: none !important; }</style>
 
-  <!-- Tiles (3/4/5 columnas responsivo) -->
+  <!-- Tiles -->
   <style id="ms360-tiles-essence">
     html.ms360-tiles #grid{ display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:12px !important; }
     html.ms360-tiles #grid .card{
@@ -125,7 +125,6 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
       <div id="brandTrigger" class="w-10 h-10 rounded-xl gradient-border flex items-center justify-center shrink-0 select-none">
         <div class="w-full h-full rounded-[14px] bg-[#0e1430] flex items-center justify-center">
-          <!-- J_A con degradado -->
           <span class="text-xl font-extrabold neon-title">J_A</span>
         </div>
       </div>
@@ -188,7 +187,7 @@
     const AFF_TAG = "kaninosabioan-20";
     const LS_KEY  = 'ja_store_products_v2';
     const LS_FEATURED = 'ja_featured_ids_v1';
-    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v6';
+    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v7';
 
     // ---- Migración (limpia datos locales antiguos)
     if (!localStorage.getItem(MIGRATION_FLAG)) {
@@ -244,7 +243,6 @@
 
     // ---- Render
     function productCard(p){
-      // Muestra precio solo si > 0
       const nprice = Number(p.price);
       const showPrice = Number.isFinite(nprice) && nprice > 0;
       const price = showPrice ? `${nprice.toLocaleString()}` : '';
@@ -300,7 +298,6 @@
       grid.innerHTML = ordered.map(productCard).join('');
       empty.classList.toggle('hidden', !!ordered.length);
 
-      // Estrella admin
       grid.querySelectorAll('[data-star]').forEach(btn=>{
         btn.addEventListener('click', (e)=>{
           e.stopPropagation();
@@ -343,14 +340,14 @@
         e.preventDefault(); search.value=''; setAdmin(!isAdmin);
       }
     });
-    // 2) Atajos de teclado
+    // 2) Atajos
     document.addEventListener('keydown', (e)=>{
       const k = e.key.toLowerCase();
       if ((e.altKey && k==='a') || (e.metaKey && e.shiftKey && k==='a') || (e.ctrlKey && e.shiftKey && k==='a')){
         e.preventDefault(); setAdmin(!isAdmin);
       }
     }, {passive:false});
-    // 3) Long-press en el logo J_A
+    // 3) Long-press J_A
     (function(){
       const trigger = document.getElementById('brandTrigger');
       let t=null;
@@ -364,22 +361,7 @@
       if (sp.get('admin')==='1' || location.hash.includes('admin')) setAdmin(true);
     })();
 
-    // ---- Botones del header (solo cuando ya estás en admin)
     document.getElementById('btnAdmin')?.addEventListener('click', ()=> setAdmin(false));
-    document.getElementById('btnSettings')?.addEventListener('click', ()=> alert('Panel de ajustes próximamente.'));
-
-    // ---- Verificador / Auto-Fix Tag (solo admin)
-    const btnVerify = document.getElementById('btnVerify');
-    const btnFix = document.getElementById('btnFix');
-    btnVerify?.addEventListener('click', () => {
-      const as = [...document.querySelectorAll('a[href*="amazon."]')];
-      const bad = as.filter(a => !/[\?&]tag=/.test(a.href));
-      alert(`Links Amazon: ${as.length} | Con tag: ${as.length-bad.length} | Sin tag: ${bad.length}`);
-    });
-    btnFix?.addEventListener('click', () => {
-      document.querySelectorAll('a[href*="amazon."]').forEach(a => a.href = ensureTag(a.href));
-      alert('Auto-Fix aplicado');
-    });
 
     // ================== AUTO-SYNC GITHUB (REPLACE + ID estable) ==================
     (function(){
@@ -388,7 +370,7 @@
 
       function normalizeIncoming(data){
         const obj = data && data.PRODUCTOS ? data.PRODUCTOS : {};
-        return Object.entries(obj).map(([id, data]) => norm({ ...data, id }));
+        return Object.entries(obj).map(([id, data]) => ({ ...data, id })).map(norm);
       }
 
       async function pull(){
@@ -402,7 +384,7 @@
 
           saveLocal(incoming);
           products = loadLocal();
-          products = applyImageOverrides(products);  // aplica correcciones locales
+          products = applyImageOverrides(products);
           renderCategories(products); applyFilters();
           window.dispatchEvent(new Event('ja_products_updated'));
           console.log("✅ Auto-sync REPLACE (IDs estables): productos =", products.length);
@@ -450,12 +432,10 @@
       return list.map(p => { if (map[p.id]?.image) p.image = map[p.id].image; return p; });
     }
 
-    // Scroll-lock helpers
     let __scrollY = 0;
     function lockScroll(){ __scrollY = window.scrollY||0; document.body.classList.add('no-scroll'); document.body.style.top=`-${__scrollY}px`; }
     function unlockScroll(){ document.body.classList.remove('no-scroll'); document.body.style.top=''; window.scrollTo(0,__scrollY); }
 
-    // Botón flotante (aparece en admin)
     (function(){
       const btn = document.createElement('button');
       btn.textContent = 'Revisar imágenes';
@@ -602,7 +582,6 @@
         };
       });
     }
-    // Integra overrides
     products = applyImageOverrides(products); applyFilters();
     window.addEventListener('ja_products_updated', ()=>{ products = applyImageOverrides(products); applyFilters(); });
 
@@ -625,11 +604,30 @@
     })();
   </script>
 
-  <!-- PWA -->
+  <!-- PWA: REGISTRO SW con actualización automática -->
   <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("sw.js").catch(()=>{});
+    if ('serviceWorker' in navigator) {
+      const SW_VERSION = 'v2025-10-08-b'; // <-- cambia cuando subas cambios grandes
+      window.addEventListener('load', () => {
+        const url = `sw.js?${SW_VERSION}`;
+        navigator.serviceWorker.register(url).then(reg => {
+          // Forzar que el SW nuevo tome control y recargue
+          function promptUpdate(sw){
+            if (!sw) return;
+            sw.postMessage({ type:'SKIP_WAITING' });
+          }
+          if (reg.waiting) promptUpdate(reg.waiting);
+          reg.addEventListener('updatefound', ()=>{
+            const nw = reg.installing;
+            nw && nw.addEventListener('statechange', ()=>{
+              if (nw.state === 'installed' && navigator.serviceWorker.controller) promptUpdate(nw);
+            });
+          });
+          let refreshing = false;
+          navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+            if (refreshing) return; refreshing = true; window.location.reload();
+          });
+        }).catch(()=>{});
       });
     }
   </script>
