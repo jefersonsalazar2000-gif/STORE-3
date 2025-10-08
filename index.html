@@ -7,9 +7,9 @@
   <meta name="theme-color" content="#0b0f1a"/>
 
   <!-- PWA -->
-  <link rel="manifest" href="manifest.json?v=10" />
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192-v7.png?v=10">
-  <link rel="apple-touch-icon" href="icon-180x180-v7.png?v=10">
+  <link rel="manifest" href="manifest.json?v=7" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192-v7.png?v=7">
+  <link rel="apple-touch-icon" href="icon-180x180-v7.png?v=7">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -54,46 +54,40 @@
     #grid { overflow-x:hidden; }
     *, *::before, *::after { box-sizing:border-box; }
 
-    /* ===== HEADER: título + iconos ===== */
-    header .flex-1 h1{
-      background: var(--grad-1) !important;
-      -webkit-background-clip: text !important; background-clip: text !important;
-      color: transparent !important; text-shadow: 0 0 18px rgba(124,58,237,.25) !important;
-      white-space: nowrap !important; overflow: hidden; text-overflow: ellipsis;
-      font-weight: 900 !important; letter-spacing: .02em;
-      font-size: clamp(18px, 6vw, 34px); line-height: 1.05; margin-bottom:.35rem;
-    }
-    header .flex-1 > p{ display:none !important; }
+    /* Admin oculto por defecto */
+    .admin-only{ display:none !important; }
+    .is-admin .admin-only{ display:inline-flex !important; }
 
-    .header-ctas--icons{ display:flex; gap:12px; justify-content:flex-end; align-items:flex-start; margin-top:.35rem; }
-    .cta-stack{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:58px; }
-    .cta-icon{
-      display:inline-flex; align-items:center; justify-content:center;
-      width:44px; height:44px; border-radius:12px;
-      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
-      transition:transform .12s ease, border-color .12s ease;
-      overflow:hidden;
-    }
-    .cta-icon:hover{ transform:translateY(-1px) scale(1.02); border-color:rgba(255,255,255,.25); }
-    .cta-label{ font-size:11px; line-height:1; color:#e6ebff; text-shadow:0 1px 0 rgba(0,0,0,.25); white-space:nowrap; }
+    /* Botones del header ocultos salvo modo admin */
+    .header-admin-btn{ display:none !important; }
+    .is-admin .header-admin-btn{ display:inline-flex !important; }
 
-    .cta-youtube{ background:#fff; }
-    .cta-inst{ background:#fff; }
-    .cta-amz{ background:#f2d3aa; border-color:#e6c49a; } /* caja beige Amazon */
-    .cta-ms{ background:linear-gradient(135deg,#00E5FF,#7C3AED 55%,#FF0099); }
-    .cta-ms span{ font-weight:900; color:#0b0f1a; font-size:16px; letter-spacing:.5px }
+    /* Logo Amazon viejo (header); se oculta más abajo por CSS */
+    .logo-chip{ background:#fff !important; border:1px solid rgba(255,255,255,.12) }
+    .logo-chip img{ display:block; height:24px; width:auto; max-width:92px }
+    @media (min-width:640px){ .logo-chip img{ height:26px } }
 
-    @media (max-width:360px){
-      .cta-icon{ width:40px; height:40px; }
-      .cta-label{ font-size:10px; }
-    }
-
-    /* Oculta los botones viejos del header si existieran */
-    header .max-w-7xl > a[href*="youtube.com"],
-    header .max-w-7xl > a.logo-chip{ display:none !important; }
+    /* Bloqueo de scroll del fondo cuando el revisor está abierto */
+    .no-scroll{ position:fixed; overflow:hidden; width:100%; }
   </style>
 
-  <!-- Tiles (como tenías) -->
+  <!-- Add-ons UI -->
+  <style>
+    :root { --ms360-ring: 0 0 0 1.5px rgba(124,58,237,.45), 0 0 18px rgba(124,58,237,.35), inset 0 0 12px rgba(0,229,255,.25) }
+    :focus-visible { outline:2px solid #7C3AED; outline-offset:2px }
+    .ms360-skeleton{position:relative;overflow:hidden;background:#0f1430}
+    .ms360-skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);transform:translateX(-100%);animation:ms360-shimmer 1.1s infinite}
+    #ms360-top{position:fixed;right:14px;bottom:14px;z-index:9998;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s, transform .2s}
+    #ms360-top.ms360-show{opacity:1;pointer-events:auto;transform:translateY(0)}
+    #ms360-toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:10000;display:grid;gap:8px}
+    .ms360-ibtn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:rgba(14,20,48,.75);border:1px solid rgba(255,255,255,.12);color:#fff;backdrop-filter:blur(6px);transition:transform .12s,border-color .12s}
+    .ms360-ibtn:hover{transform:translateY(-1px) scale(1.03);border-color:rgba(255,255,255,.25)}
+  </style>
+
+  <!-- Ocultar FAB y botón del header “Destacados” -->
+  <style>#fabDestacados, #btnDestacadosHeader { display: none !important; }</style>
+
+  <!-- Tiles -->
   <style id="ms360-tiles-essence">
     html.ms360-tiles #grid{ display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:12px !important; }
     html.ms360-tiles #grid .card{
@@ -122,6 +116,54 @@
     @media (min-width:640px){ html.ms360-tiles #grid{ grid-template-columns:repeat(4,minmax(0,1fr)) !important; } }
     @media (min-width:1024px){ html.ms360-tiles #grid{ grid-template-columns:repeat(5,minmax(0,1fr)) !important; } }
   </style>
+
+  <!-- ======== AJUSTES HEADER (título e iconos) ======== -->
+  <style>
+    /* Título: degradado igual a J_A, 1 línea */
+    header .flex-1 h1{
+      background: var(--grad-1) !important;
+      -webkit-background-clip: text !important; background-clip: text !important;
+      color: transparent !important; text-shadow: 0 0 18px rgba(124,58,237,.25) !important;
+      white-space: nowrap !important; overflow: hidden; text-overflow: ellipsis;
+      font-weight: 900 !important; letter-spacing: .02em;
+      font-size: clamp(18px, 6vw, 34px); line-height: 1.05; margin-bottom:.35rem;
+    }
+    /* Ocultar subtítulo (limpio) */
+    header .flex-1 > p{ display:none !important; }
+
+    /* Fila de iconos: derecha, sin wrap */
+    .header-ctas--icons{
+      display:flex; gap:.55rem; justify-content:flex-end; align-items:center;
+      flex-wrap:nowrap; white-space:nowrap; margin-top:.35rem;
+    }
+    /* Botón/icono compacto */
+    .cta-icon{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:40px; height:40px; border-radius:12px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      overflow:hidden;
+    }
+    .cta-icon:hover{ transform:translateY(-1px) scale(1.02); border-color:rgba(255,255,255,.25); }
+
+    /* Iconos (SVG/PNG) siempre centrados y nítidos */
+    .cta-icon img, .cta-icon svg{ display:block; width:26px; height:26px; }
+
+    /* Amazon: pastilla blanca dentro para que el logo se lea perfecto */
+    .cta-amz{ background:#fff; }
+    .cta-amz img{ width:28px; height:auto; }
+
+    /* Móviles muy pequeños */
+    @media (max-width:360px){
+      .cta-icon{ width:36px; height:36px; border-radius:10px; }
+      .cta-amz img{ width:26px; }
+    }
+
+    /* Ocultar botones viejos del header (texto YouTube + logo Amazon) */
+    header .max-w-7xl > a[href*="youtube.com"],
+    header .max-w-7xl > a.logo-chip{ display:none !important; }
+  </style>
 </head>
 
 <body class="min-h-full text-white bg-[radial-gradient(1200px_600px_at_20%_-10%,rgba(124,58,237,.15),transparent_55%),radial-gradient(900px_500px_at_120%_10%,rgba(0,229,255,.12),transparent_50%),#0b0f1a]">
@@ -138,75 +180,29 @@
       <div class="flex-1">
         <h1 class="text-xl sm:text-2xl font-extrabold neon-title leading-none">MEGA STORE 360</h1>
 
-        <!-- ICONOS con nombre: YouTube · Instagram · Amazon · MEGA STORE 360 -->
+        <!-- ICONOS ORIGINALES (YouTube → Instagram → Amazon) -->
         <div class="header-ctas--icons">
+          <!-- YouTube: icono oficial 2017 (squircle/square) -->
+          <a class="cta-icon" href="https://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube">
+            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/YouTube_social_red_square_(2017).svg" alt="YouTube">
+          </a>
 
-          <!-- YouTube (play rojo) -->
-          <div class="cta-stack">
-            <a class="cta-icon cta-youtube" href="https://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" rel="noopener" aria-label="YouTube">
-              <svg viewBox="0 0 48 48" width="28" height="28" aria-hidden="true">
-                <rect x="4" y="4" width="40" height="40" rx="9" fill="#FF0000"/>
-                <polygon points="20,17 20,31 32,24" fill="#FFFFFF"/>
-              </svg>
-            </a>
-            <div class="cta-label">YouTube</div>
-          </div>
+          <!-- Instagram: logo 2016 (degradado original) -->
+          <a class="cta-icon" href="https://www.instagram.com/mega_store_360/" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
+            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Instagram_logo_2016.svg" alt="Instagram">
+          </a>
 
-          <!-- Instagram (degradado 2016 + glifo) -->
-          <div class="cta-stack">
-            <a class="cta-icon cta-inst" href="https://www.instagram.com/mega_store_360/" target="_blank" rel="noopener" aria-label="Instagram">
-              <svg viewBox="0 0 48 48" width="28" height="28" aria-hidden="true">
-                <defs>
-                  <linearGradient id="igGrad" x1="0" y1="1" x2="1" y2="0">
-                    <stop offset="0%"  stop-color="#F58529"/>
-                    <stop offset="35%" stop-color="#DD2A7B"/>
-                    <stop offset="65%" stop-color="#8134AF"/>
-                    <stop offset="100%" stop-color="#515BD4"/>
-                  </linearGradient>
-                </defs>
-                <rect x="4" y="4" width="40" height="40" rx="10" fill="url(#igGrad)"/>
-                <rect x="11" y="11" width="26" height="26" rx="8" fill="none" stroke="#fff" stroke-width="3"/>
-                <circle cx="24" cy="24" r="8" fill="none" stroke="#fff" stroke-width="3"/>
-                <circle cx="33.5" cy="14.5" r="2.5" fill="#fff"/>
-              </svg>
-            </a>
-            <div class="cta-label">Instagram</div>
-          </div>
-
-          <!-- Amazon (icono de la app: caja beige + cinta azul + sonrisa) -->
-          <div class="cta-stack">
-            <a class="cta-icon cta-amz" href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" aria-label="Amazon">
-              <svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true">
-                <!-- fondo caja -->
-                <rect x="4" y="4" width="56" height="56" rx="14" fill="#E9C7A0"/>
-                <!-- cinta superior (dos tonos) -->
-                <path d="M40 6h12a8 8 0 0 1 8 8v10H40V6z" fill="#4F8DF6"/>
-                <path d="M40 6v18l6-6 6 6V6z" fill="#1E40AF" opacity=".95"/>
-                <!-- sonrisa -->
-                <path d="M16 37c8 7 25 11 36 1" fill="none" stroke="#111827" stroke-width="4" stroke-linecap="round"/>
-                <path d="M50 36c0 0-1 4-4 6" fill="none" stroke="#111827" stroke-width="4" stroke-linecap="round"/>
-              </svg>
-            </a>
-            <div class="cta-label">Amazon</div>
-          </div>
-
-          <!-- Tu app: link corregido a ./ para evitar 404 en GitHub Pages -->
-          <div class="cta-stack">
-            <a class="cta-icon cta-ms" href="./" aria-label="MEGA STORE 360">
-              <span>J_A</span>
-            </a>
-            <div class="cta-label">MEGA STORE 360</div>
-          </div>
+          <!-- Amazon: logo oficial (wordmark + sonrisa) dentro de pastilla blanca -->
+          <a class="cta-icon cta-amz" href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" title="Amazon" aria-label="Amazon">
+            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Amazon_logo.svg" alt="Amazon">
+          </a>
         </div>
       </div>
 
-      <!-- (Botones admin se quedan, ocultos si no es admin) -->
+      <!-- (Se mantienen elementos admin; quedan ocultos por CSS) -->
       <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
-      <a href="https://www.amazon.com/?tag=kaninosabioan-20"
-         target="_blank" rel="nofollow sponsored noopener"
-         class="ml-1 inline-flex items-center justify-center h-10 rounded-xl px-3 logo-chip"
-         title="Ir a Amazon (afiliado)">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" loading="eager"/>
+      <a href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" class="ml-1 inline-flex items-center justify-center h-10 rounded-xl px-3 logo-chip" title="Ir a Amazon (afiliado)">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" referrerpolicy="no-referrer" loading="eager"/>
       </a>
 
       <div class="flex items-center gap-2">
@@ -252,7 +248,7 @@
     const AFF_TAG = "kaninosabioan-20";
     const LS_KEY  = 'ja_store_products_v2';
     const LS_FEATURED = 'ja_featured_ids_v1';
-    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v10';
+    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v7';
 
     if (!localStorage.getItem(MIGRATION_FLAG)) {
       try { localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_FEATURED); } catch {}
@@ -378,27 +374,72 @@
     }
     function saveLocal(list){ localStorage.setItem(LS_KEY, JSON.stringify(list)); }
 
-    // ================== AUTO-SYNC GITHUB (con fallback jsDelivr) ==================
-    const RAW_PRIMARY = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/main/products.json";
-    const RAW_FALLBACK = "https://cdn.jsdelivr.net/gh/jefersonsalazar2000-gif/STORE-3@main/products.json";
-    async function fetchJSON(url){ const r = await fetch(url+"?"+Date.now(), {cache:"no-store"}); if(!r.ok) throw new Error(r.status); return r.json(); }
-    async function pull(){
-      const normalize=(data)=>{ const obj=data&&data.PRODUCTOS?data.PRODUCTOS:{}; return Object.entries(obj).map(([id, d])=>({...d,id})).map(norm); };
-      try{
-        let json;
-        try{ json = await fetchJSON(RAW_PRIMARY); } catch { json = await fetchJSON(RAW_FALLBACK); }
-        const incoming = normalize(json).filter(p => p.title && p.image);
-        incoming.forEach(p => p.amazon = ensureTag(p.amazon));
-        saveLocal(incoming);
-        products = loadLocal();
-        products = applyImageOverrides(products);
-        renderCategories(products); applyFilters();
-        window.dispatchEvent(new Event('ja_products_updated'));
-      }catch(e){ console.warn("[auto-sync] No se pudo leer products.json:", e); }
-    }
-    pull(); setInterval(pull, 30000); document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) pull(); });
+    products = loadLocal();
+    renderCategories(products); applyFilters();
 
-    // ---- Amazon tag interceptor
+    search.addEventListener('input', applyFilters, {passive:true});
+    categoryFilter.addEventListener('change', applyFilters, {passive:true});
+
+    function setAdmin(on){
+      isAdmin = !!on;
+      document.documentElement.classList.toggle('is-admin', isAdmin);
+      if (isAdmin) localStorage.setItem('ja_admin','1'); else localStorage.removeItem('ja_admin');
+      applyFilters();
+    }
+    search.addEventListener('keydown',(e)=>{
+      if (e.key==='Enter' && search.value.trim().toLowerCase()==='/admin'){
+        e.preventDefault(); search.value=''; setAdmin(!isAdmin);
+      }
+    });
+    document.addEventListener('keydown', (e)=>{
+      const k = e.key.toLowerCase();
+      if ((e.altKey && k==='a') || (e.metaKey && e.shiftKey && k==='a') || (e.ctrlKey && e.shiftKey && k==='a')){
+        e.preventDefault(); setAdmin(!isAdmin);
+      }
+    }, {passive:false});
+    (function(){
+      const trigger = document.getElementById('brandTrigger');
+      let t=null;
+      trigger.addEventListener('pointerdown', ()=>{ t=setTimeout(()=>setAdmin(!isAdmin), 1200); });
+      const clear=()=>{ if(t){clearTimeout(t); t=null;} };
+      ['pointerup','pointerleave','pointercancel'].forEach(ev=>trigger.addEventListener(ev, clear));
+    })();
+    (function(){
+      const sp = new URLSearchParams(location.search);
+      if (sp.get('admin')==='1' || location.hash.includes('admin')) setAdmin(true);
+    })();
+
+    document.getElementById('btnAdmin')?.addEventListener('click', ()=> setAdmin(false));
+
+    (function(){
+      const RAW_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
+      const REFRESH_MS = 30000;
+      function normalizeIncoming(data){
+        const obj = data && data.PRODUCTOS ? data.PRODUCTOS : {};
+        return Object.entries(obj).map(([id, data]) => ({ ...data, id })).map(norm);
+      }
+      async function pull(){
+        try{
+          const res = await fetch(RAW_URL + "?" + Date.now(), { cache:"no-store" });
+          if(!res.ok) throw new Error("HTTP "+res.status);
+          const json = await res.json();
+          const incoming = normalizeIncoming(json).filter(p => p.title && p.image);
+          incoming.forEach(p => p.amazon = ensureTag(p.amazon));
+          saveLocal(incoming);
+          products = loadLocal();
+          products = applyImageOverrides(products);
+          renderCategories(products); applyFilters();
+          window.dispatchEvent(new Event('ja_products_updated'));
+          console.log("✅ Auto-sync REPLACE (IDs estables): productos =", products.length);
+        }catch(e){
+          console.warn("[auto-sync] No se pudo leer products.json:", e);
+        }
+      }
+      pull();
+      setInterval(pull, REFRESH_MS);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
+    })();
+
     (function(){
       function patch(){
         document.querySelectorAll('a[href*="amazon."]').forEach(a=>{
@@ -423,7 +464,6 @@
       new MutationObserver(patch).observe(document.body,{childList:true,subtree:true});
     })();
 
-    /* ======== REVISOR DE IMÁGENES (MODO ADMIN) ======== */
     const LS_OVERRIDES = 'ja_image_overrides_v1';
     function getOverrides(){ try{return JSON.parse(localStorage.getItem(LS_OVERRIDES))||{}}catch{return{}} }
     function setOverrides(v){ localStorage.setItem(LS_OVERRIDES, JSON.stringify(v||{})); }
@@ -432,7 +472,159 @@
       return list.map(p => { if (map[p.id]?.image) p.image = map[p.id].image; return p; });
     }
 
-    // ---- Botón “Arriba”
+    let __scrollY = 0;
+    function lockScroll(){ __scrollY = window.scrollY||0; document.body.classList.add('no-scroll'); document.body.style.top=`-${__scrollY}px`; }
+    function unlockScroll(){ document.body.classList.remove('no-scroll'); document.body.style.top=''; window.scrollTo(0,__scrollY); }
+
+    (function(){
+      const btn = document.createElement('button');
+      btn.textContent = 'Revisar imágenes';
+      btn.id = 'imgAuditBtn';
+      btn.className = 'admin-only fixed bottom-20 right-4 z-[10001] px-4 py-2 rounded-xl chip font-semibold';
+      btn.addEventListener('click', openAuditPanel);
+      document.addEventListener('DOMContentLoaded', ()=> document.body.appendChild(btn), {once:true});
+    })();
+
+    function openAuditPanel(){
+      const dupes = findDuplicateImages(products);
+      const suspects = findSuspects(products);
+
+      const wrap = document.createElement('div');
+      wrap.id = 'imgAuditPanel';
+      wrap.style.cssText = 'position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto';
+      wrap.innerHTML = `
+        <div class="card rounded-2xl p-4 sm:p-6 max-w-4xl w-full text-sm relative" style="max-height:85vh; overflow:auto;">
+          <div class="absolute top-3 left-3 flex gap-2">
+            <button id="imgAuditExport" class="chip px-3 py-2 rounded-lg">Exportar cambios</button>
+            <button id="imgAuditReset" class="chip px-3 py-2 rounded-lg">Reset</button>
+          </div>
+          <button id="imgAuditClose" class="ms360-ibtn absolute top-3 right-3">✕</button>
+          <h2 class="text-lg font-extrabold mb-3">Revisor de imágenes</h2>
+          <p class="text-white/70 mb-4">Corrige URLs que no coinciden con el producto. Los cambios se guardan en <strong>este navegador</strong>. Exporta para hacerlos permanentes.</p>
+
+          <div class="grid gap-4">
+            <section>
+              <h3 class="font-bold mb-2">Posibles duplicados</h3>
+              ${renderDupeTable(dupes)}
+            </section>
+
+            <section>
+              <h3 class="font-bold mb-2">Sospechosos por título/categoría</h3>
+              ${renderSuspectTable(suspects)}
+            </section>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(wrap); lockScroll();
+
+      wrap.querySelector('#imgAuditClose').onclick = ()=>{ wrap.remove(); unlockScroll(); };
+      bindAuditActions(); bindExportActions();
+    }
+
+    function bindExportActions(){
+      const btnExport = document.getElementById('imgAuditExport');
+      const btnReset  = document.getElementById('imgAuditReset');
+      btnExport.onclick = ()=>{
+        const data = JSON.stringify(getOverrides(), null, 2);
+        const blob = new Blob([data], {type:'application/json'});
+        const url  = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'image_overrides.json';
+        document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+        alert('Descargado: image_overrides.json. Sube estos cambios a tu products.json para que se vean en incógnito.');
+      };
+      btnReset.onclick = ()=>{
+        localStorage.removeItem(LS_OVERRIDES);
+        products = loadLocal(); products = applyImageOverrides(products); applyFilters();
+        alert('Correcciones locales borradas en este navegador.');
+      };
+    }
+
+    function findDuplicateImages(list){
+      const map = {};
+      list.forEach(p=>{
+        const key = (p.image||'').trim(); if(!key) return;
+        map[key] = map[key] || []; map[key].push(p);
+      });
+      return Object.values(map).filter(arr => arr.length > 1);
+    }
+    function findSuspects(list){
+      const out = [];
+      list.forEach(p=>{
+        const img = (p.image||'').toLowerCase();
+        const title = (p.title||'').toLowerCase();
+        const fromAmazon = /m\.media-amazon\.com|images-na\.ssl-images-amazon\.com/.test(img);
+        const hotwheels = title.includes('hot wheels') && !/hot|wheel|supra|toyota/.test(img);
+        const beauty = p.category==='Belleza' && /tool|trimmer|clipper/i.test(img);
+        if (!fromAmazon || hotwheels || beauty) out.push(p);
+      });
+      return out;
+    }
+    function renderDupeTable(groups){
+      if(!groups.length) return `<div class="text-white/60">Sin duplicados. ✅</div>`;
+      return groups.map(g=>{
+        const rows = g.map(p=>`
+          <tr data-id="${p.id}">
+            <td class="align-top p-2 w-[72px]"><img src="${p.image}" alt="" class="w-16 h-16 object-contain bg-soft rounded-md"/></td>
+            <td class="align-top p-2">
+              <div class="font-semibold">${p.title}</div>
+              <div class="text-white/60 text-xs">${p.id}</div>
+              <div class="mt-1"><input class="input w-full" placeholder="Pega URL de imagen correcta" value="${p.image}" data-edit="${p.id}" /></div>
+            </td>
+            <td class="align-top p-2 w-[140px]"><button class="btn-neon rounded-lg px-3 py-2 w-full" data-save="${p.id}">Guardar</button></td>
+          </tr>
+        `).join('');
+        return `
+          <div class="overflow-auto rounded-xl border border-white/10"><table class="w-full text-sm"><tbody>${rows}</tbody></table></div>
+          ${g.length===2 ? `<div class="mt-2"><button class="chip px-3 py-2 rounded-lg" data-swap="${g[0].id},${g[1].id}">Intercambiar imágenes</button></div>` : ''}
+        `;
+      }).join('<div class="h-4"></div>');
+    }
+    function renderSuspectTable(list){
+      if(!list.length) return `<div class="text-white/60">Sin sospechosos. ✅</div>`;
+      const rows = list.map(p=>`
+        <tr data-id="${p.id}">
+          <td class="align-top p-2 w-[72px]"><img src="${p.image}" alt="" class="w-16 h-16 object-contain bg-soft rounded-md"/></td>
+          <td class="align-top p-2">
+            <div class="font-semibold">${p.title}</div>
+            <div class="text-white/60 text-xs">${p.id} • ${p.category}</div>
+            <div class="mt-1"><input class="input w-full" placeholder="Pega URL de imagen correcta" value="${p.image}" data-edit="${p.id}" /></div>
+          </td>
+          <td class="align-top p-2 w-[140px]"><button class="btn-neon rounded-lg px-3 py-2 w-full" data-save="${p.id}">Guardar</button></td>
+        </tr>`).join('');
+      return `<div class="overflow-auto rounded-xl border border-white/10"><table class="w-full text-sm"><tbody>${rows}</tbody></table></div>`;
+    }
+    function bindAuditActions(){
+      document.querySelectorAll('[data-save]').forEach(btn=>{
+        btn.onclick = ()=>{
+          const id = btn.getAttribute('data-save');
+          const input = document.querySelector(`[data-edit="${id}"]`);
+          const url = (input?.value||'').trim();
+          if(!url){ alert('Pon una URL de imagen válida'); return; }
+          const ov = getOverrides(); ov[id] = ov[id] || {}; ov[id].image = url; setOverrides(ov);
+          products = applyImageOverrides(products); applyFilters();
+          btn.textContent = 'Guardado ✓'; setTimeout(()=> btn.textContent='Guardar', 1200);
+        };
+      });
+      document.querySelectorAll('[data-swap]').forEach(btn=>{
+        btn.onclick = ()=>{
+          const [a,b] = btn.getAttribute('data-swap').split(',');
+          const pa = products.find(x=>x.id===a), pb = products.find(x=>x.id===b);
+          if(!pa||!pb) return;
+          const ov = getOverrides();
+          const imgA = (ov[a]?.image)||pa.image;
+          const imgB = (ov[b]?.image)||pb.image;
+          ov[a] = {...(ov[a]||{}), image: imgB};
+          ov[b] = {...(ov[b]||{}), image: imgA};
+          setOverrides(ov);
+          products = applyImageOverrides(products); applyFilters();
+          btn.textContent = 'Intercambiado ✓'; setTimeout(()=> btn.textContent='Intercambiar imágenes', 1200);
+        };
+      });
+    }
+    products = applyImageOverrides(products); applyFilters();
+    window.addEventListener('ja_products_updated', ()=>{ products = applyImageOverrides(products); applyFilters(); });
+
     (function(){
       const btn = document.createElement('button');
       btn.id='ms360-top'; btn.className='btn-neon rounded-full px-4 py-3 font-extrabold'; btn.textContent='↑ Arriba';
@@ -441,21 +633,19 @@
       window.addEventListener('scroll', ()=> { btn.classList.toggle('ms360-show', (window.scrollY||0) > 380); }, {passive:true});
     })();
 
-    // ---- Admin toggles
-    function setAdmin(on){ isAdmin=!!on; document.documentElement.classList.toggle('is-admin', isAdmin); if(isAdmin) localStorage.setItem('ja_admin','1'); else localStorage.removeItem('ja_admin'); applyFilters(); }
-    search.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && search.value.trim().toLowerCase()==='/admin'){ e.preventDefault(); search.value=''; setAdmin(!isAdmin); }});
-    document.addEventListener('keydown',(e)=>{ const k=e.key.toLowerCase(); if((e.altKey&&k==='a')||(e.metaKey&&e.shiftKey&&k==='a')||(e.ctrlKey&&e.shiftKey&&k==='a')){ e.preventDefault(); setAdmin(!isAdmin);}},{passive:false});
-    (function(){ const sp=new URLSearchParams(location.search); if(sp.get('admin')==='1'||location.hash.includes('admin')) setAdmin(true); })();
-    document.getElementById('btnAdmin')?.addEventListener('click', ()=> setAdmin(false));
-
-    // ---- Layout Tiles + estado admin
-    (function(){ const html=document.documentElement; function enableTiles(){ html.classList.add('ms360-tiles'); } if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', enableTiles, { once:true }); else enableTiles(); html.classList.toggle('is-admin', isAdmin); })();
+    (function(){
+      const html = document.documentElement;
+      function enableTiles(){ html.classList.add('ms360-tiles'); }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enableTiles, { once:true });
+      else enableTiles();
+      html.classList.toggle('is-admin', isAdmin);
+    })();
   </script>
 
   <!-- PWA: REGISTRO SW con actualización automática -->
   <script>
     if ('serviceWorker' in navigator) {
-      const SW_VERSION = 'v2025-10-08-f';
+      const SW_VERSION = 'v2025-10-08-b';
       window.addEventListener('load', () => {
         const url = `sw.js?${SW_VERSION}`;
         navigator.serviceWorker.register(url).then(reg => {
