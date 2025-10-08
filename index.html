@@ -62,12 +62,9 @@
     .header-admin-btn{ display:none !important; }
     .is-admin .header-admin-btn{ display:inline-flex !important; }
 
-    /* Logo Amazon viejo (header); se oculta más abajo por CSS */
-    .logo-chip{ background:#fff !important; border:1px solid rgba(255,255,255,.12) }
     .logo-chip img{ display:block; height:24px; width:auto; max-width:92px }
     @media (min-width:640px){ .logo-chip img{ height:26px } }
 
-    /* Bloqueo de scroll del fondo cuando el revisor está abierto */
     .no-scroll{ position:fixed; overflow:hidden; width:100%; }
   </style>
 
@@ -128,39 +125,38 @@
       font-weight: 900 !important; letter-spacing: .02em;
       font-size: clamp(18px, 6vw, 34px); line-height: 1.05; margin-bottom:.35rem;
     }
-    /* Ocultar subtítulo (limpio) */
+    /* Ocultar subtítulo */
     header .flex-1 > p{ display:none !important; }
 
-    /* Fila de iconos: derecha, sin wrap */
-    .header-ctas--icons{
-      display:flex; gap:.55rem; justify-content:flex-end; align-items:center;
-      flex-wrap:nowrap; white-space:nowrap; margin-top:.35rem;
-    }
-    /* Botón/icono compacto */
+    /* Contenedor de iconos con etiqueta debajo */
+    .header-ctas--icons{ display:flex; gap:10px; justify-content:flex-end; align-items:flex-start; margin-top:.35rem; }
+    .cta-stack{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:58px; }
     .cta-icon{
       display:inline-flex; align-items:center; justify-content:center;
-      width:40px; height:40px; border-radius:12px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      width:44px; height:44px; border-radius:12px;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+      transition:transform .12s ease, border-color .12s ease;
       overflow:hidden;
     }
     .cta-icon:hover{ transform:translateY(-1px) scale(1.02); border-color:rgba(255,255,255,.25); }
+    .cta-icon img, .cta-icon svg{ display:block; width:28px; height:28px; }
 
-    /* Iconos (SVG/PNG) siempre centrados y nítidos */
-    .cta-icon img, .cta-icon svg{ display:block; width:26px; height:26px; }
+    .cta-amz{ background:#f0d2ae; border-color:#e9c79f; } /* caja beige */
+    .cta-amz svg{ width:36px; height:36px; }
 
-    /* Amazon: pastilla blanca dentro para que el logo se lea perfecto */
-    .cta-amz{ background:#fff; }
-    .cta-amz img{ width:28px; height:auto; }
+    .cta-ms{ background:linear-gradient(135deg,#00E5FF,#7C3AED 55%,#FF0099); } /* tu app */
+    .cta-ms span{ font-weight:900; color:#0b0f1a; font-size:16px; letter-spacing:.5px }
 
-    /* Móviles muy pequeños */
+    .cta-label{ font-size:11px; line-height:1; color:#e6ebff; text-shadow:0 1px 0 rgba(0,0,0,.25); white-space:nowrap; }
+
     @media (max-width:360px){
-      .cta-icon{ width:36px; height:36px; border-radius:10px; }
-      .cta-amz img{ width:26px; }
+      .cta-icon{ width:40px; height:40px; }
+      .cta-icon img, .cta-icon svg{ width:26px; height:26px; }
+      .cta-amz svg{ width:32px; height:32px; }
+      .cta-label{ font-size:10px; }
     }
 
-    /* Ocultar botones viejos del header (texto YouTube + logo Amazon) */
+    /* Ocultar los botones viejos del header (texto YouTube + logo Amazon) */
     header .max-w-7xl > a[href*="youtube.com"],
     header .max-w-7xl > a.logo-chip{ display:none !important; }
   </style>
@@ -180,28 +176,59 @@
       <div class="flex-1">
         <h1 class="text-xl sm:text-2xl font-extrabold neon-title leading-none">MEGA STORE 360</h1>
 
-        <!-- ICONOS ORIGINALES (YouTube → Instagram → Amazon) -->
+        <!-- ICONOS CON NOMBRE: YouTube · Instagram · Amazon · MEGA STORE 360 -->
         <div class="header-ctas--icons">
-          <!-- YouTube: icono oficial 2017 (squircle/square) -->
-          <a class="cta-icon" href="https://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube">
-            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/YouTube_social_red_square_(2017).svg" alt="YouTube">
-          </a>
+          <!-- YouTube (original) -->
+          <div class="cta-stack">
+            <a class="cta-icon" href="https://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" rel="noopener" aria-label="YouTube">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/YouTube_social_red_square_(2017).svg" alt="YouTube">
+            </a>
+            <div class="cta-label">YouTube</div>
+          </div>
 
-          <!-- Instagram: logo 2016 (degradado original) -->
-          <a class="cta-icon" href="https://www.instagram.com/mega_store_360/" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
-            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Instagram_logo_2016.svg" alt="Instagram">
-          </a>
+          <!-- Instagram (original) -->
+          <div class="cta-stack">
+            <a class="cta-icon" href="https://www.instagram.com/mega_store_360/" target="_blank" rel="noopener" aria-label="Instagram">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Instagram_logo_2016.svg" alt="Instagram">
+            </a>
+            <div class="cta-label">Instagram</div>
+          </div>
 
-          <!-- Amazon: logo oficial (wordmark + sonrisa) dentro de pastilla blanca -->
-          <a class="cta-icon cta-amz" href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" title="Amazon" aria-label="Amazon">
-            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Amazon_logo.svg" alt="Amazon">
-          </a>
+          <!-- Amazon (APP icono: caja beige + cinta azul + sonrisa) -->
+          <div class="cta-stack">
+            <a class="cta-icon cta-amz" href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" aria-label="Amazon">
+              <!-- Vector del ícono estilo app -->
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <!-- fondo beige con esquinas redondeadas -->
+                <rect x="2" y="2" width="60" height="60" rx="14" fill="#E9C7A0"/>
+                <!-- cinta azul -->
+                <path d="M40 6h12a6 6 0 0 1 6 6v8H40V6z" fill="#3B82F6"/>
+                <path d="M40 6v14l6-6 6 6V6z" fill="#1E40AF" opacity=".95"/>
+                <!-- sonrisa -->
+                <path d="M17 37c7 6 23 10 34 1" fill="none" stroke="#0b0f1a" stroke-width="4" stroke-linecap="round"/>
+                <!-- flecha de sonrisa (punta) -->
+                <path d="M50 36c0 0-1 4-4 6" fill="none" stroke="#0b0f1a" stroke-width="4" stroke-linecap="round"/>
+              </svg>
+            </a>
+            <div class="cta-label">Amazon</div>
+          </div>
+
+          <!-- MEGA STORE 360 (tu app) -->
+          <div class="cta-stack">
+            <a class="cta-icon cta-ms" href="/" aria-label="MEGA STORE 360">
+              <span>J_A</span>
+            </a>
+            <div class="cta-label">MEGA STORE 360</div>
+          </div>
         </div>
       </div>
 
       <!-- (Se mantienen elementos admin; quedan ocultos por CSS) -->
       <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
-      <a href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" class="ml-1 inline-flex items-center justify-center h-10 rounded-xl px-3 logo-chip" title="Ir a Amazon (afiliado)">
+      <a href="https://www.amazon.com/?tag=kaninosabioan-20"
+         target="_blank" rel="nofollow sponsored noopener"
+         class="ml-1 inline-flex items-center justify-center h-10 rounded-xl px-3 logo-chip"
+         title="Ir a Amazon (afiliado)">
         <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" referrerpolicy="no-referrer" loading="eager"/>
       </a>
 
@@ -423,7 +450,7 @@
           const res = await fetch(RAW_URL + "?" + Date.now(), { cache:"no-store" });
           if(!res.ok) throw new Error("HTTP "+res.status);
           const json = await res.json();
-          const incoming = normalizeIncoming(json).filter(p => p.title && p.image);
+          const incoming = normalizeIncoming(json).filter(p => p.title y p.image);
           incoming.forEach(p => p.amazon = ensureTag(p.amazon));
           saveLocal(incoming);
           products = loadLocal();
@@ -442,7 +469,7 @@
 
     (function(){
       function patch(){
-        document.querySelectorAll('a[href*="amazon."]').forEach(a=>{
+        document.querySelectorAll('a[href*=\"amazon.\"]').forEach(a=>{
           a.href = ensureTag(a.getAttribute('href')||'#');
           a.rel = 'nofollow noopener sponsored';
           a.target = '_blank';
@@ -478,155 +505,6 @@
 
     (function(){
       const btn = document.createElement('button');
-      btn.textContent = 'Revisar imágenes';
-      btn.id = 'imgAuditBtn';
-      btn.className = 'admin-only fixed bottom-20 right-4 z-[10001] px-4 py-2 rounded-xl chip font-semibold';
-      btn.addEventListener('click', openAuditPanel);
-      document.addEventListener('DOMContentLoaded', ()=> document.body.appendChild(btn), {once:true});
-    })();
-
-    function openAuditPanel(){
-      const dupes = findDuplicateImages(products);
-      const suspects = findSuspects(products);
-
-      const wrap = document.createElement('div');
-      wrap.id = 'imgAuditPanel';
-      wrap.style.cssText = 'position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto';
-      wrap.innerHTML = `
-        <div class="card rounded-2xl p-4 sm:p-6 max-w-4xl w-full text-sm relative" style="max-height:85vh; overflow:auto;">
-          <div class="absolute top-3 left-3 flex gap-2">
-            <button id="imgAuditExport" class="chip px-3 py-2 rounded-lg">Exportar cambios</button>
-            <button id="imgAuditReset" class="chip px-3 py-2 rounded-lg">Reset</button>
-          </div>
-          <button id="imgAuditClose" class="ms360-ibtn absolute top-3 right-3">✕</button>
-          <h2 class="text-lg font-extrabold mb-3">Revisor de imágenes</h2>
-          <p class="text-white/70 mb-4">Corrige URLs que no coinciden con el producto. Los cambios se guardan en <strong>este navegador</strong>. Exporta para hacerlos permanentes.</p>
-
-          <div class="grid gap-4">
-            <section>
-              <h3 class="font-bold mb-2">Posibles duplicados</h3>
-              ${renderDupeTable(dupes)}
-            </section>
-
-            <section>
-              <h3 class="font-bold mb-2">Sospechosos por título/categoría</h3>
-              ${renderSuspectTable(suspects)}
-            </section>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(wrap); lockScroll();
-
-      wrap.querySelector('#imgAuditClose').onclick = ()=>{ wrap.remove(); unlockScroll(); };
-      bindAuditActions(); bindExportActions();
-    }
-
-    function bindExportActions(){
-      const btnExport = document.getElementById('imgAuditExport');
-      const btnReset  = document.getElementById('imgAuditReset');
-      btnExport.onclick = ()=>{
-        const data = JSON.stringify(getOverrides(), null, 2);
-        const blob = new Blob([data], {type:'application/json'});
-        const url  = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = 'image_overrides.json';
-        document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-        alert('Descargado: image_overrides.json. Sube estos cambios a tu products.json para que se vean en incógnito.');
-      };
-      btnReset.onclick = ()=>{
-        localStorage.removeItem(LS_OVERRIDES);
-        products = loadLocal(); products = applyImageOverrides(products); applyFilters();
-        alert('Correcciones locales borradas en este navegador.');
-      };
-    }
-
-    function findDuplicateImages(list){
-      const map = {};
-      list.forEach(p=>{
-        const key = (p.image||'').trim(); if(!key) return;
-        map[key] = map[key] || []; map[key].push(p);
-      });
-      return Object.values(map).filter(arr => arr.length > 1);
-    }
-    function findSuspects(list){
-      const out = [];
-      list.forEach(p=>{
-        const img = (p.image||'').toLowerCase();
-        const title = (p.title||'').toLowerCase();
-        const fromAmazon = /m\.media-amazon\.com|images-na\.ssl-images-amazon\.com/.test(img);
-        const hotwheels = title.includes('hot wheels') && !/hot|wheel|supra|toyota/.test(img);
-        const beauty = p.category==='Belleza' && /tool|trimmer|clipper/i.test(img);
-        if (!fromAmazon || hotwheels || beauty) out.push(p);
-      });
-      return out;
-    }
-    function renderDupeTable(groups){
-      if(!groups.length) return `<div class="text-white/60">Sin duplicados. ✅</div>`;
-      return groups.map(g=>{
-        const rows = g.map(p=>`
-          <tr data-id="${p.id}">
-            <td class="align-top p-2 w-[72px]"><img src="${p.image}" alt="" class="w-16 h-16 object-contain bg-soft rounded-md"/></td>
-            <td class="align-top p-2">
-              <div class="font-semibold">${p.title}</div>
-              <div class="text-white/60 text-xs">${p.id}</div>
-              <div class="mt-1"><input class="input w-full" placeholder="Pega URL de imagen correcta" value="${p.image}" data-edit="${p.id}" /></div>
-            </td>
-            <td class="align-top p-2 w-[140px]"><button class="btn-neon rounded-lg px-3 py-2 w-full" data-save="${p.id}">Guardar</button></td>
-          </tr>
-        `).join('');
-        return `
-          <div class="overflow-auto rounded-xl border border-white/10"><table class="w-full text-sm"><tbody>${rows}</tbody></table></div>
-          ${g.length===2 ? `<div class="mt-2"><button class="chip px-3 py-2 rounded-lg" data-swap="${g[0].id},${g[1].id}">Intercambiar imágenes</button></div>` : ''}
-        `;
-      }).join('<div class="h-4"></div>');
-    }
-    function renderSuspectTable(list){
-      if(!list.length) return `<div class="text-white/60">Sin sospechosos. ✅</div>`;
-      const rows = list.map(p=>`
-        <tr data-id="${p.id}">
-          <td class="align-top p-2 w-[72px]"><img src="${p.image}" alt="" class="w-16 h-16 object-contain bg-soft rounded-md"/></td>
-          <td class="align-top p-2">
-            <div class="font-semibold">${p.title}</div>
-            <div class="text-white/60 text-xs">${p.id} • ${p.category}</div>
-            <div class="mt-1"><input class="input w-full" placeholder="Pega URL de imagen correcta" value="${p.image}" data-edit="${p.id}" /></div>
-          </td>
-          <td class="align-top p-2 w-[140px]"><button class="btn-neon rounded-lg px-3 py-2 w-full" data-save="${p.id}">Guardar</button></td>
-        </tr>`).join('');
-      return `<div class="overflow-auto rounded-xl border border-white/10"><table class="w-full text-sm"><tbody>${rows}</tbody></table></div>`;
-    }
-    function bindAuditActions(){
-      document.querySelectorAll('[data-save]').forEach(btn=>{
-        btn.onclick = ()=>{
-          const id = btn.getAttribute('data-save');
-          const input = document.querySelector(`[data-edit="${id}"]`);
-          const url = (input?.value||'').trim();
-          if(!url){ alert('Pon una URL de imagen válida'); return; }
-          const ov = getOverrides(); ov[id] = ov[id] || {}; ov[id].image = url; setOverrides(ov);
-          products = applyImageOverrides(products); applyFilters();
-          btn.textContent = 'Guardado ✓'; setTimeout(()=> btn.textContent='Guardar', 1200);
-        };
-      });
-      document.querySelectorAll('[data-swap]').forEach(btn=>{
-        btn.onclick = ()=>{
-          const [a,b] = btn.getAttribute('data-swap').split(',');
-          const pa = products.find(x=>x.id===a), pb = products.find(x=>x.id===b);
-          if(!pa||!pb) return;
-          const ov = getOverrides();
-          const imgA = (ov[a]?.image)||pa.image;
-          const imgB = (ov[b]?.image)||pb.image;
-          ov[a] = {...(ov[a]||{}), image: imgB};
-          ov[b] = {...(ov[b]||{}), image: imgA};
-          setOverrides(ov);
-          products = applyImageOverrides(products); applyFilters();
-          btn.textContent = 'Intercambiado ✓'; setTimeout(()=> btn.textContent='Intercambiar imágenes', 1200);
-        };
-      });
-    }
-    products = applyImageOverrides(products); applyFilters();
-    window.addEventListener('ja_products_updated', ()=>{ products = applyImageOverrides(products); applyFilters(); });
-
-    (function(){
-      const btn = document.createElement('button');
       btn.id='ms360-top'; btn.className='btn-neon rounded-full px-4 py-3 font-extrabold'; btn.textContent='↑ Arriba';
       btn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
       document.addEventListener('DOMContentLoaded', ()=> document.body.appendChild(btn), {once:true});
@@ -645,7 +523,7 @@
   <!-- PWA: REGISTRO SW con actualización automática -->
   <script>
     if ('serviceWorker' in navigator) {
-      const SW_VERSION = 'v2025-10-08-b';
+      const SW_VERSION = 'v2025-10-08-c';
       window.addEventListener('load', () => {
         const url = `sw.js?${SW_VERSION}`;
         navigator.serviceWorker.register(url).then(reg => {
