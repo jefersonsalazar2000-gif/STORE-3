@@ -62,16 +62,18 @@
     .header-admin-btn{ display:none !important; }
     .is-admin .header-admin-btn{ display:inline-flex !important; }
 
-    /* Botón Amazon antiguo (se oculta con CSS más abajo) */
+    /* Logo Amazon (botón viejo del header; lo ocultamos después) */
     .logo-chip{ background:#fff !important; border:1px solid rgba(255,255,255,.12) }
     .logo-chip img{ display:block; height:24px; width:auto; max-width:92px }
     @media (min-width:640px){ .logo-chip img{ height:26px } }
 
+    /* Bloqueo de scroll del fondo cuando el revisor está abierto */
     .no-scroll{ position:fixed; overflow:hidden; width:100%; }
   </style>
 
   <!-- Add-ons UI -->
   <style>
+    :root { --ms360-ring: 0 0 0 1.5px rgba(124,58,237,.45), 0 0 18px rgba(124,58,237,.35), inset 0 0 12px rgba(0,229,255,.25) }
     :focus-visible { outline:2px solid #7C3AED; outline-offset:2px }
     .ms360-skeleton{position:relative;overflow:hidden;background:#0f1430}
     .ms360-skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);transform:translateX(-100%);animation:ms360-shimmer 1.1s infinite}
@@ -115,9 +117,9 @@
     @media (min-width:1024px){ html.ms360-tiles #grid{ grid-template-columns:repeat(5,minmax(0,1fr)) !important; } }
   </style>
 
-  <!-- ======== AJUSTES HEADER ======== -->
+  <!-- ======== AJUSTES HEADER (título e iconos) ======== -->
   <style>
-    /* Título: degradado igual a J_A, 1 línea, profesional */
+    /* Título: degradado igual a J_A, 1 línea */
     header .flex-1 h1{
       background: var(--grad-1) !important;
       -webkit-background-clip: text !important; background-clip: text !important;
@@ -126,32 +128,37 @@
       font-weight: 900 !important; letter-spacing: .02em;
       font-size: clamp(18px, 6vw, 34px); line-height: 1.05; margin-bottom:.35rem;
     }
-    /* Sin subtítulo para limpiar */
+    /* Ocultar subtítulo */
     header .flex-1 > p{ display:none !important; }
 
-    /* Fila de CTAs a la DERECHA, uno al lado del otro (no wrap) */
-    .header-ctas{
-      display:flex; gap:.5rem; align-items:center; justify-content:flex-end;
-      flex-wrap:nowrap; white-space:nowrap;
+    /* Fila de iconos: derecha, sin wrap */
+    .header-ctas--icons{
+      display:flex; gap:.55rem; justify-content:flex-end; align-items:center;
+      flex-wrap:nowrap; white-space:nowrap; margin-top:.35rem;
     }
-    .cta{
-      display:inline-flex; align-items:center; justify-content:center; gap:.55rem;
-      height:36px; padding:0 1rem; border-radius:12px; font-weight:800; font-size:.92rem;
+    /* Botón/icono compacto */
+    .cta-icon{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:40px; height:40px; border-radius:12px;
+      background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.12);
+      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
     }
-    .cta-yb{ background:var(--btn-grad); color:#0b0f1a; }
-    .cta-amz{ background:#fff; color:#0b0f1a; padding:0 .75rem; }
-    .cta-amz img{ display:block; height:18px; width:auto; }
+    .cta-icon:hover{ transform:translateY(-1px) scale(1.02); border-color:rgba(255,255,255,.25); }
 
-    /* Oculta los botones antiguos del extremo derecho del header */
+    /* Amazon: pastilla blanca con logo oficial dentro */
+    .cta-amz{ background:#fff; }
+    .cta-amz img{ display:block; width:28px; height:auto; }
+
+    /* Mantener lado a lado en móviles pequeños */
+    @media (max-width:360px){
+      .cta-icon{ width:36px; height:36px; border-radius:10px; }
+      .cta-amz img{ width:26px; }
+    }
+
+    /* Ocultar los botones viejos del header (texto YouTube + logo Amazon) */
     header .max-w-7xl > a[href*="youtube.com"],
     header .max-w-7xl > a.logo-chip{ display:none !important; }
-
-    /* Ajustes extra en pantallas muy pequeñas (mantener lado a lado) */
-    @media (max-width:360px){
-      .cta{ height:34px; padding:0 .7rem; font-size:.85rem; }
-      .cta-amz img{ height:16px; }
-    }
   </style>
 </head>
 
@@ -169,21 +176,47 @@
       <div class="flex-1">
         <h1 class="text-xl sm:text-2xl font-extrabold neon-title leading-none">MEGA STORE 360</h1>
 
-        <!-- CTAs NUEVAS: a la derecha, lado a lado -->
-        <div class="header-ctas">
-          <a class="cta cta-yb" href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" rel="noopener">
-            YouTube
+        <!-- ICONOS (YouTube → Instagram → Amazon) -->
+        <div class="header-ctas--icons">
+          <!-- YouTube -->
+          <a class="cta-icon" href="https://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube">
+            <svg viewBox="0 0 48 48" width="24" height="24" aria-hidden="true">
+              <rect x="2" y="8" width="44" height="32" rx="8" fill="#FF0000"/>
+              <polygon points="20,17 20,31 32,24" fill="#FFFFFF"/>
+            </svg>
           </a>
-          <a class="cta cta-amz" href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" aria-label="Amazon">
-            <!-- Solo el logo oficial (sin texto adicional) -->
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" referrerpolicy="no-referrer">
+
+          <!-- Instagram -->
+          <a class="cta-icon" href="https://www.instagram.com/mega_store_360/" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
+            <svg viewBox="0 0 48 48" width="24" height="24" aria-hidden="true">
+              <defs>
+                <linearGradient id="igGrad" x1="0" y1="1" x2="1" y2="0">
+                  <stop offset="0%"  stop-color="#F58529"/>
+                  <stop offset="35%" stop-color="#DD2A7B"/>
+                  <stop offset="65%" stop-color="#8134AF"/>
+                  <stop offset="100%" stop-color="#515BD4"/>
+                </linearGradient>
+              </defs>
+              <rect x="4" y="4" width="40" height="40" rx="10" fill="url(#igGrad)"/>
+              <circle cx="24" cy="24" r="9" fill="none" stroke="#fff" stroke-width="3"/>
+              <rect x="12" y="12" width="24" height="24" rx="7" ry="7" fill="none" stroke="#fff" stroke-width="3"/>
+              <circle cx="33.5" cy="14.5" r="2.5" fill="#fff"/>
+            </svg>
+          </a>
+
+          <!-- Amazon -->
+          <a class="cta-icon cta-amz" href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" title="Amazon" aria-label="Amazon">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="">
           </a>
         </div>
       </div>
 
-      <!-- (Se dejan, pero ocultos por CSS) -->
+      <!-- Elementos de admin (permanecen, pero los otros botones quedan ocultos por CSS) -->
       <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
-      <a href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" class="ml-1 inline-flex items-center justify-center h-10 rounded-xl px-3 logo-chip" title="Ir a Amazon (afiliado)">
+      <a href="https://www.amazon.com/?tag=kaninosabioan-20"
+         target="_blank" rel="nofollow sponsored noopener"
+         class="ml-1 inline-flex items-center justify-center h-10 rounded-xl px-3 logo-chip"
+         title="Ir a Amazon (afiliado)">
         <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" referrerpolicy="no-referrer" loading="eager"/>
       </a>
 
@@ -232,11 +265,13 @@
     const LS_FEATURED = 'ja_featured_ids_v1';
     const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v7';
 
+    // ---- Migración (limpia datos locales antiguos)
     if (!localStorage.getItem(MIGRATION_FLAG)) {
       try { localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_FEATURED); } catch {}
       localStorage.setItem(MIGRATION_FLAG, '1');
     }
 
+    // ---- Featured
     const feat = {
       get(){ try{return JSON.parse(localStorage.getItem(LS_FEATURED))||[]}catch{return[]} },
       set(v){ localStorage.setItem(LS_FEATURED, JSON.stringify(v||[])) },
@@ -244,6 +279,7 @@
       toggle(id){ const s=new Set(feat.get()); s.has(id)?s.delete(id):s.add(id); feat.set([...s]) }
     };
 
+    // ---- Afiliado
     function ensureTag(url){
       if(!url) return "#";
       try{
@@ -256,6 +292,7 @@
       }
     }
 
+    // ---- Normalizador
     const norm = (p)=>({
       id: (p.id || '').trim(),
       title: (p.title || p.TITLE || '').trim(),
@@ -268,6 +305,7 @@
       createdAt: typeof p.createdAt==='number' ? p.createdAt : Date.now()
     });
 
+    // ---- Estado UI
     let products = [];
     let isAdmin = !!localStorage.getItem('ja_admin');
 
@@ -279,10 +317,12 @@
     const year = document.getElementById('year');
     year.textContent = new Date().getFullYear();
 
+    // ---- Render
     function productCard(p){
       const nprice = Number(p.price);
       const showPrice = Number.isFinite(nprice) && nprice > 0;
       const price = showPrice ? `${nprice.toLocaleString()}` : '';
+
       const starBtn = `
         <button class="admin-only ms360-star absolute top-2 right-2 z-10 bg-[rgba(14,20,48,.8)] border border-white/15 rounded-lg px-2 py-1 text-sm"
                 data-star="${p.id}" aria-pressed="${feat.has(p.id)?'true':'false'}"
@@ -355,29 +395,35 @@
     }
     function saveLocal(list){ localStorage.setItem(LS_KEY, JSON.stringify(list)); }
 
+    // ---- Inicio
     products = loadLocal();
     renderCategories(products); applyFilters();
 
+    // ---- Filtros
     search.addEventListener('input', applyFilters, {passive:true});
     categoryFilter.addEventListener('change', applyFilters, {passive:true});
 
+    // ---- Activación Admin (4 métodos)
     function setAdmin(on){
       isAdmin = !!on;
       document.documentElement.classList.toggle('is-admin', isAdmin);
       if (isAdmin) localStorage.setItem('ja_admin','1'); else localStorage.removeItem('ja_admin');
       applyFilters();
     }
+    // 1) /admin + Enter
     search.addEventListener('keydown',(e)=>{
       if (e.key==='Enter' && search.value.trim().toLowerCase()==='/admin'){
         e.preventDefault(); search.value=''; setAdmin(!isAdmin);
       }
     });
+    // 2) Atajos
     document.addEventListener('keydown', (e)=>{
       const k = e.key.toLowerCase();
       if ((e.altKey && k==='a') || (e.metaKey && e.shiftKey && k==='a') || (e.ctrlKey && e.shiftKey && k==='a')){
         e.preventDefault(); setAdmin(!isAdmin);
       }
     }, {passive:false});
+    // 3) Long-press J_A
     (function(){
       const trigger = document.getElementById('brandTrigger');
       let t=null;
@@ -385,6 +431,7 @@
       const clear=()=>{ if(t){clearTimeout(t); t=null;} };
       ['pointerup','pointerleave','pointercancel'].forEach(ev=>trigger.addEventListener(ev, clear));
     })();
+    // 4) ?admin=1 o #admin
     (function(){
       const sp = new URLSearchParams(location.search);
       if (sp.get('admin')==='1' || location.hash.includes('admin')) setAdmin(true);
@@ -392,6 +439,7 @@
 
     document.getElementById('btnAdmin')?.addEventListener('click', ()=> setAdmin(false));
 
+    // ================== AUTO-SYNC GITHUB (REPLACE + ID estable) ==================
     (function(){
       const RAW_URL = "https://raw.githubusercontent.com/jefersonsalazar2000-gif/STORE-3/refs/heads/main/products.json";
       const REFRESH_MS = 30000;
@@ -426,6 +474,7 @@
       document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
     })();
 
+    // ---- Parche universal + Interceptor de clic para tag
     (function(){
       function patch(){
         document.querySelectorAll('a[href*="amazon."]').forEach(a=>{
@@ -450,6 +499,7 @@
       new MutationObserver(patch).observe(document.body,{childList:true,subtree:true});
     })();
 
+    /* ======== REVISOR DE IMÁGENES (MODO ADMIN) ======== */
     const LS_OVERRIDES = 'ja_image_overrides_v1';
     function getOverrides(){ try{return JSON.parse(localStorage.getItem(LS_OVERRIDES))||{}}catch{return{}} }
     function setOverrides(v){ localStorage.setItem(LS_OVERRIDES, JSON.stringify(v||{})); }
@@ -578,7 +628,7 @@
           </td>
           <td class="align-top p-2 w-[140px]"><button class="btn-neon rounded-lg px-3 py-2 w-full" data-save="${p.id}">Guardar</button></td>
         </tr>`).join('');
-      return `<div class="overflow-auto rounded-xl border border-white/10"><table class="w-full text-sm"><tbody>${rows}</tbody></table></div>`;
+      return `<div class="overflow-auto rounded-xl border border-white/10"><table class="w-full text-sm"><tbody>${rows}}</tbody></table></div>`;
     }
     function bindAuditActions(){
       document.querySelectorAll('[data-save]').forEach(btn=>{
@@ -611,6 +661,7 @@
     products = applyImageOverrides(products); applyFilters();
     window.addEventListener('ja_products_updated', ()=>{ products = applyImageOverrides(products); applyFilters(); });
 
+    // ---- Botón “Arriba”
     (function(){
       const btn = document.createElement('button');
       btn.id='ms360-top'; btn.className='btn-neon rounded-full px-4 py-3 font-extrabold'; btn.textContent='↑ Arriba';
@@ -619,6 +670,7 @@
       window.addEventListener('scroll', ()=> { btn.classList.toggle('ms360-show', (window.scrollY||0) > 380); }, {passive:true});
     })();
 
+    // ---- Layout Tiles + estado admin
     (function(){
       const html = document.documentElement;
       function enableTiles(){ html.classList.add('ms360-tiles'); }
@@ -631,11 +683,14 @@
   <!-- PWA: REGISTRO SW con actualización automática -->
   <script>
     if ('serviceWorker' in navigator) {
-      const SW_VERSION = 'v2025-10-08-b';
+      const SW_VERSION = 'v2025-10-08-b'; // <-- cambia cuando subas cambios grandes
       window.addEventListener('load', () => {
         const url = `sw.js?${SW_VERSION}`;
         navigator.serviceWorker.register(url).then(reg => {
-          function promptUpdate(sw){ if (!sw) return; sw.postMessage({ type:'SKIP_WAITING' }); }
+          function promptUpdate(sw){
+            if (!sw) return;
+            sw.postMessage({ type:'SKIP_WAITING' });
+          }
           if (reg.waiting) promptUpdate(reg.waiting);
           reg.addEventListener('updatefound', ()=>{
             const nw = reg.installing;
