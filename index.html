@@ -129,7 +129,8 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
       <div id="brandTrigger" class="w-10 h-10 rounded-xl gradient-border flex items-center justify-center shrink-0">
         <div class="w-full h-full rounded-[14px] bg-[#0e1430] flex items-center justify-center">
-          <span class="text-xl font-extrabold">J_A</span>
+          <!-- J_A con degradado igual que el título -->
+          <span class="text-xl font-extrabold neon-title">J_A</span>
         </div>
       </div>
       <div class="flex-1">
@@ -250,7 +251,7 @@
 
     // ---- Render
     function productCard(p){
-      // Mostrar precio solo si > 0 (evita "0")
+      // Mostrar precio solo si > 0 (evita "0" y "US$")
       const nprice = Number(p.price);
       const showPrice = Number.isFinite(nprice) && nprice > 0;
       const price = showPrice ? `${nprice.toLocaleString()}` : '';
