@@ -7,9 +7,9 @@
   <meta name="theme-color" content="#0b0f1a"/>
 
   <!-- PWA -->
-  <link rel="manifest" href="manifest.json?v=9" />
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192-v7.png?v=9">
-  <link rel="apple-touch-icon" href="icon-180x180-v7.png?v=9">
+  <link rel="manifest" href="manifest.json?v=10" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192-v7.png?v=10">
+  <link rel="apple-touch-icon" href="icon-180x180-v7.png?v=10">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -54,7 +54,7 @@
     #grid { overflow-x:hidden; }
     *, *::before, *::after { box-sizing:border-box; }
 
-    /* ===== HEADER: título e iconos ===== */
+    /* ===== HEADER: título + iconos ===== */
     header .flex-1 h1{
       background: var(--grad-1) !important;
       -webkit-background-clip: text !important; background-clip: text !important;
@@ -88,14 +88,12 @@
       .cta-label{ font-size:10px; }
     }
 
-    /* Oculta los botones viejos de texto del header si existieran */
+    /* Oculta los botones viejos del header si existieran */
     header .max-w-7xl > a[href*="youtube.com"],
     header .max-w-7xl > a.logo-chip{ display:none !important; }
-
-    /* Resto de estilos UI (igual que tenías)… */
   </style>
 
-  <!-- Tiles (tal cual) -->
+  <!-- Tiles (como tenías) -->
   <style id="ms360-tiles-essence">
     html.ms360-tiles #grid{ display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:12px !important; }
     html.ms360-tiles #grid .card{
@@ -143,7 +141,7 @@
         <!-- ICONOS con nombre: YouTube · Instagram · Amazon · MEGA STORE 360 -->
         <div class="header-ctas--icons">
 
-          <!-- YouTube (SVG embebido) -->
+          <!-- YouTube (play rojo) -->
           <div class="cta-stack">
             <a class="cta-icon cta-youtube" href="https://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" rel="noopener" aria-label="YouTube">
               <svg viewBox="0 0 48 48" width="28" height="28" aria-hidden="true">
@@ -154,7 +152,7 @@
             <div class="cta-label">YouTube</div>
           </div>
 
-          <!-- Instagram (degradado + glifo) -->
+          <!-- Instagram (degradado 2016 + glifo) -->
           <div class="cta-stack">
             <a class="cta-icon cta-inst" href="https://www.instagram.com/mega_store_360/" target="_blank" rel="noopener" aria-label="Instagram">
               <svg viewBox="0 0 48 48" width="28" height="28" aria-hidden="true">
@@ -175,7 +173,7 @@
             <div class="cta-label">Instagram</div>
           </div>
 
-          <!-- Amazon (ÍCONO DE LA APP: caja beige + cinta azul + sonrisa) -->
+          <!-- Amazon (icono de la app: caja beige + cinta azul + sonrisa) -->
           <div class="cta-stack">
             <a class="cta-icon cta-amz" href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" aria-label="Amazon">
               <svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true">
@@ -192,9 +190,9 @@
             <div class="cta-label">Amazon</div>
           </div>
 
-          <!-- MEGA STORE 360 (tu app) -->
+          <!-- Tu app: link corregido a ./ para evitar 404 en GitHub Pages -->
           <div class="cta-stack">
-            <a class="cta-icon cta-ms" href="/" aria-label="MEGA STORE 360">
+            <a class="cta-icon cta-ms" href="./" aria-label="MEGA STORE 360">
               <span>J_A</span>
             </a>
             <div class="cta-label">MEGA STORE 360</div>
@@ -202,7 +200,7 @@
         </div>
       </div>
 
-      <!-- (Botones admin se mantienen, ocultos salvo modo admin) -->
+      <!-- (Botones admin se quedan, ocultos si no es admin) -->
       <a href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" class="px-3 py-2 rounded-xl chip text-sm font-semibold hover:opacity-90">YouTube</a>
       <a href="https://www.amazon.com/?tag=kaninosabioan-20"
          target="_blank" rel="nofollow sponsored noopener"
@@ -254,7 +252,7 @@
     const AFF_TAG = "kaninosabioan-20";
     const LS_KEY  = 'ja_store_products_v2';
     const LS_FEATURED = 'ja_featured_ids_v1';
-    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v9';
+    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v10';
 
     if (!localStorage.getItem(MIGRATION_FLAG)) {
       try { localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_FEATURED); } catch {}
@@ -444,21 +442,20 @@
     })();
 
     // ---- Admin toggles
-    let isAdmin = !!localStorage.getItem('ja_admin');
     function setAdmin(on){ isAdmin=!!on; document.documentElement.classList.toggle('is-admin', isAdmin); if(isAdmin) localStorage.setItem('ja_admin','1'); else localStorage.removeItem('ja_admin'); applyFilters(); }
     search.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && search.value.trim().toLowerCase()==='/admin'){ e.preventDefault(); search.value=''; setAdmin(!isAdmin); }});
     document.addEventListener('keydown',(e)=>{ const k=e.key.toLowerCase(); if((e.altKey&&k==='a')||(e.metaKey&&e.shiftKey&&k==='a')||(e.ctrlKey&&e.shiftKey&&k==='a')){ e.preventDefault(); setAdmin(!isAdmin);}},{passive:false});
     (function(){ const sp=new URLSearchParams(location.search); if(sp.get('admin')==='1'||location.hash.includes('admin')) setAdmin(true); })();
     document.getElementById('btnAdmin')?.addEventListener('click', ()=> setAdmin(false));
 
-    // ---- Tiles + estado admin (al arrancar)
+    // ---- Layout Tiles + estado admin
     (function(){ const html=document.documentElement; function enableTiles(){ html.classList.add('ms360-tiles'); } if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', enableTiles, { once:true }); else enableTiles(); html.classList.toggle('is-admin', isAdmin); })();
   </script>
 
   <!-- PWA: REGISTRO SW con actualización automática -->
   <script>
     if ('serviceWorker' in navigator) {
-      const SW_VERSION = 'v2025-10-08-e';
+      const SW_VERSION = 'v2025-10-08-f';
       window.addEventListener('load', () => {
         const url = `sw.js?${SW_VERSION}`;
         navigator.serviceWorker.register(url).then(reg => {
