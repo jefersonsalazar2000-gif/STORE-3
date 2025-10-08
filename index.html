@@ -116,6 +116,26 @@
     @media (min-width:640px){ html.ms360-tiles #grid{ grid-template-columns:repeat(4,minmax(0,1fr)) !important; } }
     @media (min-width:1024px){ html.ms360-tiles #grid{ grid-template-columns:repeat(5,minmax(0,1fr)) !important; } }
   </style>
+
+  <!-- ======== AJUSTE SOLICITADO: MISMO DEGRADADO + UNA LÍNEA + SIN SUBTÍTULO ======== -->
+  <style>
+    header .flex-1 h1{
+      background: var(--grad-1) !important;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      color: transparent !important;
+      text-shadow: 0 0 18px rgba(124,58,237,.25) !important;
+      white-space: nowrap !important;    /* una sola línea */
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 900 !important;
+      letter-spacing: .02em;
+      font-size: clamp(22px, 8vw, 42px);
+      line-height: 1.05;
+    }
+    /* ocultar subtítulo para mantener el header limpio */
+    header .flex-1 > p{ display:none !important; }
+  </style>
 </head>
 
 <body class="min-h-full text-white bg-[radial-gradient(1200px_600px_at_20%_-10%,rgba(124,58,237,.15),transparent_55%),radial-gradient(900px_500px_at_120%_10%,rgba(0,229,255,.12),transparent_50%),#0b0f1a]">
@@ -426,7 +446,7 @@
     /* ======== REVISOR DE IMÁGENES (MODO ADMIN) ======== */
     const LS_OVERRIDES = 'ja_image_overrides_v1';
     function getOverrides(){ try{return JSON.parse(localStorage.getItem(LS_OVERRIDES))||{}}catch{return{}} }
-    function setOverrides(v){ localStorage.setItem(LS_OVERRIDES, JSON.stringify(v||{})); }
+    function setOverrides(v){ localStorage.localStorage?null:localStorage; localStorage.setItem(LS_OVERRIDES, JSON.stringify(v||{})); }
     function applyImageOverrides(list){
       const map = getOverrides();
       return list.map(p => { if (map[p.id]?.image) p.image = map[p.id].image; return p; });
