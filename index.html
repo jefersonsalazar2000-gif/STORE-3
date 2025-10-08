@@ -129,20 +129,29 @@
     /* Sin subtítulo para limpiar */
     header .flex-1 > p{ display:none !important; }
 
-    /* Fila de CTAs alineada a la DERECHA, justo debajo del título */
-    .header-ctas{ display:flex; gap:.5rem; align-items:center; justify-content:flex-end; flex-wrap:wrap; }
+    /* Fila de CTAs a la DERECHA, uno al lado del otro (no wrap) */
+    .header-ctas{
+      display:flex; gap:.5rem; align-items:center; justify-content:flex-end;
+      flex-wrap:nowrap; white-space:nowrap;
+    }
     .cta{
       display:inline-flex; align-items:center; justify-content:center; gap:.55rem;
       height:36px; padding:0 1rem; border-radius:12px; font-weight:800; font-size:.92rem;
-      border:1px solid rgba(255,255,255,.12); white-space:nowrap;
+      border:1px solid rgba(255,255,255,.12);
     }
-    .cta svg,.cta img{ height:18px; width:auto; display:block }
     .cta-yb{ background:var(--btn-grad); color:#0b0f1a; }
-    .cta-amz{ background:#fff; color:#0b0f1a; }
+    .cta-amz{ background:#fff; color:#0b0f1a; padding:0 .75rem; }
+    .cta-amz img{ display:block; height:18px; width:auto; }
 
     /* Oculta los botones antiguos del extremo derecho del header */
     header .max-w-7xl > a[href*="youtube.com"],
     header .max-w-7xl > a.logo-chip{ display:none !important; }
+
+    /* Ajustes extra en pantallas muy pequeñas (mantener lado a lado) */
+    @media (max-width:360px){
+      .cta{ height:34px; padding:0 .7rem; font-size:.85rem; }
+      .cta-amz img{ height:16px; }
+    }
   </style>
 </head>
 
@@ -160,17 +169,14 @@
       <div class="flex-1">
         <h1 class="text-xl sm:text-2xl font-extrabold neon-title leading-none">MEGA STORE 360</h1>
 
-        <!-- CTAs NUEVAS: SOLO 2, a la DERECHA y debajo del título -->
+        <!-- CTAs NUEVAS: a la derecha, lado a lado -->
         <div class="header-ctas">
           <a class="cta cta-yb" href="http://www.youtube.com/@SABIDURIAANIMAL86" target="_blank" rel="noopener">
-            <!-- Ícono YouTube inline (texto completo "YouTube") -->
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.5a4 4 0 0 0-2.8-2.8C18.7 3 12 3 12 3s-6.7 0-8.7.7A4 4 0 0 0 .5 6.5 41 41 0 0 0 0 12a41 41 0 0 0 .5 5.5 4 4 0 0 0 2.8 2.8C5.3 21 12 21 12 21s6.7 0 8.7-.7a4 4 0 0 0 2.8-2.8A41 41 0 0 0 24 12a41 41 0 0 0-.5-5.5Z" fill="currentColor" opacity=".25"/><path d="M10 8.5v7l6-3.5-6-3.5Z" fill="currentColor"/></svg>
-            <span>YouTube</span>
+            YouTube
           </a>
-          <a class="cta cta-amz" href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener">
-            <!-- Logo oficial Amazon -->
+          <a class="cta cta-amz" href="https://www.amazon.com/?tag=kaninosabioan-20" target="_blank" rel="nofollow sponsored noopener" aria-label="Amazon">
+            <!-- Solo el logo oficial (sin texto adicional) -->
             <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" referrerpolicy="no-referrer">
-            <span>Amazon</span>
           </a>
         </div>
       </div>
