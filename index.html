@@ -194,7 +194,7 @@
     const AFF_TAG = "kaninosabioan-20";
     const LS_KEY  = 'ja_store_products_v2';
     const LS_FEATURED = 'ja_featured_ids_v1';
-    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v3';
+    const MIGRATION_FLAG = 'ja_migrated_2025_10_08_fix_ids_v4';
 
     // ---- Migración 1 sola vez para limpiar datos antiguos/corruptos
     if (!localStorage.getItem(MIGRATION_FLAG)) {
@@ -210,7 +210,7 @@
       toggle(id){ const s=new Set(feat.get()); s.has(id)?s.delete(id):s.add(id); feat.set([...s]) }
     };
 
-    // ---- Normalización segura (con ID estable desde la clave del JSON)
+    // ---- Normalización segura
     function ensureTag(url){
       if(!url) return "#";
       try{
@@ -248,7 +248,11 @@
 
     // ---- Render
     function productCard(p){
-      const price = (p.price || p.price===0) && p.price!=='' ? `${Number(p.price).toLocaleString()}` : '';
+      // Mostrar precio solo si > 0 y numérico (evita "0" o 0)
+      const nprice = Number(p.price);
+      const showPrice = Number.isFinite(nprice) && nprice > 0;
+      const price = showPrice ? `${nprice.toLocaleString()}` : '';
+
       const starBtn = `
         <button class="admin-only ms360-star absolute top-2 right-2 z-10 bg-[rgba(14,20,48,.8)] border border-white/15 rounded-lg px-2 py-1 text-sm"
                 data-star="${p.id}"
@@ -388,6 +392,33 @@
       document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
     })();
 
+    // ---- Parche universal de enlaces Amazon en el DOM + Interceptor de clic
+    (function(){
+      function patch(){
+        document.querySelectorAll('a[href*="amazon."]').forEach(a=>{
+          a.href = ensureTag(a.getAttribute('href')||'#');
+          a.rel = 'nofollow noopener sponsored';
+          a.target = '_blank';
+        });
+      }
+      // Interceptor: fuerza el tag justo al hacer clic
+      document.addEventListener('click', (ev)=>{
+        const a = ev.target.closest && ev.target.closest('a[href]');
+        if(!a) return;
+        try{
+          const u = new URL(a.href, location.href);
+          if(/amazon\./i.test(u.hostname)){
+            u.searchParams.set('tag', AFF_TAG);
+            ev.preventDefault();
+            window.open(u.toString(), '_blank', 'noopener');
+          }
+        }catch{}
+      }, {capture:true});
+
+      window.addEventListener('load', patch, {once:true});
+      new MutationObserver(patch).observe(document.body,{childList:true,subtree:true});
+    })();
+
     // ---- Verificador + AutoFix tag (solo visible en admin)
     const btnVerify = document.getElementById('btnVerify');
     const btnFix = document.getElementById('btnFix');
@@ -408,19 +439,6 @@
         setAdmin(false);
       });
     }
-
-    // ---- Parche universal de enlaces Amazon en el DOM
-    (function(){
-      function patch(){
-        document.querySelectorAll('a[href*="amazon."]').forEach(a=>{
-          a.href = ensureTag(a.getAttribute('href'));
-          a.rel = 'nofollow noopener sponsored';
-          a.target = '_blank';
-        });
-      }
-      window.addEventListener('load', patch, {once:true});
-      new MutationObserver(patch).observe(document.body,{childList:true,subtree:true});
-    })();
 
     // ---- Botón “Arriba”
     (function(){
