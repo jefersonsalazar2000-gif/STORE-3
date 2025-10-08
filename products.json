@@ -734,6 +734,80 @@
       "IMAGE": "https://m.media-amazon.com/images/I/71nIqR2GRnL._AC_UL640_FMwebp_QL65_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B0FQPBHM24?tag=kaninosabioan-20",
       "FEATURE": false
+    },
+
+    /* ========= NUEVOS ARTÍCULOS AÑADIDOS ========= */
+    "barajador-automatico-cartas-b0dnjprfhn": {
+      "TITLE": "Barajador y distribuidor automático de cartas (2 en 1, 12 jugadores, con 4 mandos)",
+      "PRICE": 0,
+      "CATEGORY": "Juguetes",
+      "IMAGE": "https://m.media-amazon.com/images/I/71JbmxrgOoL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DNJPRFHN?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "dispensador-premios-pato-b0fjfgfgy1": {
+      "TITLE": "Dispensador de premios tipo rompecabezas para perros (pato, alimentación lenta)",
+      "PRICE": 0,
+      "CATEGORY": "Mascotas",
+      "IMAGE": "https://m.media-amazon.com/images/I/61jPnfgHUiL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FJFGFGY1?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "dogbuddy-recogedor-b073zzjp7w": {
+      "TITLE": "DogBuddy — Recogedor de heces con dispensador de bolsas",
+      "PRICE": 0,
+      "CATEGORY": "Mascotas",
+      "IMAGE": "https://m.media-amazon.com/images/I/615jjOc7nIL._AC_SL1000_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B073ZZJP7W?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "hat-washer-cage-b0c5wmnzg7": {
+      "TITLE": "Soporte para lavar gorras (Hat Washer Cage) — Lavadora/Lavavajillas",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/71Q7O4MYWgL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0C5WMNZG7?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "oneisall-aspiradora-aseo-perros-b0cvvwbxmt": {
+      "TITLE": "oneisall — Aspiradora de aseo para perros 13000Pa (kit 7 piezas, 3L)",
+      "PRICE": 0,
+      "CATEGORY": "Mascotas",
+      "IMAGE": "https://m.media-amazon.com/images/I/712-IHzZ06L._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0CVVWBXMT?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "pecute-cepillo-autolimpiante-b0cx18d5bj": {
+      "TITLE": "Pecute — Cepillo deslizante autolimpiante para perros y gatos",
+      "PRICE": 0,
+      "CATEGORY": "Mascotas",
+      "IMAGE": "https://m.media-amazon.com/images/I/61FbHB+O4VL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0CX18D5BJ?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "maleta-policarbonato-22-b0fnd2s5x5": {
+      "TITLE": "Maleta rígida 22\" policarbonato/ABS con ruedas, TSA y puerto USB",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/61D7YE3AScL._AC_SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FND2S5X5?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "aspiradora-colchon-uv-b0d1qqxh6v": {
+      "TITLE": "Aspiradora inalámbrica para colchón con luz UV-C y filtro HEPA",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/71xsKieUm3L._AC_SY300_SX300_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0D1QQXH6V?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "luz-nocturna-calabaza-b0chw33wrk": {
+      "TITLE": "Luz nocturna de calabaza — lámpara LED de silicona recargable",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/51RJH8zeo0L._AC_SX342_SY445_QL70_FMwebp_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0CHW33WRK?tag=kaninosabioan-20",
+      "FEATURE": false
     }
   }
 }
