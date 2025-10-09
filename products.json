@@ -862,6 +862,23 @@
       "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/61pIL2maVKL._AC_UL900_SR900,600_.jpg",
       "AMAZON": "https://www.amazon.com/-/es/CeraVe-Hidratante-facial-corporal-diaria/dp/B00TTD9BRC?tag=kaninosabioan-20",
       "FEATURE": false
+    },
+
+    "sani-hands-100-paquetes": {
+      "TITLE": "Sani-Hands – Desinfectante para manos (100 paquetes por caja)",
+      "PRICE": 0,
+      "CATEGORY": "Salud",
+      "IMAGE": "https://m.media-amazon.com/images/I/71g3Oz1NclL._SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/Desinfectante-Sani-Hands-manos-paquetes-caja/dp/B00E8QDBR6/ref=sr_1_1?__mk_es_US=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=30SBDHLOZ6ICW&dib=eyJ2IjoiMSJ9.5129fjaxPq-31P-lsI4XQyqhVEPRKNkYALdBMwGN0S7UJYs9LvENoT228YHjCpF7b7mBkUIKM6VkY1AePrOj9XKW2xSaedjT-W_wpzmb1fjX-BFGcFWc38AKC3bHIzbJbcTs399-udQtBbfwCeA3kZQ9soAnAvO3yIC97r1BRX33sIYpVadXzZLJzPwsZUgzGsRXmoqa2LWJI8RGFy1ZDF7o2yzQ9DullSUXCIoomYiR0aj9YUMWWxxizxER126cUMKpGVXDcYkZKTAyRSIllWOs94etourPctGv_VqsZ5A.RWlE9jONYTLYovbfORV_IQarfCXP--p8CSye7ZAThBw&dib_tag=se&keywords=Desinfectante+Sani-Hands+para+manos%2C+100+paquetes+por+caja.+Sani-Hands+hand+sanitizer%2C+100+packets+per+box.&qid=1760015301&s=industrial&sprefix=desinfectante+sani-hands+para+manos%2C+100+paquetes+por+caja.+sani-hands+hand+sanitizer%2C+100+packets+per+box.%2Cindustrial%2C256&sr=1-1",
+      "FEATURE": false
+    },
+    "desinfectante-manos-portatil": {
+      "TITLE": "Desinfectante para manos (portátil)",
+      "PRICE": 0,
+      "CATEGORY": "Salud",
+      "IMAGE": "https://m.media-amazon.com/images/I/716ncrezU-L._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/sspa/click?ie=UTF8&spc=MTo0NjUyMDQ0OTU3Mjc3OTg1OjE3NjAwMTUzMDE6c3BfbXRmOjMwMDgzNDM5NTE2NjEwMjo6MDo6&url=%2Fdesinfectante-esenciales-infusi%25C3%25B3n-port%25C3%25A1til-3900-09-ECME17%2Fdp%2FB06Y5JFFZW%2Fref%3Dsr_1_15_sspa%3F__mk_es_US%3D%25C3%2585M%25C3%2585%25C5%25BD%25C3%2595%25C3%2591%26crid%3D30SBDHLOZ6ICW%26dib%3DeyJ2IjoiMSJ9.5129fjaxPq-31P-lsI4XQyqhVEPRKNkYALdBMwGN0S7UJYs9LvENoT228YHjCpF7b7mBkUIKM6VkY1AePrOj9XKW2xSaedjT-W_wpzmb1fjX-BFGcFWc38AKC3bHIzbJbcTs399-udQtBbfwCeA3kZQ9soAnAvO3yIC97r1BRX33sIYpVadXzZLJzPwsZUgzGsRXmoqa2LWJI8RGFy1ZDF7o2yzQ9DullSUXCIoomYiR0aj9YUMWWxxizxER126cUMKpGVXDcYkZKTAyRSIllWOs94etourPctGv_VqsZ5A.RWlE9jONYTLYovbfORV_IQarfCXP--p8CSye7ZAThBw%26dib_tag%3Dse%26keywords%3DDesinfectante%2BSani-Hands%2Bpara%2Bmanos%252C%2B100%2Bpaquetes%2Bpor%2Bcaja.%2BSani-Hands%2Bhand%2Bsanitizer%252C%2B100%2Bpackets%2Bper%2Bbox.%26qid%3D1760015301%26s%3Dindustrial%26sprefix%3Ddesinfectante%2Bsani-hands%2Bpara%2Bmanos%252C%2B100%2Bpaquetes%2Bpor%2Bcaja.%2Bsani-hands%2Bhand%2Bsanitizer%252C%2B100%2Bpackets%2Bper%2Bbox.%252Cindustrial%252C256%26sr%3D1-15-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9tdGY%26psc%3D1",
+      "FEATURE": false
     }
   }
 }
