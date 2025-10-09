@@ -736,6 +736,89 @@
       "FEATURE": false
     },
 
+    /* === AQUI AGREGO LAS 10 NUEVAS DE BELLEZA QUE ME PEDISTE === */
+    "biodance-mascarilla-colageno-b0f1fr7rqk": {
+      "TITLE": "BIODANCE Real Deep Bio-Collagen Mask – Mascarilla hidratante y reafirmante",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/51Qiwz3ZiaL._SL1000_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/BIODANCE-Repair-Calming-Mask-Duo/dp/B0F1FR7RQK?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "clean-skin-club-toallitas-b07pbxxncy": {
+      "TITLE": "Clean Skin Club – Toallitas faciales biodegradables dermatológicamente probadas",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/61581VJZ9EL._SL1080_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/Clean-Skin-Club-biodegradable-Dermatologicamente/dp/B07PBXXNCY?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "mighty-patch-original-b074pvtpbw": {
+      "TITLE": "Mighty Patch Original – Parche antiacné invisible (36 unidades)",
+      "PRICE": 0,
+      "CATEGORY": "Cuidado facial",
+      "IMAGE": "https://m.media-amazon.com/images/I/61YI0Z2FdvL._SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/Mighty-PatchTM-Parche-original-Cosmetics/dp/B074PVTPBW?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "medicube-niacinamida-b0cm2ppnmw": {
+      "TITLE": "Medicube Niacinamida Serum – Colágeno hidrolizado con efecto iluminador",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/51Kx4Wt+VqL._SL1500_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/Medicube-niacinamida-hidrolizado-liofilizado-artificiales/dp/B0CM2PPNMW?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "neutrogena-desmaquillante-b00u2vqzds": {
+      "TITLE": "Neutrogena Toallitas Desmaquillantes – Ultrasuaves, resistentes al maquillaje",
+      "PRICE": 0,
+      "CATEGORY": "Aseo personal",
+      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/61leLgR06vL._AC_UL900_SR900,600_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/Neutrogena-desmaquillantes-ultrasuaves-maquillaje-resistente/dp/B00U2VQZDS?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "medicube-elasticidad-b0dgtmr754": {
+      "TITLE": "Medicube Brightening & Elasticity Mask – Hidratación y reafirmación intensa",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71eFYqXRGoL._AC_UL900_SR900,600_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/medicube-brillante-elasticidad-hidratante-reafirmante/dp/B0DGTMR754?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "medicube-colageno-b0brmyhms5": {
+      "TITLE": "Medicube Collagen Mask – Mascarilla de colágeno para elasticidad e hidratación",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/61An0jiJFvL._AC_UL900_SR900,600_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/medicube-mascarilla-colágeno-elasticidad-hidratación/dp/B0BRMYHMS5?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "cosmetics-bbcream-b07hld2hc4": {
+      "TITLE": "MIZON Correcting BB Cream – Cobertura ligera con hidratación y protección solar",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71F8+04jMXL._AC_UL900_SR900,600_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/COSMETICS-corrección-cobertura-hidratante-protector/dp/B07HLD2HC4?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "medicube-salmon-dna-b0dbf65jyy": {
+      "TITLE": "Medicube Salmon DNA PDRN Cream – Crema reparadora con niacinamida",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/71yAcfq5Y3L._AC_UL900_SR900,600_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/medicube-Salmon-DNA-PDRN-niacinamida/dp/B0DBF65JYY?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "cerave-hidratante-b00ttd9brc": {
+      "TITLE": "CeraVe Crema Hidratante – Cuidado facial y corporal diario (16 oz)",
+      "PRICE": 0,
+      "CATEGORY": "Aseo personal",
+      "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/61pIL2maVKL._AC_UL900_SR900,600_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/CeraVe-Hidratante-facial-corporal-diaria/dp/B00TTD9BRC?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+
+    /* === TUS 8 NUEVAS (YA LAS TENÍAS, NO TOQUÉ NADA) === */
     "barajador-automatico-cartas-b0df7kxf87": {
       "TITLE": "Barajador automático de cartas 2 en 1",
       "PRICE": 0,
