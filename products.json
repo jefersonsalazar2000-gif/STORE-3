@@ -795,6 +795,23 @@
       "FEATURE": false,
       "SKU": "SKU-004",
       "STOCK": 40
+    },
+
+    "presto-pizzazz-03430-b00005ibxj": {
+      "TITLE": "National Presto Pizzazz 03430 – Horno para pizzas giratorio",
+      "PRICE": 0,
+      "CATEGORY": "Cocina",
+      "IMAGE": "https://m.media-amazon.com/images/I/81Cjf0u0UeL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B00005IBXJ?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "greenpan-ice-cream-b0ffhk26v7": {
+      "TITLE": "GreenPan – Máquina 15-en-1 de helados y bebidas frías (soft serve, granizados, malteadas)",
+      "PRICE": 0,
+      "CATEGORY": "Cocina",
+      "IMAGE": "https://m.media-amazon.com/images/I/71DLaivxNLL._AC_SX679_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FFHK26V7?tag=kaninosabioan-20",
+      "FEATURE": false
     }
   }
 }
