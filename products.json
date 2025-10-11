@@ -1,5 +1,62 @@
 {
   "PRODUCTOS": {
+    "urea-60-foot-cream-b0frn47vct": {
+      "TITLE": "Crema 60% Urea – Antigrietas y Humectante (Pies/Zonas Secas)",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/61g46sZV69L._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FRN47VCT?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "foot-cream-dry-cracked-peach-b0fl2rdqrx": {
+      "TITLE": "Crema Hidratante Antigrietas (Aroma Melocotón) – Zonas Secas",
+      "PRICE": 0,
+      "CATEGORY": "Belleza",
+      "IMAGE": "https://m.media-amazon.com/images/I/71FlC26cNaL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FL2RDQRX?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "o-cedar-h2pro-mop-b0f817n4kd": {
+      "TITLE": "O-Cedar H2Pro – Trapeador plano con almohadilla de microfibra",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/71H19mPo5rL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0F817N4KD?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "fedicelly-lint-roller-320-sheets-b09pds626w": {
+      "TITLE": "Fedicelly Rodillo Quitapelusas XL (320 hojas, 6.3\" ancho)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/61w-vZ7zN1L._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B09PDS626W?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "lint-roller-grande-mascotas-b07r5s96p2": {
+      "TITLE": "Rodillo Quitapelusas Grande para Mascotas (Pack multihojas)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/81amaGFWTVL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B07R5S96P2?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "fingerprint-door-lock-b0fh23kz36": {
+      "TITLE": "Cerradura de Puerta con Huella + App (Perilla Biométrica)",
+      "PRICE": 0,
+      "CATEGORY": "Herramientas",
+      "IMAGE": "https://m.media-amazon.com/images/I/71c+XY463FL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FH23KZ36?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "mini-bag-sealer-2en1-b0frrvltng": {
+      "TITLE": "Sellador de Bolsas 2-en-1 Recargable (Mini Resealer con Cuchilla)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar",
+      "IMAGE": "https://m.media-amazon.com/images/I/511NmhQaivL._AC_UY436_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0FRRVLTNG?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+
     "quay-nightfall-shield-b0bw5llkxy": {
       "TITLE": "QUAY Nightfall Shield – Gafas de sol (negro)",
       "PRICE": 0,
@@ -716,4 +773,3 @@
     }
   }
 }
-
