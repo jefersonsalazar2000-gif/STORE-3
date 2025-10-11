@@ -1,5 +1,30 @@
 {
   "PRODUCTOS": {
+    "icy-face-eye-mask-b07hd61pyn": {
+      "TITLE": "Icy Face & Eye Mask – Reduce hinchazón y ojeras (Gel frío/calor)",
+      "PRICE": 0,
+      "CATEGORY": "Cuidado facial",
+      "IMAGE": "https://m.media-amazon.com/images/I/71J157-uKML._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B07HD61PYN?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "stella-eye-mask-pack-b0dw4k7ssj": {
+      "TITLE": "STELLA – Paquete variado de mascarillas para debajo de los ojos",
+      "PRICE": 0,
+      "CATEGORY": "Cuidado facial",
+      "IMAGE": "https://m.media-amazon.com/images/I/71YFioBr7WL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0DW4K7SSJ?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+    "24k-collagen-eye-masks-b0bnsrn83t": {
+      "TITLE": "Mascarillas de Colágeno 24K para ojos – Desinflama e hidrata",
+      "PRICE": 0,
+      "CATEGORY": "Cuidado facial",
+      "IMAGE": "https://m.media-amazon.com/images/I/71AllnpajlL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B0BNSRN83T?tag=kaninosabioan-20",
+      "FEATURE": false
+    },
+
     "urea-60-foot-cream-b0frn47vct": {
       "TITLE": "Crema 60% Urea – Antigrietas y Humectante (Pies/Zonas Secas)",
       "PRICE": 0,
