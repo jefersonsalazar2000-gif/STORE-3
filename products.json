@@ -682,14 +682,16 @@
       "AMAZON": "https://www.amazon.com/-/es/Clean-Skin-Club-biodegradable-Dermatologicamente/dp/B07PBXXNCY?tag=kaninosabioan-20",
       "FEATURE": false
     },
+
     "mighty-patch-original-b074pvtpbw": {
       "TITLE": "Mighty Patch Original – Parche antiacné invisible (36 unidades)",
       "PRICE": 0,
       "CATEGORY": "Cuidado facial",
-      "IMAGE": "https://m.media-amazon.com/images/I/61YI0Z2FdvL._SL1500_.jpg",
-      "AMAZON": "https://www.amazon.com/-/es/Mighty-PatchTM-Parche-original-Cosmetics/dp/B074PVTPBW?tag=kaninosabioan-20",
+      "IMAGE": "https://m.media-amazon.com/images/I/6193GuD9ZnL._AC_UL640_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/dp/B074PVTPBW?tag=kaninosabioan-20",
       "FEATURE": true
     },
+
     "medicube-niacinamida-b0cm2ppnmw": {
       "TITLE": "Medicube Niacinamida Serum – Colágeno hidrolizado con efecto iluminador",
       "PRICE": 0,
@@ -843,7 +845,7 @@
       "TITLE": "Differin Gel 0.1% Adapaleno – Tratamiento antiacné (15 g)",
       "PRICE": 0,
       "CATEGORY": "Cuidado facial",
-      "IMAGE": "https://m.media-amazon.com/images/I/61pK8I1c8gL._AC_UL640_FMwebp_QL65_.jpg",
+      "IMAGE": "https://m.media-amazon.com/images/I/61Rncot-U9L._SL1500_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B07L1PHSY9?tag=kaninosabioan-20",
       "FEATURE": true
     },
@@ -851,7 +853,7 @@
       "TITLE": "PanOxyl Espuma Limpiadora 10% Peróxido de Benzoilo (5.5 oz)",
       "PRICE": 0,
       "CATEGORY": "Cuidado facial",
-      "IMAGE": "https://m.media-amazon.com/images/I/71y6w4eMYnL._AC_UL640_FMwebp_QL65_.jpg",
+      "IMAGE": "https://m.media-amazon.com/images/I/713tzBRSP%2BL._AC_UL640_QL65_.jpg",
       "AMAZON": "https://www.amazon.com/dp/B081KL2QYJ?tag=kaninosabioan-20",
       "FEATURE": false
     }
