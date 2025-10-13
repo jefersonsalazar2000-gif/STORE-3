@@ -1,5 +1,22 @@
 {
   "PRODUCTOS": {
+    "bebird-earsight-plus-r37r": {
+      "TITLE": "Bebird Earsight Plus R37R - Herramienta para limpieza de oídos con cámara",
+      "PRICE": 0,
+      "CATEGORY": "Electrónica / Salud",
+      "IMAGE": "https://m.media-amazon.com/images/I/61S7x6WH8QL._AC_UL640_FMwebp_QL65_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/sspa/click?ie=UTF8&spc=MTo4MDc4MjA2NzkyMzMxMTEzOjE3NjAzNTcwODY6c3BfYXRmOjMwMDc1MTgyMjQzNjEwMjo6MDo6&url=%2FBebird-Earsight-Plus-R37R-herramientas%2Fdp%2FB0DTHV46VS%2Fref%3Dsr_1_1_sspa%3F__mk_es_US%3D%25C3%2585M%25C3%2585%25C5%25BD%25C3%2595%25C3%2591%26crid%3D1M5NR4QH2Y52Z%26dib%3DeyJ2IjoiMSJ9.hLmDVOjRiNyB-H-MoY-d3VeEeTeumx7BqcWVQtTgFJ4z52-wrc0lxpiWdo-RL32oNi_PxYH9QWzfwjUW8dvKBo6SDe2XdrgovLnz0wpBz5HQM6ZOuP7pmdc2ck_mgA-zjAfCHqqwIiBSQ1tnMnbqBdCgI2THIybAbax3d2XF7Gyg5YBXcfvh8BFA1X906wEAGqHfLsE4AOw6TW8lSexMQcoixe5JztJrqgCkkBRGlw7KHYCljXr-wC7llsk7lvsKsAgHebx-HSKKPV5vPvGcSY9vzhef4H1BRXAEVOFfpWQ.lke5IuJ9H0ueGP4jPDoYaa_JSQXYe1fsgll2JlQ9ysQ%26dib_tag%3Dse%26keywords%3DBebird%2BEarsight%2BPlus%2BR37R%2BWax%2Bremoval%2Btool%2Bkit%2Bfor%2Bear%2Bcleaning%2Bcamera%252C%2Bflexible%2Blight%2Bfor%2Botoscope%2Bcamera%252C%2Bvisual%2Bear%2Bselector%252C%2Bwireless%2Btweezers%2Bfor%2Bremoval%26qid%3D1760357086%26s%3Dhpc%26sprefix%3Dbebird%2Bearsight%2Bplus%2Br37r%2Bwax%2Bremoval%2Btool%2Bkit%2Bfor%2Bear%2Bcleaning%2Bcamera%252C%2Bflexible%2Blight%2Bfor%2Botoscope%2Bcamera%252C%2Bvisual%2Bear%2Bselector%252C%2Bwireless%2Btweezers%2Bfor%2Bremoval%252Chpc%252C268%26sr%3D1-1-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9hdGY%26psc%3D1",
+      "FEATURE": false
+    },
+    "peleg-design-penguin-warmer": {
+      "TITLE": "Peleg Design - Escalfador Pingüino (Penguin Egg Boiler / Preparador)",
+      "PRICE": 0,
+      "CATEGORY": "Hogar / Cocina",
+      "IMAGE": "https://m.media-amazon.com/images/I/41SIlXBrhuL._MCnd_AC_.jpg",
+      "AMAZON": "https://www.amazon.com/-/es/Peleg-Design-escalfador-ping%C3%BCino-preparar/dp/B07WD8MF7W/ref=pd_ci_mcx_mh_mcx_views_0_image?pd_rd_w=KG1LY&content-id=amzn1.sym.679481c3-2bf4-4843-80c0-ffb319282e84%3Aamzn1.symc.c3d5766d-b606-46b8-ab07-1d9d1da0638b&pf_rd_p=679481c3-2bf4-4843-80c0-ffb319282e84&pf_rd_r=JM8R2W1S8PZ71X9GD4YD&pd_rd_wg=fvA3O&pd_rd_r=b077588e-ecdc-41c0-92f5-58579674cad2&pd_rd_i=B07WD8MF7W",
+      "FEATURE": false
+    },
+
     "icy-face-eye-mask-b07hd61pyn": {
       "TITLE": "Icy Face & Eye Mask – Reduce hinchazón y ojeras (Gel frío/calor)",
       "PRICE": 0,
@@ -721,7 +738,7 @@
       "PRICE": 0,
       "CATEGORY": "Belleza",
       "IMAGE": "https://images-na.ssl-images-amazon.com/images/I/61An0jiJFvL._AC_UL900_SR900,600_.jpg",
-      "AMAZON": "https://www.amazon.com/-/es/medicube-mascarilla-colágeno-elasticidad-hidratación/dp/B0BRMYHMS5?tag=kaninosabioan-20",
+      "AMAZON": "https://www.amazon.com/-/es/medicube-mascarilla-colageno-elasticidad-hidratación/dp/B0BRMYHMS5?tag=kaninosabioan-20",
       "FEATURE": false
     },
     "cosmetics-bbcream-b07hld2hc4": {
